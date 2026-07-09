@@ -1,10 +1,120 @@
-export const metadata = { title: "Visit Us" };
+import type { Metadata } from "next";
+import { getSite, getFaq } from "@/lib/content";
+import ContactForm from "@/components/contact/ContactForm";
+import BrandMap from "@/components/home/BrandMap";
+import Divider from "@/components/ui/Divider";
+
+export const metadata: Metadata = {
+  title: "Visit Us · Hours, Location & Contact",
+  description:
+    "Find The Wrap Shack at 40100 Washington St, Suite 109, Bermuda Dunes — on the Palm Desert border. Open daily 11 am – 8 pm. Call (760) 360-8178 or send a note.",
+};
 
 export default function ContactPage() {
+  const site = getSite();
+  const faq = getFaq();
+
   return (
-    <div className="grain bg-cream px-6 pb-32 pt-40">
-      <h1 className="display-section text-center text-charcoal">Visit Us</h1>
-      <p className="eyebrow mt-6 text-center text-olive">Built in Phase 3</p>
+    <div className="grain bg-cream">
+      <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-32 md:px-10 md:pt-40">
+        <p className="eyebrow text-gold">Visit us</p>
+        <h1 className="display-section mt-4 max-w-[18ch] text-charcoal">
+          Come hungry. Leave with extra garlic sauce.
+        </h1>
+
+        <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_1.1fr]">
+          {/* info + map */}
+          <div className="space-y-10">
+            <dl className="grid gap-8 sm:grid-cols-2">
+              <div data-reveal>
+                <dt className="eyebrow text-charcoal-60">Address</dt>
+                <dd className="mt-1.5 leading-relaxed">
+                  {site.address.street}
+                  <br />
+                  {site.address.locality}, {site.address.region}{" "}
+                  {site.address.postalCode}
+                </dd>
+              </div>
+              <div data-reveal>
+                <dt className="eyebrow text-charcoal-60">Hours</dt>
+                <dd className="mt-1.5">
+                  {site.hours.display}
+                  <span className="mt-1 block text-[14px] text-charcoal-60">
+                    {site.hours.orderingWindow}
+                  </span>
+                </dd>
+              </div>
+              <div data-reveal>
+                <dt className="eyebrow text-charcoal-60">Phone</dt>
+                <dd className="mt-1.5">
+                  <a
+                    href={site.phoneHref}
+                    className="underline decoration-tahini underline-offset-4 transition-colors duration-250 hover:decoration-gold"
+                  >
+                    {site.phone}
+                  </a>
+                </dd>
+              </div>
+              <div data-reveal>
+                <dt className="eyebrow text-charcoal-60">Email</dt>
+                <dd className="mt-1.5">
+                  <a
+                    href={`mailto:${site.email}`}
+                    className="underline decoration-tahini underline-offset-4 transition-colors duration-250 hover:decoration-gold"
+                  >
+                    {site.email}
+                  </a>
+                </dd>
+              </div>
+            </dl>
+            <div data-reveal>
+              <BrandMap className="aspect-[4/3]" />
+            </div>
+          </div>
+
+          {/* form */}
+          <div data-reveal>
+            <h2 className="font-display text-[1.9rem] font-medium text-charcoal">
+              Send us a note
+            </h2>
+            <p className="body-copy mt-2 text-[15px] text-charcoal-60">
+              Catering questions, feedback, or a craving we should know about.
+              For orders, use the Order buttons — they go straight to the
+              kitchen.
+            </p>
+            <div className="mt-8">
+              <ContactForm />
+            </div>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <section aria-labelledby="faq-heading" className="mt-28 max-w-[820px]">
+          <p className="eyebrow text-gold">Good to know</p>
+          <h2 id="faq-heading" className="display-section mt-4 text-charcoal">
+            Questions we hear a lot
+          </h2>
+          <div className="mt-10">
+            {faq.map((f) => (
+              <details key={f.id} className="group border-b border-tahini/70 py-5 first:border-t">
+                <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 font-display text-[1.35rem] font-medium text-charcoal [&::-webkit-details-marker]:hidden">
+                  {f.question}
+                  <span
+                    aria-hidden
+                    className="text-olive transition-transform duration-250 ease-brand group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="body-copy mt-3 max-w-[62ch] text-[15px] leading-relaxed text-charcoal-60">
+                  {f.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+          <Divider tone="olive" className="mt-16 max-w-[120px]" />
+        </section>
+      </div>
     </div>
   );
 }
