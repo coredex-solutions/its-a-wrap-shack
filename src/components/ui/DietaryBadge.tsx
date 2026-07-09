@@ -73,7 +73,7 @@ export default function DietaryBadge({
     >
       <Icon kind={kind} />
       {withLabel ? (
-        <span className="text-[10.5px] font-semibold uppercase tracking-[0.08em]">
+        <span className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-charcoal-60">
           {label}
         </span>
       ) : (

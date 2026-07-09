@@ -8,7 +8,7 @@ export default function VisitSection() {
     <section aria-labelledby="visit-heading" className="grain bg-cream">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-24 md:grid-cols-2 md:items-center md:gap-20 md:px-10 md:py-32">
         <div>
-          <p className="eyebrow text-gold" data-reveal>
+          <p className="eyebrow text-gold-ink" data-reveal>
             Visit us
           </p>
           <h2 id="visit-heading" className="display-section mt-4 text-charcoal" data-reveal>

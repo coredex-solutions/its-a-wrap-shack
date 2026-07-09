@@ -76,7 +76,7 @@ export default function AboutPage() {
       {/* the daily practice */}
       <section aria-labelledby="values-heading" className="grain bg-cream">
         <div className="mx-auto max-w-[1100px] px-5 py-24 md:px-10 md:py-32">
-          <p className="eyebrow text-gold" data-reveal>
+          <p className="eyebrow text-gold-ink" data-reveal>
             The daily practice
           </p>
           <h2 id="values-heading" className="display-section mt-4 text-charcoal" data-reveal>

@@ -114,7 +114,7 @@ export default function Header() {
                         ? "text-cream hover:text-tahini"
                         : "text-charcoal hover:text-forest",
                       pathname === item.href
-                        ? "after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-gold"
+                        ? "after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-gold-ink"
                         : "",
                     ].join(" ")}
                   >

@@ -17,7 +17,7 @@ export default function ContactPage() {
   return (
     <div className="grain bg-cream">
       <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-32 md:px-10 md:pt-40">
-        <p className="eyebrow text-gold">Visit us</p>
+        <p className="eyebrow text-gold-ink">Visit us</p>
         <h1 className="display-section mt-4 max-w-[18ch] text-charcoal">
           Come hungry. Leave with extra garlic sauce.
         </h1>
@@ -90,7 +90,7 @@ export default function ContactPage() {
 
         {/* FAQ */}
         <section aria-labelledby="faq-heading" className="mt-28 max-w-[820px]">
-          <p className="eyebrow text-gold">Good to know</p>
+          <p className="eyebrow text-gold-ink">Good to know</p>
           <h2 id="faq-heading" className="display-section mt-4 text-charcoal">
             Questions we hear a lot
           </h2>

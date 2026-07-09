@@ -53,7 +53,7 @@ export default function SignatureDishes() {
     <section aria-labelledby="dishes-heading" className="grain bg-cream">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
         <div className="max-w-[52ch]">
-          <p className="eyebrow text-gold" data-reveal>
+          <p className="eyebrow text-gold-ink" data-reveal>
             Signature dishes
           </p>
           <h2 id="dishes-heading" className="display-section mt-4 text-charcoal" data-reveal>

@@ -102,7 +102,7 @@ export default function MenuExplorer() {
                   <span
                     aria-hidden
                     className={[
-                      "h-px bg-gold transition-[width] duration-300 ease-brand",
+                      "h-px bg-gold-ink transition-[width] duration-300 ease-brand",
                       current === c.id ? "w-6" : "w-0 group-hover:w-3",
                     ].join(" ")}
                   />
@@ -191,7 +191,7 @@ function MenuCard({
         )}
         <div className="flex flex-1 flex-col px-7 py-7 md:px-9 md:py-8">
           {item.featured && (
-            <p className="eyebrow mb-3 text-gold">House favorite</p>
+            <p className="eyebrow mb-3 text-gold-ink">House favorite</p>
           )}
           <div className="flex items-baseline gap-3">
             <h3 className="font-display text-[1.55rem] font-medium leading-snug text-charcoal">

@@ -18,7 +18,7 @@ export default function MenuPage() {
       <header className="mx-auto max-w-[1400px] px-5 pb-10 pt-32 md:px-10 md:pt-40">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
-            <p className="eyebrow text-gold">The menu</p>
+            <p className="eyebrow text-gold-ink">The menu</p>
             <h1 className="display-section mt-4 max-w-[16ch] text-charcoal">
               Everything halal.
               <br />

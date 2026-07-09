@@ -11,8 +11,12 @@
   --color-tahini: #d9c7a7;
   --color-sand: #c4a16b;
   --color-gold: #c9962e;
+  /* WCAG-passing "toasted gold" for SMALL text on cream/garlic surfaces
+     (bright gold is 2.5:1 there — decorative/large/dark-surface use only) */
+  --color-gold-ink: #8c6414;
   --color-charcoal: #26241f;
-  --color-charcoal-60: rgba(38, 36, 31, 0.62);
+  /* 0.62 per the original spec measured 4.3:1 on cream — nudged to pass AA */
+  --color-charcoal-60: rgba(38, 36, 31, 0.68);
 
   /* ——— Type ——— */
   --font-display: var(--font-cormorant);
@@ -44,9 +48,10 @@ body {
   color: var(--color-charcoal);
 }
 
-/* Brand focus ring — gold, offset, on everything focusable. */
+/* Brand focus ring — toasted gold, offset, on everything focusable.
+   gold-ink passes 3:1 non-text contrast on cream; bright gold does not. */
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-gold-ink);
   outline-offset: 3px;
   border-radius: 2px;
 }

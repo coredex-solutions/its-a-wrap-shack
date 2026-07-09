@@ -8,7 +8,7 @@ import { contactSchema, type ContactInput } from "@/lib/contact-schema";
 const inputCls =
   "w-full border border-tahini bg-cream px-4 py-3 text-[15px] text-charcoal " +
   "placeholder:text-charcoal-60/60 transition-[border-color,box-shadow] duration-250 " +
-  "focus:border-olive focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+  "focus:border-olive focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
@@ -54,7 +54,7 @@ export default function ContactForm() {
             {...register("name")}
           />
           {errors.name && (
-            <p id="cf-name-err" role="alert" className="mt-1.5 text-[13px] text-gold">
+            <p id="cf-name-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
               {errors.name.message}
             </p>
           )}
@@ -73,7 +73,7 @@ export default function ContactForm() {
             {...register("email")}
           />
           {errors.email && (
-            <p id="cf-email-err" role="alert" className="mt-1.5 text-[13px] text-gold">
+            <p id="cf-email-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
               {errors.email.message}
             </p>
           )}
@@ -106,7 +106,7 @@ export default function ContactForm() {
           {...register("message")}
         />
         {errors.message && (
-          <p id="cf-message-err" role="alert" className="mt-1.5 text-[13px] text-gold">
+          <p id="cf-message-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
             {errors.message.message}
           </p>
         )}

@@ -117,7 +117,7 @@ export default function MenuPreview() {
       <div className="mx-auto max-w-[1100px] px-5 pb-28 pt-24 md:px-10 md:pb-36 md:pt-28">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div>
-            <p className="eyebrow text-gold" data-reveal>
+            <p className="eyebrow text-gold-ink" data-reveal>
               From the menu
             </p>
             <h2

@@ -32,7 +32,7 @@ export default function Testimonials() {
         onFocus={() => setPaused(true)}
         onBlur={() => setPaused(false)}
       >
-        <p className="eyebrow text-olive" data-reveal>
+        <p className="eyebrow text-gold-ink" data-reveal>
           From the counter
         </p>
 
@@ -66,7 +66,7 @@ export default function Testimonials() {
               onClick={() => setIndex(i)}
               className={[
                 "h-[7px] w-[7px] rounded-full transition-[background-color,transform] duration-250 ease-brand",
-                i === index ? "scale-110 bg-gold" : "bg-tahini hover:bg-sand",
+                i === index ? "scale-110 bg-gold-ink" : "bg-tahini hover:bg-sand",
               ].join(" ")}
             />
           ))}
