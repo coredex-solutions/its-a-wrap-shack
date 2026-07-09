@@ -106,6 +106,25 @@ body {
     opacity: 0;
     transform: translateY(28px);
   }
+  html.js [data-pullline] {
+    opacity: 0;
+  }
+}
+
+/* ————— Final CTA: the shawarma cutout's gentle float (±6px, 6s) ————— */
+@media (prefers-reduced-motion: no-preference) {
+  .float-gently {
+    animation: float-gently 6s ease-in-out infinite;
+  }
+  @keyframes float-gently {
+    0%,
+    100% {
+      transform: translateY(-6px);
+    }
+    50% {
+      transform: translateY(6px);
+    }
+  }
 }
 
 /* ————— Skip link — visually hidden until focused ————— */
