@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  /* ——— Brand palette (CLAUDE.md §Design tokens — exact) ——— */
+  --color-forest: #1f3b2c;
+  --color-forest-deep: #16291f; /* button hover only — one step darker */
+  --color-olive: #75815b;
+  --color-sage: #a8b396;
+  --color-cream: #faf6ee;
+  --color-garlic: #f2ead9;
+  --color-tahini: #d9c7a7;
+  --color-sand: #c4a16b;
+  --color-gold: #c9962e;
+  --color-charcoal: #26241f;
+  --color-charcoal-60: rgba(38, 36, 31, 0.62);
+
+  /* ——— Type ——— */
+  --font-display: var(--font-cormorant);
+  --font-body: var(--font-montserrat);
+
+  /* ——— Motion: the one easing family ——— */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --tracking-label: 0.1em;
+}
+
+/* Never pure white or black anywhere; cream field, charcoal ink. */
+html {
+  background-color: var(--color-cream);
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-sage);
+  color: var(--color-charcoal);
+}
+
+/* Brand focus ring — gold, offset, on everything focusable. */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ————— Signature texture: faint paper grain on cream chapters ————— */
+.grain {
+  position: relative;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  z-index: 0;
+}
+.grain > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ————— Type helpers ————— */
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.display-hero {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3.5rem, 8vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.display-section {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.body-copy {
+  max-width: 65ch;
+}
+
+/* ————— Reveal defaults (GSAP sets the animation; this hides pre-reveal) —————
+   Guarded by html.js (set inline in <head>) so content is never hidden without JS. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* ————— Skip link — visually hidden until focused ————— */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: var(--color-forest);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
