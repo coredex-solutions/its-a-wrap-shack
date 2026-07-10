@@ -2,34 +2,36 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { initGsap, prefersReducedMotion } from "@/lib/gsap";
+import { initGsap, prefersReducedMotion, whenIdle } from "@/lib/gsap";
 
 /**
  * Site-wide Lenis smooth scrolling, driving GSAP ScrollTrigger from its raf.
- * Skipped entirely under prefers-reduced-motion.
+ * Skipped entirely under prefers-reduced-motion; started off the hydration
+ * critical path (native scroll covers the first few hundred ms).
  */
 export default function SmoothScroll() {
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
-    const { gsap, ScrollTrigger } = initGsap();
+    let lenis: Lenis | null = null;
+    let raf: ((time: number) => void) | null = null;
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
+    const cancel = whenIdle(() => {
+      const { gsap, ScrollTrigger } = initGsap();
+      lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      raf = (time: number) => lenis!.raf(time * 1000);
+      gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
     });
 
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const raf = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
-
     return () => {
-      gsap.ticker.remove(raf);
-      lenis.destroy();
+      cancel();
+      if (raf) initGsap().gsap.ticker.remove(raf);
+      lenis?.destroy();
     };
   }, []);
 

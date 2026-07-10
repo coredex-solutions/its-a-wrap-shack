@@ -3,11 +3,13 @@ import { getSite, getFaq } from "@/lib/content";
 import ContactForm from "@/components/contact/ContactForm";
 import BrandMap from "@/components/home/BrandMap";
 import Divider from "@/components/ui/Divider";
+import { JsonLd, faqJsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Visit Us · Hours, Location & Contact",
   description:
     "Find The Wrap Shack at 40100 Washington St, Suite 109, Bermuda Dunes — on the Palm Desert border. Open daily 11 am – 8 pm. Call (760) 360-8178 or send a note.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
@@ -16,6 +18,12 @@ export default function ContactPage() {
 
   return (
     <div className="grain bg-cream">
+      <JsonLd
+        data={[
+          faqJsonLd(),
+          breadcrumbsJsonLd([{ name: "Visit Us", path: "/contact" }]),
+        ]}
+      />
       <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-32 md:px-10 md:pt-40">
         <p className="eyebrow text-gold-ink">Visit us</p>
         <h1 className="display-section mt-4 max-w-[18ch] text-charcoal">

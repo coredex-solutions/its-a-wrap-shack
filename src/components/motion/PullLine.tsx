@@ -32,6 +32,9 @@ export default function PullLine({
         type: "lines",
         mask: "lines",
         linesClass: "pull-line",
+        // default "auto" stamps aria-label on the <p>, which ARIA prohibits
+        // on paragraph roles; the split text nodes stay readable as-is
+        aria: "none",
       });
       gsap.set(el, { opacity: 1 });
       gsap.from(split.lines, {

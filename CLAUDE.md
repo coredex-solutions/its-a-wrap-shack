@@ -21,10 +21,15 @@ Marketing site for **The Wrap Shack — Mediterranean Eats** (Lebanese/Mediterra
 --garlic:      #F2EAD9   raised surfaces / cards
 --tahini:      #D9C7A7   borders, subtle fills
 --sand:        #C4A16B   kraft-paper warm sand
---gold:        #C9962E   accent — toasted gold, SPARINGLY
+--gold:        #C9962E   accent — toasted gold, SPARINGLY (decorative/large/dark-surface only)
+--gold-ink:    #8C6414   WCAG-passing gold for SMALL text + focus ring on cream/garlic
 --charcoal:    #26241F   text — logo ink
---charcoal-60: rgba(38,36,31,0.62) secondary text
+--charcoal-60: rgba(38,36,31,0.68) secondary text (spec said 0.62; 0.68 passes AA on cream)
 ```
+
+Contrast law: bright `--gold` is 2.5:1 on cream — never use it for text under 24px
+or focus indicators on light surfaces; use `--gold-ink` there. Gold text on forest
+(#1F3B2C) passes at any size.
 
 Rules:
 - Cream is the dominant field. Forest is for full-bleed "moment" chapters (story, final CTA) — the page alternates light/dark chapters.

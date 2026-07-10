@@ -8,10 +8,12 @@ import Testimonials from "@/components/home/Testimonials";
 import VisitSection from "@/components/home/VisitSection";
 import FinalCta from "@/components/home/FinalCta";
 import Divider from "@/components/ui/Divider";
+import { JsonLd, restaurantJsonLd } from "@/lib/jsonld";
 
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={restaurantJsonLd()} />
       <HeroSequence />
       <TrustStrip />
       <StorySection />

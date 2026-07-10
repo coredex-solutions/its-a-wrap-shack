@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import { initGsap, prefersReducedMotion, whenIdle, EASE } from "@/lib/gsap";
 
 /**
  * The one reveal pattern (CLAUDE.md): rise 28px + fade, 0.85s, stagger 80ms,
@@ -15,12 +15,26 @@ export default function RevealManager() {
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
-    const { gsap, ScrollTrigger } = initGsap();
+    let cleanup: (() => void) | null = null;
+    const cancel = whenIdle(() => {
+      cleanup = setup();
+    });
+    return () => {
+      cancel();
+      cleanup?.();
+    };
+  }, [pathname]);
 
-    const els = gsap.utils.toArray<HTMLElement>("[data-reveal]");
-    if (!els.length) return;
+  return null;
+}
 
-    const batch = ScrollTrigger.batch(els, {
+function setup(): (() => void) | null {
+  const { gsap, ScrollTrigger } = initGsap();
+
+  const els = gsap.utils.toArray<HTMLElement>("[data-reveal]");
+  if (!els.length) return null;
+
+  const batch = ScrollTrigger.batch(els, {
       start: "top 75%",
       once: true,
       onEnter: (targets) => {
@@ -40,9 +54,10 @@ export default function RevealManager() {
       },
     });
 
-    // Images inside revealing cards get the slow 1.04 → 1.0 scale-settle.
-    const imgs = gsap.utils.toArray<HTMLElement>("[data-reveal-img]");
-    imgs.forEach((img) => {
+  // Images inside revealing cards get the slow 1.04 → 1.0 scale-settle.
+  const imgTweens = gsap.utils
+    .toArray<HTMLElement>("[data-reveal-img]")
+    .map((img) =>
       gsap.fromTo(
         img,
         { scale: 1.04 },
@@ -52,13 +67,14 @@ export default function RevealManager() {
           ease: EASE,
           scrollTrigger: { trigger: img, start: "top 80%", once: true },
         },
-      );
+      ),
+    );
+
+  return () => {
+    batch.forEach((t) => t.kill());
+    imgTweens.forEach((t) => {
+      t.scrollTrigger?.kill();
+      t.kill();
     });
-
-    return () => {
-      batch.forEach((t) => t.kill());
-    };
-  }, [pathname]);
-
-  return null;
+  };
 }

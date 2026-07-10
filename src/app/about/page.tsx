@@ -4,11 +4,13 @@ import PullLine from "@/components/motion/PullLine";
 import Divider from "@/components/ui/Divider";
 import Button from "@/components/ui/Button";
 import { getCloverUrl } from "@/lib/content";
+import { JsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Our Story · Lebanese Kitchen in the Desert",
   description:
     "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, garlic sauce from a family recipe, everything 100% halal.",
+  alternates: { canonical: "/about" },
 };
 
 const VALUES = [
@@ -34,6 +36,7 @@ export default function AboutPage() {
   const clover = getCloverUrl();
   return (
     <>
+      <JsonLd data={breadcrumbsJsonLd([{ name: "Our Story", path: "/about" }])} />
       {/* opening chapter */}
       <section className="bg-forest text-cream">
         <div className="mx-auto max-w-[1100px] px-5 pb-24 pt-36 md:px-10 md:pb-32 md:pt-44">

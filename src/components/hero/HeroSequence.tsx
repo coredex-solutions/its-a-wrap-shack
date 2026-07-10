@@ -124,7 +124,29 @@ export default function HeroSequence() {
     resize();
 
     // ——— progressive preload: every 5th frame, then backfill in batches ———
+    // Deferred until the window has loaded and the main thread is idle (or
+    // the user starts scrolling) so hydration isn't fighting 70+ fetches;
+    // the poster is the LCP and covers the gap.
     (async () => {
+      await new Promise<void>((resolve) => {
+        let done = false;
+        const go = () => {
+          if (done) return;
+          done = true;
+          resolve();
+        };
+        window.addEventListener("scroll", go, { once: true, passive: true });
+        const idle = () => {
+          if ("requestIdleCallback" in window) {
+            requestIdleCallback(go, { timeout: 2500 });
+          } else {
+            setTimeout(go, 400);
+          }
+        };
+        if (document.readyState === "complete") idle();
+        else window.addEventListener("load", idle, { once: true });
+      });
+      if (disposed) return;
       const coarse: Promise<void>[] = [];
       for (let i = 0; i < cfg.end; i += 5) coarse.push(loadFrame(i));
       coarse.push(loadFrame(cfg.end - 1));
@@ -182,7 +204,12 @@ export default function HeroSequence() {
     // 0–15%: intro overlay rises out; scroll cue gone by 5%
     if (cueRef.current) tl.to(cueRef.current, { opacity: 0, duration: 0.04 }, 0.01);
     if (introRef.current)
-      tl.to(introRef.current, { opacity: 0, y: -48, duration: 0.09 }, 0.055);
+      tl.fromTo(
+        introRef.current,
+        { opacity: 1, y: 0 },
+        { opacity: 0, y: -48, duration: 0.09, immediateRender: false },
+        0.055,
+      );
 
     // ~45%: italic caption drifts through
     if (captionRef.current) {
@@ -207,18 +234,10 @@ export default function HeroSequence() {
         );
     }
 
-    // entrance (time-based, not scroll-linked)
-    if (introRef.current) {
-      gsap.fromTo(
-        introRef.current.children,
-        { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, duration: 0.9, ease: "brand", stagger: 0.09, delay: 0.2 },
-      );
-    }
-
-    // The pin spacer changes the page height — recalculate every trigger
-    // created before this one (e.g. the header's sentinel watcher).
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    // (the intro entrance is a CSS animation — see .hero-enter — so the
+    // headline paints before hydration and stays the fastest LCP candidate;
+    // triggers created before this pin recalibrate on ScrollTrigger's own
+    // window-load refresh)
 
     return () => {
       disposed = true;
@@ -296,14 +315,17 @@ export default function HeroSequence() {
           ref={introRef}
           className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
         >
-          <p className="eyebrow mb-6 text-tahini">
+          <p className="eyebrow hero-enter mb-6 text-tahini">
             Palm Desert · 100% Halal
           </p>
-          <h1 className="display-hero text-cream">
+          <h1
+            className="display-hero hero-enter text-cream"
+            style={{ animationDelay: "0.12s" }}
+          >
             <span className="block">Lebanese soul.</span>
             <span className="block italic">California sun.</span>
           </h1>
-          <div className="mt-10">
+          <div className="hero-enter mt-10" style={{ animationDelay: "0.24s" }}>
             <a
               href={clover}
               target="_blank"

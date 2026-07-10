@@ -24,6 +24,20 @@ export function initGsap() {
 
 export const EASE = "brand";
 
+/**
+ * Defer non-critical motion setup off the hydration critical path.
+ * Returns a cancel function.
+ */
+export function whenIdle(fn: () => void, timeout = 1500): () => void {
+  if (typeof window === "undefined") return () => {};
+  if ("requestIdleCallback" in window) {
+    const id = requestIdleCallback(fn, { timeout });
+    return () => cancelIdleCallback(id);
+  }
+  const id = setTimeout(fn, 200);
+  return () => clearTimeout(id);
+}
+
 export function prefersReducedMotion(): boolean {
   return (
     typeof window !== "undefined" &&
