@@ -36,7 +36,7 @@ export default function Testimonials() {
           From the counter
         </p>
 
-        <div className="relative mt-10 min-h-[220px] md:min-h-[190px]" data-reveal>
+        <div className="relative mt-10 min-h-[320px] md:min-h-[260px]" data-reveal>
           {quotes.map((q, i) => (
             <blockquote
               key={q.id}
@@ -49,8 +49,27 @@ export default function Testimonials() {
               <p className="font-display text-[clamp(1.5rem,2.7vw,2.2rem)] font-medium italic leading-[1.4] text-charcoal">
                 &ldquo;{q.quote}&rdquo;
               </p>
-              <footer className="eyebrow mt-7 text-charcoal-60">
+              <div
+                aria-label={`${q.rating ?? 5} out of 5 stars`}
+                className="mt-7 flex justify-center gap-1 text-gold-ink"
+              >
+                {Array.from({ length: q.rating ?? 5 }).map((_, s) => (
+                  <svg
+                    key={s}
+                    viewBox="0 0 20 20"
+                    className="h-3.5 w-3.5"
+                    fill="currentColor"
+                    aria-hidden
+                  >
+                    <path d="M10 1.5l2.47 5.26 5.53.66-4.09 3.9 1.08 5.68L10 14.9l-4.99 2.5 1.08-5.68L2 7.42l5.53-.66L10 1.5z" />
+                  </svg>
+                ))}
+              </div>
+              <footer className="eyebrow mt-4 text-charcoal-60">
                 {q.attribution}
+                {q.source && (
+                  <span className="text-charcoal-60/70"> · {q.source}</span>
+                )}
               </footer>
             </blockquote>
           ))}

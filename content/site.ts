@@ -52,9 +52,9 @@ export const site = {
   mapsUrl:
     "https://maps.google.com/?q=40100+Washington+St+Suite+109,+Bermuda+Dunes,+CA+92203",
 
-  // TODO(owner): real social profiles.
   socials: {
-    instagram: null as string | null,
+    instagram: "https://instagram.com/itsawrapshack" as string | null,
+    // TODO(owner): Facebook profile, if any.
     facebook: null as string | null,
   },
 

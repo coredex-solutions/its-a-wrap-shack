@@ -1,4 +1,10 @@
-import { getSite, getCategories, getMenuByCategory, getFaq } from "@/lib/content";
+import {
+  getSite,
+  getCategories,
+  getMenuByCategory,
+  getFaq,
+  getTestimonials,
+} from "@/lib/content";
 import type { Dietary } from "@/lib/content";
 
 /** All JSON-LD is sourced from the content layer — never hand-typed values. */
@@ -12,6 +18,9 @@ const DIET_MAP: Partial<Record<Dietary, string>> = {
 export function restaurantJsonLd() {
   const site = getSite();
   const sameAs = [site.socials.instagram, site.socials.facebook].filter(Boolean);
+  const reviews = getTestimonials();
+  const ratings = reviews.map((r) => r.rating ?? 5);
+  const avg = ratings.reduce((a, b) => a + b, 0) / (ratings.length || 1);
   return {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -48,6 +57,27 @@ export function restaurantJsonLd() {
         closes: site.hours.closes,
       },
     ],
+    ...(reviews.length
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avg.toFixed(1),
+            reviewCount: reviews.length,
+            bestRating: "5",
+            worstRating: "1",
+          },
+          review: reviews.map((r) => ({
+            "@type": "Review",
+            author: { "@type": "Person", name: r.attribution },
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: String(r.rating ?? 5),
+              bestRating: "5",
+            },
+            reviewBody: r.quote,
+          })),
+        }
+      : {}),
     ...(sameAs.length ? { sameAs } : {}),
   };
 }

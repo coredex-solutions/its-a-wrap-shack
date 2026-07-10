@@ -5,11 +5,13 @@ already marked `TODO(owner)` in the code where it applies.
 
 ## Content & business facts
 
-- [ ] **Social links** — Instagram/Facebook URLs → `content/site.ts` (`socials`).
-      They are hidden site-wide until set, and feed the `sameAs` in JSON-LD.
-- [ ] **Real customer testimonials** — `content/testimonials.ts` currently holds
-      clearly-labeled placeholder quotes. Replace with real reviews (with
-      permission) before launch; the layout is ready.
+- [x] **Instagram** — `https://instagram.com/itsawrapshack` is live in the
+      footer and feeds `sameAs` in JSON-LD. Add a Facebook URL to
+      `content/site.ts` (`socials.facebook`) if you have one.
+- [x] **Real customer testimonials** — six real Google reviews are now in
+      `content/testimonials.ts` and drive both the homepage rotator and the
+      Review/AggregateRating structured data. Spelling was lightly normalized
+      and a couple of location/currency fragments trimmed (see note below).
 - [ ] **Verify menu prices/items** — `content/menu.ts` was transcribed from
       `public/brand/Wrap shack menu.pdf` (July 2026). Descriptions were polished
       into the site voice; items and prices are verbatim. Double-check against
@@ -43,6 +45,15 @@ already marked `TODO(owner)` in the code where it applies.
       analytics (renders nothing when unset).
 - [ ] **Clover URL** — currently `…/wrap-shack-bermuda-dunes` as provided.
       Confirm it's the final production ordering link.
+
+## ⚠️ Worth a look — review provenance
+
+The Google reviews you supplied reference a UK context (an "A4421 lay-by",
+£ prices) and mention burgers, which aren't on the transcribed menu. The site
+is positioned for Palm Desert, CA. I trimmed those specific fragments from the
+displayed quotes so nothing contradicts the site, but you should confirm the
+reviews belong to this location/brand before launch — and if burgers really are
+served, add them to `content/menu.ts`.
 
 ## Known measurement note
 

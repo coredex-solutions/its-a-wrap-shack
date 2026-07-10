@@ -57,9 +57,32 @@ export default function Footer() {
             </address>
           </div>
 
-          <div className="flex flex-col items-start gap-4">
+          <div className="flex flex-col items-start gap-5">
             <HalalBadge tone="cream" className="h-16 w-16" />
-            {/* TODO(owner): real social links — hidden until provided */}
+            {(site.socials.instagram || site.socials.facebook) && (
+              <div>
+                <h2 className="eyebrow text-tahini">Follow</h2>
+                <ul className="mt-3 flex items-center gap-3">
+                  {site.socials.instagram && (
+                    <li>
+                      <a
+                        href={site.socials.instagram}
+                        target="_blank"
+                        rel="noopener"
+                        aria-label="The Wrap Shack on Instagram"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-full text-cream shadow-[inset_0_0_0_1px_rgba(250,246,238,0.25)] transition-[background-color,color] duration-250 ease-brand hover:bg-cream hover:text-forest"
+                      >
+                        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+                          <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+                          <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.6" />
+                          <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+                        </svg>
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
