@@ -18,10 +18,8 @@ const NAV = [
  * cream, blurred, hairline-bordered bar once the hero releases — tracked via
  * an IntersectionObserver on the hero's [data-hero-sentinel].
  *
- * On the solid bar it auto-hides on scroll-down and reveals on scroll-up
- * (driven by ScrollTrigger so it rides the same rAF as the rest of the site;
- * disabled under reduced motion). The mobile menu is a focus-trapped dialog
- * that restores focus to its toggle on close.
+ * The bar stays visible at all times while scrolling. The mobile menu is a
+ * focus-trapped dialog that restores focus to its toggle on close.
  */
 export default function Header() {
   const pathname = usePathname();
@@ -31,13 +29,9 @@ export default function Header() {
 
   const [overHero, setOverHero] = useState(isHome);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  // Live mirror so the single ScrollTrigger can read current flags.
-  const flags = useRef({ menuOpen, overHero });
-  flags.current = { menuOpen, overHero };
 
   const isActive = useCallback(
     (href: string) =>
@@ -67,23 +61,6 @@ export default function Header() {
       window.removeEventListener("hero:creamphase", onCream);
     };
   }, [pathname]);
-
-  // Auto-hide on scroll-down / reveal on scroll-up (solid bar only).
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const { ScrollTrigger } = initGsap();
-    const st = ScrollTrigger.create({
-      onUpdate: (self) => {
-        const { menuOpen: open, overHero: over } = flags.current;
-        if (open || over) {
-          setHidden(false);
-          return;
-        }
-        setHidden(self.direction === 1 && self.scroll() > 180);
-      },
-    });
-    return () => st.kill();
-  }, []);
 
   // Mobile overlay: scroll lock + staggered link reveal.
   useEffect(() => {
@@ -147,8 +124,7 @@ export default function Header() {
     <>
       <header
         className={[
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter,transform] duration-500 ease-brand",
-          hidden ? "-translate-y-full" : "translate-y-0",
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-brand",
           transparent
             ? "bg-transparent"
             : "bg-cream/90 backdrop-blur-md shadow-[0_1px_0_0_var(--color-tahini)]",
