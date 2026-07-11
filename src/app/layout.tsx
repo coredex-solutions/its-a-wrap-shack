@@ -35,6 +35,13 @@ export const metadata: Metadata = {
     description: site.seo.description,
     images: ["/og.jpg"],
   },
+  // local-SEO geo hints (read by some engines and directories)
+  other: {
+    "geo.region": `${site.address.country}-${site.address.region}`,
+    "geo.placename": `${site.address.locality}, California`,
+    "geo.position": `${site.geo.latitude};${site.geo.longitude}`,
+    ICBM: `${site.geo.latitude}, ${site.geo.longitude}`,
+  },
 };
 
 export default function RootLayout({

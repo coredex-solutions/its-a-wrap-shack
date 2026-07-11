@@ -49,6 +49,22 @@ already marked `TODO(owner)` in the code where it applies.
 - [ ] **Use HTTPS in production** — the admin session cookie is only sent over
       HTTPS when `NODE_ENV=production`.
 
+## Local SEO — off-site (the biggest ranking levers; owner action only)
+
+- [ ] **Google Business Profile** — claim/verify the listing for 40100
+      Washington St Suite 109; set the website to itsawrapshack.com, hours,
+      photos, menu link (Clover), and the "Order online" button. This single
+      item outweighs everything on-site for "near me" searches.
+- [ ] **Bing Places + Apple Business Connect** — same data, both free;
+      Apple Maps feeds Siri/Apple Intelligence answers.
+- [ ] **Yelp / TripAdvisor / delivery-app listings** — consistent NAP
+      (name, address, phone) everywhere; inconsistencies dilute local rank.
+- [ ] **Ask happy customers for Google reviews** — review volume/recency is
+      a top local-pack factor; the site already links to the profile.
+- [ ] **After deploy**: submit the sitemap in Google Search Console + Bing
+      Webmaster Tools and verify the structured data with Google's Rich
+      Results Test (the site emits a full Restaurant/Menu/FAQ entity graph).
+
 ## Wiring
 
 - [ ] **Contact form delivery** — `src/app/api/contact/route.ts` is a validated

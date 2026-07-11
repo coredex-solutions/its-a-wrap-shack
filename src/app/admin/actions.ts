@@ -42,6 +42,7 @@ async function guard(): Promise<void> {
 /** Every save revalidates the whole tree — content reaches every route. */
 function revalidateSite(): void {
   revalidatePath("/", "layout");
+  revalidatePath("/llms.txt"); // the AEO brief mirrors CMS content
 }
 
 async function save<T>(schema: z.ZodType<T>, data: unknown, key: string): Promise<SaveResult> {

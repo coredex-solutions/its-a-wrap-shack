@@ -5,12 +5,15 @@ import Divider from "@/components/ui/Divider";
 import Button from "@/components/ui/Button";
 import { getCloverUrl } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
-import { JsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
+import { JsonLd, pageGraph } from "@/lib/jsonld";
+
+const TITLE = "Our Story · Lebanese Kitchen in the Desert";
+const DESCRIPTION =
+  "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, garlic sauce from a family recipe, everything 100% halal.";
 
 export const metadata: Metadata = {
-  title: "Our Story · Lebanese Kitchen in the Desert",
-  description:
-    "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, garlic sauce from a family recipe, everything 100% halal.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/about" },
 };
 
@@ -38,7 +41,15 @@ export default async function AboutPage() {
   const clover = getCloverUrl();
   return (
     <>
-      <JsonLd data={breadcrumbsJsonLd([{ name: "Our Story", path: "/about" }])} />
+      <JsonLd
+        data={pageGraph({
+          path: "/about",
+          title: TITLE,
+          description: DESCRIPTION,
+          pageType: "AboutPage",
+          breadcrumbs: [{ name: "Our Story", path: "/about" }],
+        })}
+      />
       {/* opening chapter */}
       <section className="bg-forest text-cream">
         <div className="mx-auto max-w-[1100px] px-5 pb-24 pt-36 md:px-10 md:pb-32 md:pt-44">

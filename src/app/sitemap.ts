@@ -3,10 +3,11 @@ import { getSite } from "@/lib/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSite().url;
+  const lastModified = new Date(); // build/revalidation time
   return [
-    { url: base, changeFrequency: "monthly", priority: 1 },
-    { url: `${base}/menu`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/about`, changeFrequency: "yearly", priority: 0.6 },
-    { url: `${base}/contact`, changeFrequency: "monthly", priority: 0.7 },
+    { url: base, lastModified, changeFrequency: "monthly", priority: 1 },
+    { url: `${base}/menu`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/about`, lastModified, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${base}/contact`, lastModified, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

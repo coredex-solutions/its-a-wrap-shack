@@ -5,12 +5,15 @@ import ContactForm from "@/components/contact/ContactForm";
 import BrandMap from "@/components/home/BrandMap";
 import Divider from "@/components/ui/Divider";
 import OpenNow from "@/components/ui/OpenNow";
-import { JsonLd, faqJsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
+import { JsonLd, pageGraph } from "@/lib/jsonld";
+
+const TITLE = "Visit Us · Hours, Location & Contact";
+const DESCRIPTION =
+  "Find The Wrap Shack at 40100 Washington St, Suite 109, Bermuda Dunes — on the Palm Desert border. Open daily 11 am – 8 pm. Call (760) 360-8178 or send a note.";
 
 export const metadata: Metadata = {
-  title: "Visit Us · Hours, Location & Contact",
-  description:
-    "Find The Wrap Shack at 40100 Washington St, Suite 109, Bermuda Dunes — on the Palm Desert border. Open daily 11 am – 8 pm. Call (760) 360-8178 or send a note.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/contact" },
 };
 
@@ -22,10 +25,14 @@ export default async function ContactPage() {
   return (
     <div className="grain bg-cream">
       <JsonLd
-        data={[
-          faqJsonLd(),
-          breadcrumbsJsonLd([{ name: "Visit Us", path: "/contact" }]),
-        ]}
+        data={pageGraph({
+          path: "/contact",
+          title: TITLE,
+          description: DESCRIPTION,
+          pageType: "ContactPage",
+          breadcrumbs: [{ name: "Visit Us", path: "/contact" }],
+          withFaq: true,
+        })}
       />
       <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-32 md:px-10 md:pt-40">
         <p className="eyebrow text-gold-ink">Visit us</p>
@@ -39,11 +46,13 @@ export default async function ContactPage() {
             <dl className="grid gap-8 sm:grid-cols-2">
               <div data-reveal>
                 <dt className="eyebrow text-charcoal-60">Address</dt>
-                <dd className="mt-1.5 leading-relaxed">
-                  {site.address.street}
-                  <br />
-                  {site.address.locality}, {site.address.region}{" "}
-                  {site.address.postalCode}
+                <dd className="mt-1.5">
+                  <address className="not-italic leading-relaxed">
+                    {site.address.street}
+                    <br />
+                    {site.address.locality}, {site.address.region}{" "}
+                    {site.address.postalCode}
+                  </address>
                 </dd>
               </div>
               <div data-reveal>

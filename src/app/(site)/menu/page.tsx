@@ -5,12 +5,15 @@ import Button from "@/components/ui/Button";
 import HalalBadge from "@/components/ui/HalalBadge";
 import { getSite, getCloverUrl } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
-import { JsonLd, menuJsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
+import { JsonLd, pageGraph } from "@/lib/jsonld";
+
+const TITLE = "Halal Menu · Shawarma, Wraps & Mezza";
+const DESCRIPTION =
+  "The full Wrap Shack menu with prices — chicken and beef shawarma, gyros, falafel, bowls, mezza, and baklava. 100% halal, with vegan and gluten-free options. Palm Desert area.";
 
 export const metadata: Metadata = {
-  title: "Menu · Shawarma, Wraps & Mezza",
-  description:
-    "The full Wrap Shack menu — chicken and beef shawarma, gyros, falafel, bowls, mezza, and baklava. 100% halal, with vegan and gluten-free options. Palm Desert area.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/menu" },
 };
 
@@ -21,7 +24,13 @@ export default async function MenuPage() {
   return (
     <div className="grain bg-cream">
       <JsonLd
-        data={[menuJsonLd(), breadcrumbsJsonLd([{ name: "Menu", path: "/menu" }])]}
+        data={pageGraph({
+          path: "/menu",
+          title: TITLE,
+          description: DESCRIPTION,
+          breadcrumbs: [{ name: "Menu", path: "/menu" }],
+          withMenu: true,
+        })}
       />
       <header className="mx-auto max-w-[1400px] px-5 pb-10 pt-32 md:px-10 md:pt-40">
         <div className="flex flex-wrap items-end justify-between gap-8">

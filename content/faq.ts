@@ -41,4 +41,28 @@ export const faq: FaqItem[] = [
     answer:
       "Every day. The shawarma is stacked and roasted in-house, the falafel is fried to order, and the garlic sauce is made from a family recipe — not a jar.",
   },
+  {
+    id: "hours",
+    question: "What are your hours?",
+    answer:
+      "We're open every day of the week, 11:00 am to 8:00 pm. Online ordering runs 11:30 am to 7:30 pm — 30 minutes inside our door hours.",
+  },
+  {
+    id: "reservations",
+    question: "Do you take reservations?",
+    answer:
+      "No need — we're fast-casual counter service. Walk in any time we're open, or order ahead on Clover and pick up when it's ready.",
+  },
+  {
+    id: "catering",
+    question: "Do you handle catering or large orders?",
+    answer:
+      "Ask us — call (760) 360-8178 or send a note through the contact form with your date and headcount, and we'll sort out the details.",
+  },
+  {
+    id: "shawarma",
+    question: "What is shawarma?",
+    answer:
+      "Marinated meat — chicken or beef, in our case — stacked on a vertical spit and slow-roasted, then shaved off thin to order. Ours is built by hand every morning and served in wraps, bowls, and plates.",
+  },
 ];

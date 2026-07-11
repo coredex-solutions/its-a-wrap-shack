@@ -8,14 +8,22 @@ import Testimonials from "@/components/home/Testimonials";
 import VisitSection from "@/components/home/VisitSection";
 import FinalCta from "@/components/home/FinalCta";
 import Divider from "@/components/ui/Divider";
-import { JsonLd, restaurantJsonLd } from "@/lib/jsonld";
+import { JsonLd, pageGraph } from "@/lib/jsonld";
 import { loadContent } from "@/lib/cms/store";
+import { getSite } from "@/lib/content";
 
 export default async function HomePage() {
   await loadContent(); // prime the content snapshot before anything renders
+  const site = getSite();
   return (
     <>
-      <JsonLd data={restaurantJsonLd()} />
+      <JsonLd
+        data={pageGraph({
+          path: "/",
+          title: site.seo.titleDefault,
+          description: site.seo.description,
+        })}
+      />
       <HeroSequence />
       <TrustStrip />
       <StorySection />
