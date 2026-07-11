@@ -1,0 +1,76 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { isAdmin } from "@/lib/cms/auth";
+import { logout } from "./actions";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: { index: false, follow: false },
+};
+
+const SECTIONS = [
+  { href: "/admin/site", label: "Business info" },
+  { href: "/admin/menu", label: "Menu" },
+  { href: "/admin/testimonials", label: "Reviews" },
+  { href: "/admin/faq", label: "FAQ" },
+] as const;
+
+/** Owner-only CMS chrome — deliberately plain, no marketing motion. */
+export default async function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const authed = await isAdmin();
+  return (
+    <div className="min-h-screen bg-cream">
+      <header className="border-b border-tahini bg-garlic/60">
+        <div className="mx-auto flex h-16 max-w-[1100px] items-center justify-between px-5">
+          <div className="flex items-center gap-8">
+            <Link href="/admin" className="flex items-center gap-3">
+              <Image
+                src="/brand/logo.png"
+                alt=""
+                width={46}
+                height={37}
+                className="h-9 w-auto"
+              />
+              <span className="eyebrow text-charcoal">Admin</span>
+            </Link>
+            {authed && (
+              <nav aria-label="Admin sections" className="hidden gap-6 sm:flex">
+                {SECTIONS.map((s) => (
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    className="text-[13px] font-semibold uppercase tracking-[0.08em] text-charcoal-60 transition-colors duration-250 hover:text-forest"
+                  >
+                    {s.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+          </div>
+          <div className="flex items-center gap-5">
+            <Link
+              href="/"
+              className="text-[13px] font-semibold uppercase tracking-[0.08em] text-charcoal-60 transition-colors duration-250 hover:text-forest"
+            >
+              View site ↗
+            </Link>
+            {authed && (
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="rounded-full bg-forest px-5 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-cream transition-colors duration-250 hover:bg-forest-deep"
+                >
+                  Sign out
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </header>
+      <main className="mx-auto max-w-[1100px] px-5 py-10">{children}</main>
+    </div>
+  );
+}

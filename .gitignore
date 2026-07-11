@@ -22,3 +22,6 @@ npm-debug.log*
 
 # typescript
 *.tsbuildinfo
+
+# CMS runtime data (owner edits — not source)
+/data/cms/

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSite, getFaq } from "@/lib/content";
+import { loadContent } from "@/lib/cms/store";
 import ContactForm from "@/components/contact/ContactForm";
 import BrandMap from "@/components/home/BrandMap";
 import Divider from "@/components/ui/Divider";
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  await loadContent(); // prime the content snapshot before anything renders
   const site = getSite();
   const faq = getFaq();
 

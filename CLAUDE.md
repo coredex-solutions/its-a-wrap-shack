@@ -79,9 +79,22 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 
 ## Architecture
 
-- Next.js (App Router, latest) · React 19 · TS strict · Tailwind v4 · GSAP + Lenis · RHF + Zod (contact form only).
-- Routes: `/`, `/menu`, `/about`, `/contact`. Contact form posts to a route handler that is a clearly-marked TODO stub.
-- All content in typed files under `content/` (site.ts, menu.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly (future CMS seam).
+- Next.js (App Router, latest) · React 19 · TS strict · Tailwind v4 · GSAP + Lenis · RHF + Zod (contact form + CMS validation).
+- Routes: `(site)/` group = `/`, `/menu`, `/about`, `/contact` (marketing chrome lives in `(site)/layout.tsx`); `/admin` = owner CMS with its own plain layout (noindex + robots-disallowed). Contact form posts to a route handler that is a clearly-marked TODO stub.
+- All content in typed files under `content/` (site.ts, menu.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly.
+
+## CMS (owner-only, custom)
+
+- `content/*` files are the SEEDS. The admin panel writes a JSON overlay to `data/cms/content.json` (gitignored runtime data); present sections replace their seed wholesale, missing sections fall back. Zod schemas in `src/lib/cms/schema.ts` are the write/read contract.
+- `src/lib/cms/store.ts#loadContent()` (server-only, fs) merges overlay over seeds, primes the accessor snapshot, and is called at the top of `(site)/layout.tsx` **and every page** (React-cached). Client components get the same bundle via `<ContentHydrator>` — accessors stay synchronous, no prop drilling. Never import `store.ts` from a client component.
+- Auth: single `ADMIN_PASSWORD` env (+ optional `ADMIN_SECRET`), HMAC-signed expiry cookie, timing-safe compares (`src/lib/cms/auth.ts`). Unset password = admin disabled. This owner-only panel is the sanctioned exception to the "no accounts/DB" ban — the public site remains static, no visitor accounts, no database.
+- Saves are server actions (`src/app/admin/actions.ts`): guard → Zod parse → atomic file write → `revalidatePath("/", "layout")`. Edits are live without a rebuild, but REQUIRE a persistent Node server (`next start` on a VPS) — ephemeral serverless filesystems lose edits on redeploy.
+- Editable: business info (phone/email/hours/Clover URL/socials), menu (categories' labels+notes, items), testimonials, FAQ. Category IDs are fixed (components reference them); SEO strings/address/brand facts are code-only on purpose.
+
+## CSS landmines (learned the hard way)
+
+- Unlayered rules in globals.css BEAT Tailwind utilities (which live in `@layer`). `.grain` once had a `.grain > * { position: relative }` child rule that silently killed `fixed` positioning twice — grain now paints via `::before` at `z-index:-1` under `isolation: isolate`, and must never regain child rules.
+- In flex/grid, `min-width: auto` stops shrinking: horizontal scrollers need `min-w-0` on the flex child, and long non-wrapping rows inside cards need `flex-wrap`.
 - Menu data is the REAL menu transcribed from `public/brand/Wrap shack menu.pdf`.
 - SEO: per-route Metadata API, JSON-LD (Restaurant, Menu/MenuItem, FAQPage, BreadcrumbList) sourced from `content/site.ts`, sitemap.ts, robots.ts, canonical `https://itsawrapshack.com`.
 - Analytics: env-gated GA4 via `next/script` (`NEXT_PUBLIC_GA_ID`, renders nothing unset). Deploy-agnostic — no Vercel-only APIs.

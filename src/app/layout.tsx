@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 import { cormorant, montserrat } from "@/lib/fonts";
 import { getSite } from "@/lib/content";
-import { loadContent } from "@/lib/cms/store";
-import SmoothScroll from "@/components/motion/SmoothScroll";
-import RevealManager from "@/components/motion/RevealManager";
-import ContentHydrator from "@/components/ContentHydrator";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import Analytics from "@/components/Analytics";
 import "./globals.css";
 
@@ -43,11 +37,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // CMS-merged content: primes the server snapshot and hydrates the client one
-  const content = await loadContent();
   return (
     <html
       lang="en"
@@ -61,17 +53,8 @@ export default async function RootLayout({
             __html: "document.documentElement.classList.add('js')",
           }}
         />
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <ContentHydrator data={content}>
-          <SmoothScroll />
-          <RevealManager />
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-          <Analytics />
-        </ContentHydrator>
+        {children}
+        <Analytics />
       </body>
     </html>
   );

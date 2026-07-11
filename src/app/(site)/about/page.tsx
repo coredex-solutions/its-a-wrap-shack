@@ -4,6 +4,7 @@ import PullLine from "@/components/motion/PullLine";
 import Divider from "@/components/ui/Divider";
 import Button from "@/components/ui/Button";
 import { getCloverUrl } from "@/lib/content";
+import { loadContent } from "@/lib/cms/store";
 import { JsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -32,7 +33,8 @@ const VALUES = [
   },
 ] as const;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  await loadContent(); // prime the content snapshot before anything renders
   const clover = getCloverUrl();
   return (
     <>

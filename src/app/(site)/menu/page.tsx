@@ -4,6 +4,7 @@ import MenuOrderBar from "@/components/menu/MenuOrderBar";
 import Button from "@/components/ui/Button";
 import HalalBadge from "@/components/ui/HalalBadge";
 import { getSite, getCloverUrl } from "@/lib/content";
+import { loadContent } from "@/lib/cms/store";
 import { JsonLd, menuJsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/menu" },
 };
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  await loadContent(); // prime the content snapshot before anything renders
   const site = getSite();
   const clover = getCloverUrl();
   return (

@@ -35,12 +35,25 @@ already marked `TODO(owner)` in the code where it applies.
       knockout of the white-background JPEG (`public/brand/logo.png` +
       `logo-cream.png`). If a vector/transparent original exists, replace both.
 
+## CMS (`/admin`)
+
+- [ ] **Set `ADMIN_PASSWORD`** in the deployment environment to enable the
+      content editor at `/admin` (business info, menu, reviews, FAQ). Unset =
+      admin disabled; the site runs on the built-in content. Optionally set
+      `ADMIN_SECRET` for cookie signing separate from the password.
+- [ ] **Host on a persistent Node server** (`next start` on a VPS or similar)
+      if you want CMS edits to survive — edits are saved to
+      `data/cms/content.json` on disk. On serverless hosts with ephemeral
+      filesystems (e.g. Vercel), edits vanish on redeploy. Back up that file;
+      deleting it resets the site to the built-in content.
+- [ ] **Use HTTPS in production** — the admin session cookie is only sent over
+      HTTPS when `NODE_ENV=production`.
+
 ## Wiring
 
 - [ ] **Contact form delivery** — `src/app/api/contact/route.ts` is a validated
       stub: it accepts submissions but delivers them nowhere. Wire to
-      transactional email (e.g. Resend → itsawrapshack@outlook.com) or the
-      future CMS.
+      transactional email (e.g. Resend → itsawrapshack@outlook.com).
 - [ ] **GA4** — set `NEXT_PUBLIC_GA_ID` in the deployment environment to enable
       analytics (renders nothing when unset).
 - [ ] **Clover URL** — currently `…/wrap-shack-bermuda-dunes` as provided.

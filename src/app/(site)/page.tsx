@@ -9,8 +9,10 @@ import VisitSection from "@/components/home/VisitSection";
 import FinalCta from "@/components/home/FinalCta";
 import Divider from "@/components/ui/Divider";
 import { JsonLd, restaurantJsonLd } from "@/lib/jsonld";
+import { loadContent } from "@/lib/cms/store";
 
-export default function HomePage() {
+export default async function HomePage() {
+  await loadContent(); // prime the content snapshot before anything renders
   return (
     <>
       <JsonLd data={restaurantJsonLd()} />
