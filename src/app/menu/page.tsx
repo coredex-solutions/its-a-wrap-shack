@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MenuExplorer from "@/components/menu/MenuExplorer";
+import MenuOrderBar from "@/components/menu/MenuOrderBar";
 import Button from "@/components/ui/Button";
 import HalalBadge from "@/components/ui/HalalBadge";
 import { getSite, getCloverUrl } from "@/lib/content";
@@ -40,8 +41,11 @@ export default function MenuPage() {
             </Button>
           </div>
         </div>
+        {/* once this leaves the viewport, the mobile order bar slides in */}
+        <span data-orderbar-sentinel aria-hidden />
       </header>
       <MenuExplorer />
+      <MenuOrderBar />
     </div>
   );
 }

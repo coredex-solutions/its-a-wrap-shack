@@ -56,23 +56,24 @@ body {
   border-radius: 2px;
 }
 
-/* ————— Signature texture: faint paper grain on cream chapters ————— */
+/* ————— Signature texture: faint paper grain on cream chapters —————
+   The tile sits at z-index -1 inside its own stacking context, so it paints
+   above the section background but below ALL content — without touching the
+   position of any child (a `.grain > *` rule here once silently overrode
+   Tailwind's `fixed` utility, because unlayered CSS beats @layer utilities). */
 .grain {
   position: relative;
+  isolation: isolate;
 }
 .grain::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
-  z-index: 0;
-}
-.grain > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* ————— Type helpers ————— */
@@ -102,6 +103,57 @@ body {
 
 .body-copy {
   max-width: 65ch;
+}
+
+/* ————— Editorial line-breaking: balanced display lines, no orphans ————— */
+.display-hero,
+.display-section,
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* ————— Page-enter: each route fades in (template.tsx remount).
+   Opacity only — a transform would break the hero pin's fixed positioning. */
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    animation: page-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* ————— Reading-progress hairline (header, solid bar only).
+   CSS scroll-driven animation: no JS, no scroll listeners; hidden where
+   the browser doesn't support scroll timelines. */
+.scroll-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    transform-origin: left center;
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes scroll-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
 }
 
 /* ————— Reveal defaults (GSAP sets the animation; this hides pre-reveal) —————

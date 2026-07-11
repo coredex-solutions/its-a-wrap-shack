@@ -54,7 +54,10 @@ export default function MenuExplorer() {
       {/* filter pills — sticky below the header on all viewports */}
       <div className="sticky top-[72px] z-30 -mx-5 border-b border-tahini bg-cream/95 px-5 py-4 backdrop-blur-sm md:-mx-10 md:px-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <nav aria-label="Menu categories" className="-mx-1 overflow-x-auto md:hidden">
+          <nav
+            aria-label="Menu categories"
+            className="-mx-1 w-full min-w-0 overflow-x-auto scrollbar-none md:hidden"
+          >
             <ul className="flex gap-1 whitespace-nowrap px-1">
               {categories.map((c) => (
                 <li key={c.id}>
@@ -208,8 +211,8 @@ function MenuCard({
           <p className="body-copy mt-2 text-[14.5px] leading-relaxed text-charcoal-60">
             {item.description}
           </p>
-          <div className="mt-auto flex items-center justify-between pt-5">
-            <span className="flex items-center gap-3">
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-5">
+            <span className="flex flex-wrap items-center gap-3">
               {item.dietary.map((k) => (
                 <DietaryBadge key={k} kind={k} withLabel />
               ))}

@@ -3,6 +3,7 @@ import { getSite, getFaq } from "@/lib/content";
 import ContactForm from "@/components/contact/ContactForm";
 import BrandMap from "@/components/home/BrandMap";
 import Divider from "@/components/ui/Divider";
+import OpenNow from "@/components/ui/OpenNow";
 import { JsonLd, faqJsonLd, breadcrumbsJsonLd } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -50,6 +51,7 @@ export default function ContactPage() {
                   <span className="mt-1 block text-[14px] text-charcoal-60">
                     {site.hours.orderingWindow}
                   </span>
+                  <OpenNow className="mt-2 text-gold-ink" />
                 </dd>
               </div>
               <div data-reveal>

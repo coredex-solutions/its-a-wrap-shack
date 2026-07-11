@@ -154,6 +154,13 @@ export default function Header() {
             : "bg-cream/90 backdrop-blur-md shadow-[0_1px_0_0_var(--color-tahini)]",
         ].join(" ")}
       >
+        {/* reading-progress hairline — rides the solid bar's bottom edge */}
+        {!transparent && (
+          <span
+            aria-hidden
+            className="scroll-progress absolute inset-x-0 bottom-0 h-px bg-olive/70"
+          />
+        )}
         <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-5 md:px-10">
           <Link
             href="/"
