@@ -243,7 +243,10 @@ export default function Header() {
         aria-modal="true"
         aria-label="Site menu"
         className={[
-          "fixed inset-0 z-40 flex flex-col justify-center bg-forest px-8 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[72px] transition-opacity duration-300 md:hidden",
+          // z-[45]: above every page-level fixed bar (e.g. the menu page's z-40
+          // order bar, which otherwise paints over this overlay), below the
+          // z-50 header so the close button stays reachable.
+          "fixed inset-0 z-[45] flex flex-col justify-center bg-forest px-8 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[72px] transition-opacity duration-300 md:hidden",
           menuOpen ? "opacity-100" : "pointer-events-none opacity-0",
         ].join(" ")}
         aria-hidden={!menuOpen}
