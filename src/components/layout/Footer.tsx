@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         {/* ——— the facts, set like a menu card ——— */}
-        <div className="grid gap-9 py-10 md:grid-cols-[1.4fr_0.8fr_1fr_1.1fr] md:gap-12 md:py-20">
+        <div className="grid gap-9 pb-8 pt-10 md:grid-cols-[1.4fr_0.8fr_1fr_1.1fr] md:gap-12 md:pb-12 md:pt-16">
           <div data-reveal>
             <Image
               src="/brand/logo-cream.png"
@@ -212,7 +212,9 @@ export default function Footer() {
 
         {/* ——— the wordmark, sinking behind the fold line ——— */}
         <div aria-hidden className="pointer-events-none select-none overflow-hidden">
-          <p className="translate-y-[26%] whitespace-nowrap text-center font-display text-[clamp(3.4rem,12.5vw,11.5rem)] font-medium italic leading-none text-cream/[0.07]">
+          {/* negative top margin reclaims the translate + ascent whitespace, so
+              the cap line hugs the grid above while the baseline stays cropped */}
+          <p className="mt-[-0.34em] translate-y-[26%] whitespace-nowrap text-center font-display text-[clamp(3.4rem,12.5vw,11.5rem)] font-medium italic leading-none text-cream/[0.07]">
             {site.name}
           </p>
         </div>
