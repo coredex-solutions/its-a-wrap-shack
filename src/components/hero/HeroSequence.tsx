@@ -12,7 +12,7 @@ import { initGsap, prefersReducedMotion } from "@/lib/gsap";
  * - Poster (frame 1) renders via next/image `priority` → it is the LCP.
  * - Frames preload progressively: every 5th first, then backfill; decoded
  *   with createImageBitmap where supported. No loader UI — the poster covers.
- * - `sm` set on small viewports / Save-Data. Pin: 300vh desktop, 200vh touch.
+ * - `sm` set on small viewports / Save-Data. Pin: 300vh desktop, 150vh touch.
  * - The source video ends on a garbled AI rendition of the logo; the scrub
  *   stops at frame 133 (clean wrap) and the final hold crossfades to a cream
  *   DOM overlay carrying the REAL logo asset instead.
@@ -55,7 +55,7 @@ export default function HeroSequence() {
         .connection?.saveData === true;
     const cfg = small || saveData ? SETS.sm : SETS.lg;
     const touch = window.matchMedia("(pointer: coarse)").matches;
-    const pinVh = touch ? 200 : 300;
+    const pinVh = touch ? 150 : 300; // shorter scrub on touch — less scroll to clear the hero
 
     let disposed = false;
     const frames: (ImageBitmap | HTMLImageElement | null)[] = new Array(

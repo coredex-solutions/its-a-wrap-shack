@@ -15,7 +15,7 @@ const CRAFT = [
 export default function StorySection() {
   return (
     <section aria-labelledby="story-heading" className="bg-forest text-cream">
-      <div className="mx-auto grid max-w-[1400px] gap-14 px-5 py-24 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-20 md:px-10 md:py-36">
+      <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-16 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-20 md:px-10 md:py-36">
         <div>
           <p className="eyebrow text-gold" data-reveal>
             Our story
@@ -45,7 +45,7 @@ export default function StorySection() {
               </li>
             ))}
           </ul>
-          <div className="mt-11" data-reveal>
+          <div className="mt-8 md:mt-11" data-reveal>
             <Button href="/about" variant="light">
               Read our story
             </Button>

@@ -6,7 +6,7 @@ export default function FinalCta() {
   const clover = getCloverUrl();
   return (
     <section aria-labelledby="cta-heading" className="overflow-hidden bg-forest text-cream">
-      <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-5 py-24 md:grid-cols-[1fr_auto] md:gap-24 md:px-10 md:py-32">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-8 px-5 py-16 md:grid-cols-[1fr_auto] md:gap-24 md:px-10 md:py-32">
         <div>
           <p className="eyebrow text-gold" data-reveal>
             Ready when you are
@@ -24,7 +24,7 @@ export default function FinalCta() {
             Order ahead for pickup — wrapped in kraft, tied with twine, and hot
             when you walk in. {site.hours.orderingWindow}.
           </p>
-          <div className="mt-10" data-reveal>
+          <div className="mt-8 md:mt-10" data-reveal>
             <a
               href={clover}
               target="_blank"

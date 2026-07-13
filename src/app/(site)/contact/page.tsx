@@ -34,13 +34,13 @@ export default async function ContactPage() {
           withFaq: true,
         })}
       />
-      <div className="mx-auto max-w-[1400px] px-5 pb-28 pt-32 md:px-10 md:pt-40">
+      <div className="mx-auto max-w-[1400px] px-5 pb-16 pt-28 md:px-10 md:pb-28 md:pt-40">
         <p className="eyebrow text-gold-ink">Visit us</p>
         <h1 className="display-section mt-4 max-w-[18ch] text-charcoal">
           Come hungry. Leave with extra garlic sauce.
         </h1>
 
-        <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_1.1fr]">
+        <div className="mt-10 grid gap-10 md:mt-16 md:gap-16 lg:grid-cols-[1fr_1.1fr]">
           {/* info + map */}
           <div className="space-y-10">
             <dl className="grid gap-8 sm:grid-cols-2">
@@ -110,7 +110,7 @@ export default async function ContactPage() {
         </div>
 
         {/* FAQ */}
-        <section aria-labelledby="faq-heading" className="mt-28 max-w-[820px]">
+        <section aria-labelledby="faq-heading" className="mt-16 max-w-[820px] md:mt-28">
           <p className="eyebrow text-gold-ink">Good to know</p>
           <h2 id="faq-heading" className="display-section mt-4 text-charcoal">
             Questions we hear a lot
@@ -133,7 +133,7 @@ export default async function ContactPage() {
               </details>
             ))}
           </div>
-          <Divider tone="olive" className="mt-16 max-w-[120px]" />
+          <Divider tone="olive" className="mt-10 max-w-[120px] md:mt-16" />
         </section>
       </div>
     </div>

@@ -84,7 +84,7 @@ export default function Testimonials() {
   return (
     <section aria-label="Customer reviews" className="grain bg-cream">
       <div
-        className="mx-auto max-w-[1000px] px-5 py-24 md:py-32"
+        className="mx-auto max-w-[1000px] px-5 py-16 md:py-32"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onFocusCapture={() => setPaused(true)}
@@ -114,9 +114,9 @@ export default function Testimonials() {
         </div>
 
         {/* quote card */}
-        <div className="relative mt-14" data-reveal>
+        <div className="relative mt-10 md:mt-14" data-reveal>
           <div
-            className="relative overflow-hidden border border-tahini bg-garlic px-7 pb-12 pt-16 md:px-20 md:pb-16 md:pt-20"
+            className="relative overflow-hidden border border-tahini bg-garlic px-6 pb-10 pt-14 md:px-20 md:pb-16 md:pt-20"
             onPointerDown={(e) => (pointerX.current = e.clientX)}
             onPointerUp={(e) => {
               if (pointerX.current === null) return;
@@ -169,7 +169,7 @@ export default function Testimonials() {
         </div>
 
         {/* controls: arrows + progress track */}
-        <div className="mt-9 flex items-center justify-center gap-6" data-reveal>
+        <div className="mt-7 flex items-center md:mt-9 justify-center gap-6" data-reveal>
           <button
             type="button"
             onClick={() => go(-1)}

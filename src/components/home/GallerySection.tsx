@@ -16,7 +16,7 @@ const SHOTS = [
 export default function GallerySection() {
   return (
     <section aria-label="Gallery" className="border-y border-tahini bg-garlic">
-      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+      <div className="mx-auto max-w-[1400px] px-5 py-14 md:px-10 md:py-28">
         <div className="columns-2 gap-4 md:columns-3 md:gap-6 [&>figure]:mb-4 md:[&>figure]:mb-6">
           {SHOTS.map((s) => (
             <figure

@@ -32,7 +32,7 @@ export default async function MenuPage() {
           withMenu: true,
         })}
       />
-      <header className="mx-auto max-w-[1400px] px-5 pb-10 pt-32 md:px-10 md:pt-40">
+      <header className="mx-auto max-w-[1400px] px-5 pb-8 pt-28 md:px-10 md:pb-10 md:pt-40">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
             <p className="eyebrow text-gold-ink">The menu</p>

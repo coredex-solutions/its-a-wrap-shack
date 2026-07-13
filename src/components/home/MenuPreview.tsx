@@ -114,7 +114,7 @@ export default function MenuPreview() {
 
   return (
     <section aria-labelledby="preview-heading" className="grain bg-cream">
-      <div className="mx-auto max-w-[1100px] px-5 pb-28 pt-24 md:px-10 md:pb-36 md:pt-28">
+      <div className="mx-auto max-w-[1100px] px-5 pb-16 pt-16 md:px-10 md:pb-36 md:pt-28">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div>
             <p className="eyebrow text-gold-ink" data-reveal>
@@ -133,7 +133,7 @@ export default function MenuPreview() {
           </div>
         </div>
 
-        <ul ref={listRef} className="mt-12" aria-live="polite">
+        <ul ref={listRef} className="mt-8 md:mt-12" aria-live="polite">
           {items.map((item) => {
             const show = matches(item);
             return (
@@ -141,7 +141,7 @@ export default function MenuPreview() {
                 key={item.id}
                 data-item
                 data-reveal
-                className={`border-b border-tahini/60 py-6 first:border-t ${show ? "" : "hidden"}`}
+                className={`border-b border-tahini/60 py-4 first:border-t md:py-6 ${show ? "" : "hidden"}`}
                 aria-hidden={!show}
               >
                 <div className="flex items-baseline gap-3">
@@ -161,7 +161,7 @@ export default function MenuPreview() {
                     {formatPrice(item)}
                   </span>
                 </div>
-                <p className="body-copy mt-1.5 max-w-[58ch] text-[14.5px] leading-relaxed text-charcoal-60">
+                <p className="body-copy mt-1.5 line-clamp-2 max-w-[58ch] text-[14.5px] leading-relaxed text-charcoal-60 md:line-clamp-none">
                   {item.description}
                 </p>
               </li>
@@ -169,12 +169,12 @@ export default function MenuPreview() {
           })}
         </ul>
         {visibleCount === 0 && (
-          <p className="mt-10 font-display text-xl italic text-charcoal-60">
+          <p className="mt-8 font-display text-xl italic text-charcoal-60">
             Nothing in this small preview matches — the full menu has plenty.
           </p>
         )}
 
-        <div className="mt-12" data-reveal>
+        <div className="mt-8 md:mt-12" data-reveal>
           <Button href="/menu">See the full menu</Button>
         </div>
       </div>

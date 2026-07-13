@@ -52,7 +52,7 @@ export default async function AboutPage() {
       />
       {/* opening chapter */}
       <section className="bg-forest text-cream">
-        <div className="mx-auto max-w-[1100px] px-5 pb-24 pt-36 md:px-10 md:pb-32 md:pt-44">
+        <div className="mx-auto max-w-[1100px] px-5 pb-16 pt-28 md:px-10 md:pb-32 md:pt-44">
           <p className="eyebrow text-gold" data-reveal>
             Our story
           </p>
@@ -60,7 +60,7 @@ export default async function AboutPage() {
           <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
             A Lebanese kitchen that crossed an ocean and kept its accent.
           </PullLine>
-          <div className="body-copy mt-10 space-y-6 text-[16.5px] leading-[1.85] text-sage">
+          <div className="body-copy mt-8 space-y-5 md:mt-10 md:space-y-6 text-[16.5px] leading-[1.85] text-sage">
             <p data-reveal>
               The Wrap Shack began the way most Lebanese cooking does — at a
               family table, with recipes nobody ever wrote down properly because
@@ -79,7 +79,7 @@ export default async function AboutPage() {
       </section>
 
       {/* image band */}
-      <section aria-hidden className="relative h-[46vh] min-h-[320px] overflow-hidden border-y border-tahini">
+      <section aria-hidden className="relative h-[30vh] min-h-[220px] overflow-hidden border-y border-tahini md:h-[46vh] md:min-h-[320px]">
         <Image
           src="/images/gallery/ingredients-toss.webp"
           alt=""
@@ -91,14 +91,14 @@ export default async function AboutPage() {
 
       {/* the daily practice */}
       <section aria-labelledby="values-heading" className="grain bg-cream">
-        <div className="mx-auto max-w-[1100px] px-5 py-24 md:px-10 md:py-32">
+        <div className="mx-auto max-w-[1100px] px-5 py-16 md:px-10 md:py-32">
           <p className="eyebrow text-gold-ink" data-reveal>
             The daily practice
           </p>
           <h2 id="values-heading" className="display-section mt-4 text-charcoal" data-reveal>
             What &ldquo;fresh daily&rdquo; actually means here
           </h2>
-          <div className="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+          <div className="mt-10 grid gap-x-16 gap-y-8 md:mt-14 md:grid-cols-2 md:gap-y-12">
             {VALUES.map((v) => (
               <div key={v.title} data-reveal>
                 <Divider tone="olive" className="max-w-[64px]" />
@@ -111,7 +111,7 @@ export default async function AboutPage() {
               </div>
             ))}
           </div>
-          <div className="mt-16 flex flex-wrap gap-4" data-reveal>
+          <div className="mt-10 flex flex-wrap gap-4 md:mt-16" data-reveal>
             <Button href="/menu" variant="outline">
               See the menu
             </Button>

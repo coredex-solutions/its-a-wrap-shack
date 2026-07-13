@@ -9,8 +9,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-forest text-cream">
-      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_auto]">
+      <div className="mx-auto max-w-[1400px] px-5 py-12 md:px-10 md:py-20">
+        <div className="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr_auto] md:gap-12">
           <div>
             <Image
               src="/brand/logo-cream.png"
@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-cream/15 pt-6 text-[13px] text-sage md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col md:mt-14 gap-2 border-t border-cream/15 pt-6 text-[13px] text-sage md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} {site.name} · {site.descriptor}
           </p>

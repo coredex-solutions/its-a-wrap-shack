@@ -6,7 +6,7 @@ export default function VisitSection() {
   const site = getSite();
   return (
     <section aria-labelledby="visit-heading" className="grain bg-cream">
-      <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-24 md:grid-cols-2 md:items-center md:gap-20 md:px-10 md:py-32">
+      <div className="mx-auto grid max-w-[1400px] gap-8 px-5 py-16 md:grid-cols-2 md:items-center md:gap-20 md:px-10 md:py-32">
         <div>
           <p className="eyebrow text-gold-ink" data-reveal>
             Visit us
@@ -17,7 +17,7 @@ export default function VisitSection() {
             just off the 10
           </h2>
 
-          <dl className="mt-10 space-y-7">
+          <dl className="mt-8 space-y-5 md:mt-10 md:space-y-7">
             <div data-reveal>
               <dt className="eyebrow text-charcoal-60">Address</dt>
               <dd className="mt-1.5 text-[17px] leading-relaxed">
@@ -49,7 +49,7 @@ export default function VisitSection() {
             </div>
           </dl>
 
-          <div className="mt-11" data-reveal>
+          <div className="mt-8 md:mt-11" data-reveal>
             <Button href={site.mapsUrl} external>
               Get directions
             </Button>

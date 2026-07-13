@@ -115,7 +115,7 @@ export default function SignatureDishes() {
 
   return (
     <section aria-labelledby="dishes-heading" className="grain bg-cream">
-      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-32">
         {/* header */}
         <div className="max-w-[60ch]">
           <p className="eyebrow text-gold-ink" data-reveal>
@@ -129,7 +129,7 @@ export default function SignatureDishes() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-10 md:mt-16 md:grid-cols-[1.4fr_1fr] md:items-stretch md:gap-14 lg:gap-20">
+        <div className="mt-8 grid gap-8 md:mt-16 md:grid-cols-[1.4fr_1fr] md:items-stretch md:gap-14 lg:gap-20">
           {/* ——— FEATURED PANEL ——— */}
           <div data-reveal>
             <div

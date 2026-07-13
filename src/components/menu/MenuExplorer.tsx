@@ -85,7 +85,7 @@ export default function MenuExplorer() {
         </div>
       </div>
 
-      <div className="grid gap-12 pb-28 pt-12 md:grid-cols-[220px_1fr] md:gap-16">
+      <div className="grid gap-8 pb-16 pt-8 md:grid-cols-[220px_1fr] md:gap-16 md:pb-28 md:pt-12">
         {/* desktop rail */}
         <nav aria-label="Menu categories" className="hidden md:block">
           <ul className="sticky top-[160px] space-y-1">
@@ -127,7 +127,7 @@ export default function MenuExplorer() {
                 id={`cat-${cat.id}`}
                 data-menu-category={cat.id}
                 aria-labelledby={`cat-${cat.id}-h`}
-                className={`scroll-mt-[150px] ${visible.length === 0 ? "hidden" : ""} ${ci > 0 ? "mt-20" : ""}`}
+                className={`scroll-mt-[150px] ${visible.length === 0 ? "hidden" : ""} ${ci > 0 ? "mt-12 md:mt-20" : ""}`}
               >
                 <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
                   <h2
@@ -142,7 +142,7 @@ export default function MenuExplorer() {
                 </div>
                 <Divider tone="olive" className="mt-4 max-w-[120px]" />
 
-                <ul className="mt-8 grid gap-5 lg:grid-cols-2">
+                <ul className="mt-6 grid gap-4 md:mt-8 md:gap-5 lg:grid-cols-2">
                   {items.map((item) => (
                     <MenuCard
                       key={item.id}
@@ -192,12 +192,12 @@ function MenuCard({
             />
           </div>
         )}
-        <div className="flex flex-1 flex-col px-7 py-7 md:px-9 md:py-8">
+        <div className="flex flex-1 flex-col px-5 py-5 md:px-9 md:py-8">
           {item.featured && (
             <p className="eyebrow mb-3 text-gold-ink">House favorite</p>
           )}
           <div className="flex items-baseline gap-3">
-            <h3 className="font-display text-[1.55rem] font-medium leading-snug text-charcoal">
+            <h3 className="font-display text-[1.35rem] font-medium leading-snug text-charcoal md:text-[1.55rem]">
               {item.name}
             </h3>
             <span
@@ -211,7 +211,7 @@ function MenuCard({
           <p className="body-copy mt-2 text-[14.5px] leading-relaxed text-charcoal-60">
             {item.description}
           </p>
-          <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-5">
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-3 md:pt-5">
             <span className="flex flex-wrap items-center gap-3">
               {item.dietary.map((k) => (
                 <DietaryBadge key={k} kind={k} withLabel />
@@ -221,7 +221,7 @@ function MenuCard({
               href={clover}
               target="_blank"
               rel="noopener"
-              className="text-[12px] font-semibold uppercase tracking-[0.1em] text-forest underline decoration-tahini underline-offset-4 transition-colors duration-250 hover:decoration-gold"
+              className="hidden text-[12px] font-semibold uppercase tracking-[0.1em] text-forest underline decoration-tahini underline-offset-4 transition-colors duration-250 hover:decoration-gold sm:inline"
             >
               Order on Clover ↗
             </a>
