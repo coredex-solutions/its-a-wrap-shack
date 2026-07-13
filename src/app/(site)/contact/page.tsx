@@ -35,30 +35,30 @@ export default async function ContactPage() {
           withFaq: true,
         })}
       />
-      <div className="mx-auto max-w-[1400px] px-5 pb-16 pt-28 md:px-10 md:pb-28 md:pt-36">
-        {/* heading + brand image filling the right column (aligned with the
-            form column below); stacks under the heading on phones */}
-        <div className="grid items-end gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-          <div>
-            <p className="eyebrow text-gold-ink">Visit us</p>
-            <h1 className="display-section mt-4 max-w-[18ch] text-charcoal">
-              Come hungry. Leave with extra garlic sauce.
-            </h1>
-          </div>
-          <div className="relative aspect-video overflow-hidden lg:aspect-auto lg:min-h-[240px] lg:self-stretch">
-            <Image
-              src="/images/gallery/wrap-sauce.webp"
-              alt="The Wrap Shack's chicken shawarma wrap in kraft paper tied with twine"
-              fill
-              priority
-              sizes="(min-width: 1024px) 60vw, 100vw"
-              className="object-cover"
-              data-reveal-img
-            />
-          </div>
+      {/* opening chapter: the heading over the brand image as a full-bleed
+          background — the wrap sits right of the text on every viewport */}
+      <section className="relative overflow-hidden bg-forest text-cream">
+        <Image
+          src="/images/gallery/wrap-sauce.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[35%_center] md:object-center"
+        />
+        {/* flat mobile-only veil: the display text crosses the bright wrap on
+            narrow crops — solid color, so no gradient/glass in sight */}
+        <span aria-hidden className="absolute inset-0 bg-forest/60 md:hidden" />
+        <div className="relative mx-auto max-w-[1400px] px-5 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
+          <p className="eyebrow text-gold">Visit us</p>
+          <h1 className="display-section mt-4 max-w-[18ch]">
+            Come hungry. Leave with extra garlic sauce.
+          </h1>
         </div>
+      </section>
 
-        <div className="mt-10 grid gap-10 md:mt-16 md:gap-16 lg:grid-cols-[1fr_1.1fr]">
+      <div className="mx-auto max-w-[1400px] px-5 pb-16 pt-12 md:px-10 md:pb-28 md:pt-20">
+        <div className="grid gap-10 md:gap-16 lg:grid-cols-[1fr_1.1fr]">
           {/* info + map */}
           <div className="space-y-10">
             <dl className="grid gap-8 sm:grid-cols-2">
