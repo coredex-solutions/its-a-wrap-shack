@@ -210,11 +210,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ——— the wordmark, sinking behind the fold line ——— */}
-        <div aria-hidden className="pointer-events-none select-none overflow-hidden">
-          {/* negative top margin reclaims the translate + ascent whitespace, so
-              the cap line hugs the grid above while the baseline stays cropped */}
-          <p className="mt-[-0.34em] translate-y-[26%] whitespace-nowrap text-center font-display text-[clamp(3.4rem,12.5vw,11.5rem)] font-medium italic leading-none text-cream/[0.07]">
+        {/* ——— the oversized wordmark, shown in full above the fold line ——— */}
+        <div aria-hidden className="pointer-events-none select-none">
+          <p className="mt-[-0.12em] whitespace-nowrap text-center font-display text-[clamp(3.4rem,12.5vw,11.5rem)] font-medium italic leading-none text-cream/[0.07]">
             {site.name}
           </p>
         </div>
