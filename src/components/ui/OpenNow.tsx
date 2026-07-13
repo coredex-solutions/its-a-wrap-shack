@@ -2,32 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getSite } from "@/lib/content";
-
-const TZ = "America/Los_Angeles";
-
-function parseHM(hm: string): number {
-  const [h, m] = hm.split(":").map(Number);
-  return h * 60 + m;
-}
-
-function minutesNowInTz(): number {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: TZ,
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-  }).formatToParts(new Date());
-  const h = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
-  const m = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
-  return (h % 24) * 60 + m;
-}
-
-function fmt(hm: string): string {
-  const [h, m] = hm.split(":").map(Number);
-  const period = h >= 12 ? "pm" : "am";
-  const hr = h % 12 || 12;
-  return m ? `${hr}:${String(m).padStart(2, "0")} ${period}` : `${hr}:00 ${period}`;
-}
+import { parseHM, minutesNowInTz, fmt } from "@/lib/hours";
 
 /**
  * Live "Open now / Opens at …" chip, computed in the restaurant's timezone
