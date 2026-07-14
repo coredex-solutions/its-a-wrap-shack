@@ -80,8 +80,8 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 ## Architecture
 
 - Next.js (App Router, latest) · React 19 · TS strict · Tailwind v4 · GSAP + Lenis · RHF + Zod (contact form + CMS validation).
-- Routes: `(site)/` group = `/`, `/menu`, `/about`, `/contact` (marketing chrome lives in `(site)/layout.tsx`); `/admin` = owner CMS with its own plain layout (noindex + robots-disallowed). Contact form posts to a route handler that is a clearly-marked TODO stub.
-- All content in typed files under `content/` (site.ts, menu.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly.
+- Routes: `(site)/` group = `/`, `/menu`, `/catering`, `/about`, `/contact` (marketing chrome lives in `(site)/layout.tsx`); `/admin` = owner CMS with its own plain layout (noindex + robots-disallowed). Contact form posts to a route handler that is a clearly-marked TODO stub.
+- All content in typed files under `content/` (site.ts, menu.ts, catering.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly. Catering is code-only (no CMS section); ordering it is by PHONE, 48h ahead — no Clover buttons on `/catering`.
 
 ## CMS (owner-only, custom)
 

@@ -57,7 +57,13 @@ export const faq: FaqItem[] = [
     id: "catering",
     question: "Do you handle catering or large orders?",
     answer:
-      "Ask us — call (760) 360-8178 or send a note through the contact form with your date and headcount, and we'll sort out the details.",
+      "Yes — we have a full catering menu of platters, bowls, salads, and mezza trays built for ten, from shawarma and mixed-grill skewers to baklava. Call (760) 360-8178 at least 48 hours ahead and we'll sort out the details.",
+  },
+  {
+    id: "delivery",
+    question: "Do you offer delivery?",
+    answer:
+      "Yes — everything is cooked to order for pickup or delivery. Order through our online ordering page and choose what works for you.",
   },
   {
     id: "shawarma",

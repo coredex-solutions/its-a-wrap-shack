@@ -1,5 +1,10 @@
 import { loadContent } from "@/lib/cms/store";
-import { formatPrice } from "@/lib/content";
+import {
+  formatPrice,
+  getCatering,
+  getCateringLeadTime,
+  formatCateringPrice,
+} from "@/lib/content";
 
 /**
  * llms.txt — a concise, factual brief for AI crawlers and answer engines
@@ -27,6 +32,18 @@ export async function GET() {
     .map((f) => `### ${f.question}\n${f.answer}`)
     .join("\n\n");
 
+  const cateringLines = getCatering()
+    .map((section) => {
+      const items = section.items
+        .map(
+          (i) =>
+            `- ${i.name} — ${formatCateringPrice(i)}${i.description ? `: ${i.description}` : ""}`,
+        )
+        .join("\n");
+      return `### ${section.label}\n${section.note ? `${section.note}\n` : ""}${items}`;
+    })
+    .join("\n\n");
+
   const body = `# ${s.name} — ${s.descriptor}
 
 > ${s.seo.description}
@@ -39,7 +56,8 @@ ${s.name} is a family-run, fast-casual Lebanese/Mediterranean restaurant in the 
 - Phone: ${s.phone}
 - Email: ${s.email}
 - Hours: ${s.hours.display} (${s.hours.orderingWindow})
-- Ordering: online for pickup via Clover — ${c.cloverUrl}
+- Ordering: online for pickup or delivery via Clover — ${c.cloverUrl}
+- Catering: platters and trays for 10; order by phone 48 hours in advance
 - Reservations: not taken (fast-casual counter service)
 - Cuisine: ${s.cuisine.join(", ")}
 - Dietary: 100% halal menu; vegan, vegetarian, and gluten-free options marked per item
@@ -49,12 +67,19 @@ ${s.socials.instagram ? `- Instagram: ${s.socials.instagram}\n` : ""}- Map: ${s.
 
 - [Home](${s.url}/): overview, signature dishes, reviews
 - [Menu](${s.url}/menu): full menu with prices and dietary badges
+- [Catering](${s.url}/catering): platters and trays for ten, 48-hour notice
 - [Our Story](${s.url}/about): the family history and daily practice
 - [Visit Us](${s.url}/contact): hours, directions, contact form, FAQ
 
 ## Menu
 
 ${menuLines}
+
+## Catering menu (serves 10 unless noted)
+
+${getCateringLeadTime()}
+
+${cateringLines}
 
 ## Frequently asked questions
 

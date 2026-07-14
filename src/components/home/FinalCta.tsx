@@ -21,8 +21,8 @@ export default function FinalCta() {
             <span className="italic">Not the garlic sauce.</span>
           </h2>
           <p className="body-copy mt-6 text-[16px] leading-relaxed text-sage" data-reveal>
-            Order ahead for pickup — wrapped in kraft, tied with twine, and hot
-            when you walk in. {site.hours.orderingWindow}.
+            Order ahead for pickup or delivery — wrapped in kraft, tied with
+            twine, and hot when it reaches you. {site.hours.orderingWindow}.
           </p>
           <div className="mt-8 md:mt-10" data-reveal>
             <a

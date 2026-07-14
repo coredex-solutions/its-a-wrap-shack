@@ -9,7 +9,7 @@ import { JsonLd, pageGraph } from "@/lib/jsonld";
 
 const TITLE = "Our Story · Lebanese Kitchen in the Desert";
 const DESCRIPTION =
-  "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, garlic sauce from a family recipe, everything 100% halal.";
+  "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, fresh local ingredients, vegan options, garlic sauce from a family recipe, everything 100% halal.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -73,6 +73,15 @@ export default async function AboutPage() {
               We opened on Washington Street to cook that food the way it
               deserves — fast enough for a lunch break, never faster than the
               food allows.
+            </p>
+            <p data-reveal>
+              The menu leans fresh and health-conscious: local ingredients
+              where the valley provides them, a deep bench of vegan options
+              led by our falafel, and a freshly prepared tahini sauce that
+              sharpens anything it touches. Regulars argue over the star —
+              the chicken shawarma, or the beef gyro seared and folded with
+              fresh tzatziki. Come taste why the Coachella Valley treats us
+              as its go-to for Mediterranean eats.
             </p>
           </div>
         </div>

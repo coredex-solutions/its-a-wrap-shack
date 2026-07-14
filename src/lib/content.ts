@@ -21,8 +21,23 @@ import {
 } from "@content/menu";
 import { testimonials as seedTestimonials, type Testimonial } from "@content/testimonials";
 import { faq as seedFaq, type FaqItem } from "@content/faq";
+import {
+  catering,
+  CATERING_LEAD_TIME,
+  type CateringSection,
+  type CateringItem,
+} from "@content/catering";
 
-export type { CategoryId, Dietary, MenuCategory, MenuItem, Testimonial, FaqItem };
+export type {
+  CategoryId,
+  Dietary,
+  MenuCategory,
+  MenuItem,
+  Testimonial,
+  FaqItem,
+  CateringSection,
+  CateringItem,
+};
 
 /** `content/site.ts` with its literal types widened for CMS-edited values. */
 export interface SiteData {
@@ -117,6 +132,19 @@ export function getTestimonials(): Testimonial[] {
 
 export function getFaq(): FaqItem[] {
   return current.faq;
+}
+
+/** Catering is code-only content (no CMS overlay) — the seed IS the menu. */
+export function getCatering(): CateringSection[] {
+  return catering;
+}
+
+export function getCateringLeadTime(): string {
+  return CATERING_LEAD_TIME;
+}
+
+export function formatCateringPrice(item: CateringItem): string {
+  return `$${item.price.toFixed(2).replace(/\.00$/, "")}`;
 }
 
 export function formatPrice(item: MenuItem): string {
