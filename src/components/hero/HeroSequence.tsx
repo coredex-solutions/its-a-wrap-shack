@@ -13,16 +13,17 @@ import { initGsap, prefersReducedMotion } from "@/lib/gsap";
  * - Frames preload progressively: every 5th first, then backfill; decoded
  *   with createImageBitmap where supported. No loader UI — the poster covers.
  * - `sm` set on small viewports / Save-Data. Pin: 300vh desktop, 150vh touch.
- * - The source video ends on a garbled AI rendition of the logo; the scrub
- *   stops at frame 133 (clean wrap) and the final hold crossfades to a cream
- *   DOM overlay carrying the REAL logo asset instead.
+ * - Frames are rendered procedurally from real assets (scripts/hero-render.js):
+ *   parsley and peppercorns converge while the kraft wrap rises and settles
+ *   under steam. The sequence is clean end-to-end, so the scrub uses the full
+ *   range; the final hold crossfades to a cream DOM overlay with the REAL logo.
  * - prefers-reduced-motion: no pin, no scrub — a static wrap still (art-
  *   directed via <picture>) with the same overlay content.
  */
 
 const SETS = {
-  lg: { dir: "lg", end: 133, native: 150 },
-  sm: { dir: "sm", end: 71, native: 80 },
+  lg: { dir: "lg", end: 150, native: 150 },
+  sm: { dir: "sm", end: 80, native: 80 },
 } as const;
 
 const HERO_ALT =
@@ -190,7 +191,7 @@ export default function HeroSequence() {
       },
     });
 
-    // frames 0 → 133 across the full scrub
+    // full frame range across the scrub
     tl.to(
       state,
       {
