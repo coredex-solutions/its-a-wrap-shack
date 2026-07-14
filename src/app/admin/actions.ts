@@ -45,38 +45,56 @@ function revalidateSite(): void {
   revalidatePath("/llms.txt"); // the AEO brief mirrors CMS content
 }
 
-async function save<T>(schema: z.ZodType<T>, data: unknown, key: string): Promise<SaveResult> {
+/** Owner-readable version of the first validation issue ("Item 3 — name: …"). */
+function firstIssue(error: z.ZodError, noun: string): string {
+  const issue = error.issues[0];
+  if (!issue) return "Invalid data.";
+  const path = issue.path;
+  const where =
+    typeof path[0] === "number"
+      ? `${noun} ${Number(path[0]) + 1}${path.length > 1 ? ` — ${path.slice(1).join(".")}` : ""}`
+      : path.join(".");
+  return `${where}: ${issue.message}`;
+}
+
+async function save<T>(
+  schema: z.ZodType<T>,
+  data: unknown,
+  key: string,
+  noun: string,
+): Promise<SaveResult> {
   await guard();
   const parsed = schema.safeParse(data);
-  if (!parsed.success) {
-    const first = parsed.error.issues[0];
-    return {
-      ok: false,
-      error: `${first?.path.join(".") ?? ""}: ${first?.message ?? "invalid data"}`,
-    };
-  }
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error, noun) };
   await saveOverlaySection({ [key]: parsed.data });
   revalidateSite();
   return { ok: true };
 }
 
 export async function saveSite(data: unknown): Promise<SaveResult> {
-  return save(siteEditableSchema, data, "site");
+  return save(siteEditableSchema, data, "site", "Field");
 }
 
-export async function saveMenu(data: unknown): Promise<SaveResult> {
-  const result = await save(z.array(menuItemSchema).min(1), data, "menu");
-  return result;
-}
-
-export async function saveCategories(data: unknown): Promise<SaveResult> {
-  return save(z.array(menuCategorySchema).min(1), data, "categories");
+/** Categories + items validated together, written in ONE atomic overlay write —
+    a bad item can never leave half the menu saved. */
+export async function saveMenuAndCategories(
+  categories: unknown,
+  menu: unknown,
+): Promise<SaveResult> {
+  await guard();
+  const cats = z.array(menuCategorySchema).min(1).safeParse(categories);
+  if (!cats.success) return { ok: false, error: firstIssue(cats.error, "Category") };
+  const items = z.array(menuItemSchema).min(1).safeParse(menu);
+  if (!items.success) return { ok: false, error: firstIssue(items.error, "Item") };
+  await saveOverlaySection({ categories: cats.data, menu: items.data });
+  revalidateSite();
+  return { ok: true };
 }
 
 export async function saveTestimonials(data: unknown): Promise<SaveResult> {
-  return save(z.array(testimonialSchema), data, "testimonials");
+  return save(z.array(testimonialSchema), data, "testimonials", "Review");
 }
 
 export async function saveFaq(data: unknown): Promise<SaveResult> {
-  return save(z.array(faqItemSchema), data, "faq");
+  return save(z.array(faqItemSchema), data, "faq", "Question");
 }

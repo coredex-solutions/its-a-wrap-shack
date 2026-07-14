@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { saveMenu, saveCategories } from "@/app/admin/actions";
+import { saveMenuAndCategories } from "@/app/admin/actions";
 import { DIETARY } from "@/lib/cms/schema";
 import type { MenuCategory, MenuItem } from "@/lib/content";
 import {
@@ -19,6 +19,37 @@ function slug(name: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+/**
+ * Price field with its own text state so intermediate keystrokes ("13.")
+ * survive — a controlled number round-trip would swallow the decimal point.
+ * Commits a number (or null = "ask in store") on every valid keystroke.
+ */
+function PriceInput({
+  value,
+  onCommit,
+}: {
+  value: number | null;
+  onCommit: (v: number | null) => void;
+}) {
+  const [text, setText] = useState(value === null ? "" : String(value));
+  return (
+    <TextInput
+      inputMode="decimal"
+      value={text}
+      onChange={(e) => {
+        const v = e.target.value.trim();
+        if (!/^\d*\.?\d{0,2}$/.test(v)) return; // digits, one dot, ≤2 decimals
+        setText(v);
+        const n = Number(v);
+        onCommit(v === "" || !Number.isFinite(n) ? null : n);
+      }}
+      onBlur={() => {
+        if (text.endsWith(".")) setText(text.slice(0, -1));
+      }}
+    />
+  );
 }
 
 export default function MenuEditor({
@@ -64,17 +95,22 @@ export default function MenuEditor({
   };
 
   const save = async () => {
-    // stabilize ids from names for newly added items
-    const normalized = items.map((it) =>
-      it.id.startsWith("new-item-") && it.name
-        ? { ...it, id: `${slug(it.name)}` }
-        : it,
+    // stabilize ids from names for newly added items, never colliding with
+    // an existing id (two "Falafel Wrap"s must not share React keys)
+    const taken = new Set(
+      items.filter((it) => !it.id.startsWith("new-item-")).map((it) => it.id),
     );
-    const catResult = await saveCategories(cats);
-    if (!catResult.ok) return catResult;
-    const menuResult = await saveMenu(normalized);
-    if (menuResult.ok) setItems(normalized);
-    return menuResult;
+    const normalized = items.map((it) => {
+      if (!it.id.startsWith("new-item-") || !it.name) return it;
+      const base = slug(it.name) || it.id;
+      let id = base;
+      for (let n = 2; taken.has(id); n++) id = `${base}-${n}`;
+      taken.add(id);
+      return { ...it, id };
+    });
+    const result = await saveMenuAndCategories(cats, normalized);
+    if (result.ok) setItems(normalized);
+    return result;
   };
 
   return (
@@ -130,16 +166,10 @@ export default function MenuEditor({
                         />
                       </Field>
                       <Field label="Price ($)" hint="Empty = “ask in store”">
-                        <TextInput
-                          inputMode="decimal"
-                          value={it.price === null ? "" : String(it.price)}
-                          onChange={(e) => {
-                            const v = e.target.value.trim();
-                            const n = Number(v);
-                            setItem(it.id, {
-                              price: v === "" ? null : Number.isFinite(n) ? n : it.price,
-                            });
-                          }}
+                        <PriceInput
+                          key={it.id}
+                          value={it.price}
+                          onCommit={(price) => setItem(it.id, { price })}
                         />
                       </Field>
                       <Field label="Price note" hint="e.g. “3 for”">

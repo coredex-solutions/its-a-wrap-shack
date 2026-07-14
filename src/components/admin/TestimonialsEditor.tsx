@@ -5,6 +5,32 @@ import { saveTestimonials } from "@/app/admin/actions";
 import type { Testimonial } from "@/lib/content";
 import { Field, TextInput, TextArea, RemoveButton, AddButton, SaveBar } from "./ui";
 
+/** Star rating with local text state so the field can be cleared and retyped. */
+function StarsInput({
+  value,
+  onCommit,
+}: {
+  value: number;
+  onCommit: (v: number) => void;
+}) {
+  const [text, setText] = useState(String(value));
+  return (
+    <TextInput
+      inputMode="numeric"
+      value={text}
+      onChange={(e) => {
+        const v = e.target.value;
+        if (!/^[1-5]?$/.test(v)) return;
+        setText(v);
+        if (v !== "") onCommit(Number(v));
+      }}
+      onBlur={() => {
+        if (text === "") setText(String(value));
+      }}
+    />
+  );
+}
+
 export default function TestimonialsEditor({ initial }: { initial: Testimonial[] }) {
   const [list, setList] = useState(initial);
   const [dirty, setDirty] = useState(false);
@@ -57,13 +83,10 @@ export default function TestimonialsEditor({ initial }: { initial: Testimonial[]
               />
             </Field>
             <Field label="Stars (1–5)">
-              <TextInput
-                inputMode="numeric"
-                value={String(t.rating ?? 5)}
-                onChange={(e) => {
-                  const n = Number(e.target.value);
-                  if (Number.isInteger(n) && n >= 1 && n <= 5) set(t.id, { rating: n });
-                }}
+              <StarsInput
+                key={t.id}
+                value={t.rating ?? 5}
+                onCommit={(rating) => set(t.id, { rating })}
               />
             </Field>
           </div>
