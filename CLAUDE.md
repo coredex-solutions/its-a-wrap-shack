@@ -81,7 +81,7 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 
 - Next.js (App Router, latest) · React 19 · TS strict · Tailwind v4 · GSAP + Lenis · RHF + Zod (contact form + CMS validation).
 - Routes: `(site)/` group = `/`, `/menu`, `/catering`, `/about`, `/contact` (marketing chrome lives in `(site)/layout.tsx`); `/admin` = owner CMS with its own plain layout (noindex + robots-disallowed). Contact form posts to a route handler that is a clearly-marked TODO stub.
-- All content in typed files under `content/` (site.ts, menu.ts, catering.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly. Catering is code-only (no CMS section); ordering it is by PHONE, 48h ahead — no Clover buttons on `/catering`.
+- All content in typed files under `content/` (site.ts, menu.ts, catering.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly. Catering ordering is by PHONE, 48h ahead — no Clover buttons on `/catering`.
 
 ## CMS (owner-only, custom)
 
@@ -89,7 +89,7 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 - `src/lib/cms/store.ts#loadContent()` (server-only, fs) merges overlay over seeds, primes the accessor snapshot, and is called at the top of `(site)/layout.tsx` **and every page** (React-cached). Client components get the same bundle via `<ContentHydrator>` — accessors stay synchronous, no prop drilling. Never import `store.ts` from a client component.
 - Auth: single `ADMIN_PASSWORD` env (+ optional `ADMIN_SECRET`), HMAC-signed expiry cookie, timing-safe compares (`src/lib/cms/auth.ts`). Unset password = admin disabled. This owner-only panel is the sanctioned exception to the "no accounts/DB" ban — the public site remains static, no visitor accounts, no database.
 - Saves are server actions (`src/app/admin/actions.ts`): guard → Zod parse → atomic file write → `revalidatePath("/", "layout")`. Edits are live without a rebuild, but REQUIRE a persistent Node server (`next start` on a VPS) — ephemeral serverless filesystems lose edits on redeploy.
-- Editable: business info (phone/email/hours/Clover URL/socials), menu (categories' labels+notes, items), testimonials, FAQ. Category IDs are fixed (components reference them); SEO strings/address/brand facts are code-only on purpose.
+- Editable: business info (phone/email/hours/Clover URL/socials), menu (categories' labels+notes, items), catering (sections' labels+notes, trays, lead-time line), testimonials, FAQ. Category/section IDs are fixed (components reference them); SEO strings/address/brand facts are code-only on purpose.
 
 ## CSS landmines (learned the hard way)
 

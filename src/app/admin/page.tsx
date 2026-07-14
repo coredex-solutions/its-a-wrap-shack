@@ -15,6 +15,11 @@ const CARDS = [
     blurb: "Items, prices, descriptions, dietary badges, and house favorites.",
   },
   {
+    href: "/admin/catering",
+    title: "Catering",
+    blurb: "Trays and platters for ten, prices, and the 48-hour notice line.",
+  },
+  {
     href: "/admin/testimonials",
     title: "Reviews",
     blurb: "The customer quotes rotating on the homepage.",
@@ -72,7 +77,7 @@ export default async function AdminDashboard() {
       <dl className="mt-12 grid grid-cols-2 gap-5 border-t border-tahini pt-8 sm:grid-cols-4">
         {[
           ["Menu items", content.menu.length],
-          ["Categories", content.categories.length],
+          ["Catering trays", content.catering.reduce((n, s) => n + s.items.length, 0)],
           ["Reviews", content.testimonials.length],
           ["FAQ entries", content.faq.length],
         ].map(([label, n]) => (

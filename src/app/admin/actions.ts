@@ -16,6 +16,7 @@ import {
   menuItemSchema,
   testimonialSchema,
   faqItemSchema,
+  cateringSectionSchema,
 } from "@/lib/cms/schema";
 import { z } from "zod";
 
@@ -93,6 +94,21 @@ export async function saveMenuAndCategories(
 
 export async function saveTestimonials(data: unknown): Promise<SaveResult> {
   return save(z.array(testimonialSchema), data, "testimonials", "Review");
+}
+
+/** Catering sections + the lead-time line, validated together, one atomic write. */
+export async function saveCatering(
+  sections: unknown,
+  leadTime: unknown,
+): Promise<SaveResult> {
+  await guard();
+  const parsed = z.array(cateringSectionSchema).min(1).safeParse(sections);
+  if (!parsed.success) return { ok: false, error: firstIssue(parsed.error, "Section") };
+  const lead = z.string().min(1).safeParse(leadTime);
+  if (!lead.success) return { ok: false, error: "Lead-time note: cannot be empty" };
+  await saveOverlaySection({ catering: parsed.data, cateringLeadTime: lead.data });
+  revalidateSite();
+  return { ok: true };
 }
 
 export async function saveFaq(data: unknown): Promise<SaveResult> {

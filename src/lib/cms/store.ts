@@ -69,6 +69,8 @@ export const loadContent = cache(async (): Promise<ContentBundle> => {
         menu: overlay.menu ?? defaultBundle.menu,
         testimonials: overlay.testimonials ?? defaultBundle.testimonials,
         faq: overlay.faq ?? defaultBundle.faq,
+        catering: overlay.catering ?? defaultBundle.catering,
+        cateringLeadTime: overlay.cateringLeadTime ?? defaultBundle.cateringLeadTime,
       };
   __setContent(bundle);
   return bundle;

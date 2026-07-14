@@ -22,7 +22,7 @@ import {
 import { testimonials as seedTestimonials, type Testimonial } from "@content/testimonials";
 import { faq as seedFaq, type FaqItem } from "@content/faq";
 import {
-  catering,
+  catering as seedCatering,
   CATERING_LEAD_TIME,
   type CateringSection,
   type CateringItem,
@@ -77,6 +77,8 @@ export interface ContentBundle {
   menu: MenuItem[];
   testimonials: Testimonial[];
   faq: FaqItem[];
+  catering: CateringSection[];
+  cateringLeadTime: string;
 }
 
 export const defaultBundle: ContentBundle = {
@@ -86,6 +88,8 @@ export const defaultBundle: ContentBundle = {
   menu: seedMenu,
   testimonials: seedTestimonials,
   faq: seedFaq,
+  catering: seedCatering,
+  cateringLeadTime: CATERING_LEAD_TIME,
 };
 
 let current: ContentBundle = defaultBundle;
@@ -134,13 +138,12 @@ export function getFaq(): FaqItem[] {
   return current.faq;
 }
 
-/** Catering is code-only content (no CMS overlay) — the seed IS the menu. */
 export function getCatering(): CateringSection[] {
-  return catering;
+  return current.catering;
 }
 
 export function getCateringLeadTime(): string {
-  return CATERING_LEAD_TIME;
+  return current.cateringLeadTime;
 }
 
 export function formatCateringPrice(item: CateringItem): string {

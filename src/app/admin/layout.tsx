@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 const SECTIONS = [
   { href: "/admin/site", label: "Business info" },
   { href: "/admin/menu", label: "Menu" },
+  { href: "/admin/catering", label: "Catering" },
   { href: "/admin/testimonials", label: "Reviews" },
   { href: "/admin/faq", label: "FAQ" },
 ] as const;

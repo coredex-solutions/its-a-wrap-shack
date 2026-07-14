@@ -61,6 +61,21 @@ export const faqItemSchema = z.object({
   answer: z.string().min(1),
 });
 
+export const cateringItemSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  price: z.number().nonnegative(),
+  description: z.string().optional(),
+});
+
+/** Section ids are fixed (the page anchors reference them); label/note/items edit. */
+export const cateringSectionSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  note: z.string().optional(),
+  items: z.array(cateringItemSchema),
+});
+
 export const siteEditableSchema = z.object({
   cloverUrl: z.string().url(),
   phone: z.string().min(7),
@@ -90,6 +105,8 @@ export const overlaySchema = z.object({
   menu: z.array(menuItemSchema).optional(),
   testimonials: z.array(testimonialSchema).optional(),
   faq: z.array(faqItemSchema).optional(),
+  catering: z.array(cateringSectionSchema).optional(),
+  cateringLeadTime: z.string().min(1).optional(),
 });
 
 export type SiteEditable = z.infer<typeof siteEditableSchema>;
