@@ -91,6 +91,8 @@ export const menu: MenuItem[] = [
       "Ground beef worked with onion and parsley, grilled on the skewer, then wrapped with greens, tomato, pickles, onion, and tahini.",
     price: 13.99,
     dietary: [],
+    image: "/images/menu/kefta-kebab-wrap.webp",
+    featured: true,
   },
   {
     id: "falafel-wrap",
@@ -191,6 +193,8 @@ export const menu: MenuItem[] = [
       "Golden seasoned fries piled with gyro meat or chicken shawarma, chopped tomato, crumbled feta, and your pick of tzatziki or garlic sauce.",
     price: 16.99,
     dietary: [],
+    image: "/images/menu/gyro-fries.webp",
+    featured: true,
   },
   {
     id: "breakfast-plate",
