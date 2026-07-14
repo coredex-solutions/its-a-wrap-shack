@@ -62,8 +62,8 @@ Rules:
 - Poster `public/hero-frames/hero-poster.webp` = frame 1, rendered via `next/image` `priority` → it is the LCP. Canvas fades in over it.
 - Progressive preload: every 5th frame first, then backfill; `createImageBitmap` where supported. No loader UI.
 - Pin ~300vh (200vh touch), `scrub: 0.5`, Lenis raf drives `ScrollTrigger.update`.
-- The video's baked-in logo ending is a garbled AI rendition — never show it. Scrub range stops before it; final hold crossfades to a cream DOM overlay with the REAL `logo.png` (see `HeroSequence`).
-- Reduced motion: static hero (wrap still, not smoke frame 1), same overlay content, no pin.
+- Frames are **procedurally rendered** by `scripts/hero-render.js` (sharp compositing: real wrap cutout + photographic parsley sprites + procedural steam/haze — every parameter a smooth function of t, so it scrubs cleanly both ways). Re-render: `node scripts/hero-render.js full` from a dir with sharp, then copy `hero-out/` over `public/hero-frames/`. Scrub uses the FULL frame range; final hold crossfades to a cream DOM overlay with the REAL `logo.png` (see `HeroSequence`).
+- Reduced motion: static hero (wrap still, not frame 1), same overlay content, no pin.
 
 ## Signature details
 
