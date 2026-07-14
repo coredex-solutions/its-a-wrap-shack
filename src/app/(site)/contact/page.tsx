@@ -39,16 +39,16 @@ export default async function ContactPage() {
           background — the wrap sits right of the text on every viewport */}
       <section className="relative overflow-hidden bg-forest text-cream">
         <Image
-          src="/images/gallery/wrap-sauce.webp"
+          src="/images/contact-hero.webp"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[35%_center] md:object-center"
+          className="object-cover object-right md:object-center"
         />
-        {/* flat mobile-only veil: the display text crosses the bright wrap on
+        {/* flat mobile-only veil: the display text can reach the wrap on
             narrow crops — solid color, so no gradient/glass in sight */}
-        <span aria-hidden className="absolute inset-0 bg-forest/60 md:hidden" />
+        <span aria-hidden className="absolute inset-0 bg-forest/45 md:hidden" />
         <div className="relative mx-auto max-w-[1400px] px-5 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
           <p className="eyebrow text-gold">Visit us</p>
           <h1 className="display-section mt-4 max-w-[18ch]">
