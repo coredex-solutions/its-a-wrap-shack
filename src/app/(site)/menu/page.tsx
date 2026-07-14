@@ -56,6 +56,32 @@ export default async function MenuPage() {
         <span data-orderbar-sentinel aria-hidden />
       </header>
       <MenuExplorer />
+
+      {/* catering pointer — group orders live on their own page (phone, 48h) */}
+      <section
+        aria-labelledby="catering-pointer"
+        className="border-t border-tahini bg-garlic"
+      >
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-10 md:py-16">
+          <div>
+            <p className="eyebrow text-gold-ink">Feeding a crowd?</p>
+            <h2
+              id="catering-pointer"
+              className="mt-3 font-display text-[clamp(1.7rem,3vw,2.4rem)] font-medium leading-tight text-charcoal"
+            >
+              Trays and platters built for ten.
+            </h2>
+            <p className="body-copy mt-2 text-[15px] text-charcoal-60">
+              Shawarma platters, mezza trays, salads, and baklava — ordered by
+              phone, 48 hours ahead.
+            </p>
+          </div>
+          <Button href="/catering" variant="outline">
+            See the catering menu
+          </Button>
+        </div>
+      </section>
+
       <MenuOrderBar />
     </div>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   getSite,
   getCatering,
@@ -145,8 +146,8 @@ export default async function CateringPage() {
             Tell us the date. The spit does the rest.
           </h2>
           <p className="body-copy mt-5 text-[15.5px] leading-relaxed text-sage" data-reveal>
-            {leadTime} We&rsquo;ll walk you through portions and pickup or
-            drop-off.
+            {leadTime}{" "}
+            We&rsquo;ll walk you through portions and pickup or drop-off.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4" data-reveal>
             <a
@@ -168,6 +169,16 @@ export default async function CateringPage() {
               {site.email}
             </a>
           </div>
+          <p className="mt-8 text-[14px] text-sage" data-reveal>
+            Just here for lunch?{" "}
+            <Link
+              href="/menu"
+              className="text-cream underline decoration-tahini/50 underline-offset-4 transition-colors duration-250 hover:decoration-gold"
+            >
+              See the everyday menu
+            </Link>
+            .
+          </p>
         </div>
       </section>
     </>

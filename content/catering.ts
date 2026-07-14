@@ -23,7 +23,7 @@ export const CATERING_LEAD_TIME = "Please call 48 hours in advance.";
 export const catering: CateringSection[] = [
   {
     id: "salads",
-    label: "Salads",
+    label: "Salad Trays",
     note: "Each serves 10",
     items: [
       {
@@ -51,7 +51,7 @@ export const catering: CateringSection[] = [
   },
   {
     id: "bowls",
-    label: "Bowl Salads",
+    label: "Family-Style Bowls",
     note: "Each serves 10",
     items: [
       {
@@ -86,7 +86,7 @@ export const catering: CateringSection[] = [
   },
   {
     id: "grill",
-    label: "From the Grill",
+    label: "Grill Platters",
     note: "Each serves 10",
     items: [
       {
@@ -121,7 +121,7 @@ export const catering: CateringSection[] = [
   },
   {
     id: "mezza",
-    label: "Bakery, Dips & Mezza",
+    label: "Bakery, Dips & Mezza Trays",
     items: [
       {
         id: "lahm-bi-ajeen",
@@ -202,7 +202,7 @@ export const catering: CateringSection[] = [
   },
   {
     id: "sweets",
-    label: "Sweets",
+    label: "Sweet Trays",
     items: [
       {
         id: "baklava-tray",
