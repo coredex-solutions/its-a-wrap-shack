@@ -52,7 +52,7 @@ export default function StorySection() {
           </div>
         </div>
 
-        <ParallaxImage className="relative aspect-[4/5] rounded-[2px]">
+        <ParallaxImage className="relative aspect-[4/5] overflow-hidden rounded-[16px]">
           <Image
             src="/images/story-ingredients.webp"
             alt="Chicken shawarma stacked on twin vertical spits, roasting in the kitchen"

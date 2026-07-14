@@ -22,7 +22,7 @@ export default function GallerySection() {
             <figure
               key={s.src}
               data-reveal
-              className="group overflow-hidden break-inside-avoid"
+              className="group overflow-hidden break-inside-avoid rounded-[14px]"
             >
               <div className={`relative ${s.tall ? "aspect-[3/4]" : "aspect-[4/3]"}`}>
                 <Image

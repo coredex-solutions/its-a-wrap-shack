@@ -13,7 +13,7 @@ export default function BrandMap({ className = "" }: { className?: string }) {
       target="_blank"
       rel="noopener"
       aria-label="Open our location in Google Maps — 40100 Washington St, Bermuda Dunes"
-      className={`group block overflow-hidden border border-tahini bg-garlic ${className}`}
+      className={`group block overflow-hidden rounded-[14px] border border-tahini bg-garlic ${className}`}
     >
       <svg viewBox="0 0 640 480" className="h-full w-full" role="img" aria-hidden>
         {/* field */}

@@ -77,7 +77,10 @@ export default async function CateringPage() {
               </p>
             </div>
           </div>
-          <div className="relative aspect-[4/3] md:aspect-[4/5]" data-reveal>
+          <div
+            className="relative aspect-[4/3] overflow-hidden rounded-[14px] md:aspect-[4/5] md:rounded-b-[14px] md:rounded-t-[190px]"
+            data-reveal
+          >
             <Image
               src="/images/menu/lamb-chop-plate.webp"
               alt="Grilled lamb chops over saffron rice with hummus, salad, and pita"

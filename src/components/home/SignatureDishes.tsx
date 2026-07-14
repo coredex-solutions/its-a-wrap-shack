@@ -138,7 +138,7 @@ export default function SignatureDishes() {
               role="tabpanel"
               id="dish-panel"
               aria-labelledby={`dish-tab-${active}`}
-              className="relative aspect-[4/3] touch-pan-y overflow-hidden border border-tahini bg-garlic md:aspect-[5/4]"
+              className="relative aspect-[4/3] touch-pan-y overflow-hidden rounded-[16px] border border-tahini bg-garlic md:aspect-[5/4]"
               onPointerDown={(e) => (pointerX.current = e.clientX)}
               onPointerUp={(e) => {
                 if (pointerX.current === null) return;
