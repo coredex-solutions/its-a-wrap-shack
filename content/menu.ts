@@ -100,6 +100,7 @@ export const menu: MenuItem[] = [
       "Chickpeas and fava beans ground with herbs and sesame, fried crisp, with greens, tomato, pickled turnips, and tahini in thin pita.",
     price: 12.99,
     dietary: ["vegan", "vegetarian"],
+    image: "/images/gallery/falafel-pita.webp",
     featured: true,
   },
 
@@ -151,6 +152,7 @@ export const menu: MenuItem[] = [
       "Your choice of chicken shawarma or gyro over rice with hummus, house salad, and warm pita.",
     price: 19.99,
     dietary: [],
+    image: "/images/dishes/beef-gyro.webp",
     featured: true,
   },
   {
@@ -322,6 +324,7 @@ export const menu: MenuItem[] = [
       "Garbanzo beans whipped with tahini, topped with herbs and a drizzle of extra-virgin olive oil.",
     price: 6.99,
     dietary: ["vegan", "vegetarian", "gluten-free"],
+    image: "/images/menu/hummus.webp",
     featured: true,
   },
   {
@@ -332,6 +335,8 @@ export const menu: MenuItem[] = [
       "Fire-roasted eggplant blended with pomegranate molasses, tomato, lemon, garlic, and herbs, finished with olive oil.",
     price: 6.99,
     dietary: ["vegan", "vegetarian", "gluten-free"],
+    image: "/images/menu/baba-ghanoush.webp",
+    featured: true,
   },
   {
     id: "mutabal",
@@ -416,6 +421,8 @@ export const menu: MenuItem[] = [
       "Parsley and fresh mint with soaked bulgur, onion, tomato, and lemon, drizzled with olive oil. Romaine hearts on the side for scooping.",
     price: 8.5,
     dietary: ["vegan", "vegetarian"],
+    image: "/images/menu/tabouleh.webp",
+    featured: true,
   },
   {
     id: "fattoush",
@@ -425,6 +432,7 @@ export const menu: MenuItem[] = [
       "Lettuce, tomato, cucumber, parsley, mint, and onion tossed in pomegranate dressing, topped with crispy pita chips.",
     price: 7.99,
     dietary: ["vegan", "vegetarian"],
+    image: "/images/dishes/fresh-salads.webp",
     featured: true,
   },
   {
