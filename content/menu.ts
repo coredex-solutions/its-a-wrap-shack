@@ -113,6 +113,7 @@ export const menu: MenuItem[] = [
       "Chopped chicken shawarma over rice and dressed greens with hummus, chickpeas, black beans, kidney beans, red cabbage, carrots, olives, cucumber, tomato, pickles, and creamy garlic sauce.",
     price: 16.99,
     dietary: ["gluten-free"],
+    image: "/images/menu/chicken-shawarma-bowl.webp",
     featured: true,
   },
   {
@@ -228,6 +229,7 @@ export const menu: MenuItem[] = [
       "Two bone-in chops grilled to medium, with garlic sauce or mint jelly, over rice with hummus, house salad, and pita. Extra chop $9.99.",
     price: 26.99,
     dietary: [],
+    image: "/images/menu/lamb-chop-plate.webp",
     featured: true,
   },
   {
@@ -512,6 +514,7 @@ export const menu: MenuItem[] = [
       "Layers of phyllo around chopped pistachios and walnuts, soaked in syrup.",
     price: 2.95,
     dietary: ["vegetarian", "contains-nuts"],
+    image: "/images/menu/baklava.webp",
     featured: true,
   },
   {
