@@ -1,15 +1,15 @@
 import Image from "next/image";
 
 /**
- * Quiet masonry. All imagery is currently derived from the brand film —
- * TODO(owner): replace/extend with real photography when available.
+ * Quiet masonry — the styled brand set (shot to match the real kitchen's
+ * food). TODO(owner): extend with real photography as it arrives.
  */
 const SHOTS = [
-  { src: "/images/gallery/wrap-sauce.webp", alt: "Garlic sauce dripping over a chicken shawarma wrap", tall: true },
-  { src: "/images/gallery/ingredients-toss.webp", alt: "Grilled chicken, pita, tomatoes, and pickles tossed mid-air", tall: false },
-  { src: "/images/gallery/wrap-open.webp", alt: "An open wrap mid-roll with tomatoes and pickles floating around it", tall: false },
-  { src: "/images/gallery/wrap-turn.webp", alt: "A wrapped shawarma cone turning through the smoke", tall: true },
-  { src: "/images/gallery/wrap-build.webp", alt: "The wrap coming together over the green studio haze", tall: false },
+  { src: "/images/gallery/wrap-sauce.webp", alt: "Kraft-wrapped shawarma cone with steam rising against deep green", tall: true },
+  { src: "/images/gallery/ingredients-toss.webp", alt: "Mezza spread — hummus, baba ghanoush, tabouleh, falafel, and warm pita", tall: false },
+  { src: "/images/gallery/wrap-open.webp", alt: "Garlic sauce pouring over an open pita piled with beef shawarma", tall: false },
+  { src: "/images/gallery/falafel-pita.webp", alt: "Falafel pita with pickled turnips, greens, and tahini", tall: true },
+  { src: "/images/gallery/wrap-build.webp", alt: "A gyro pita coming together on the prep line", tall: false },
   { src: "/images/hero-static.webp", alt: "The finished wrap in kraft paper tied with twine", tall: false },
 ] as const;
 

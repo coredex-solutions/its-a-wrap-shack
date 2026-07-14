@@ -44,10 +44,10 @@ export default function FinalCta() {
 
         <div className="justify-self-center md:justify-self-end" data-reveal>
           <Image
-            src="/images/shawarma-cutout.png"
+            src="/images/shawarma-cutout.webp"
             alt="Chicken shawarma wrap in kraft paper tied with twine"
-            width={608}
-            height={1260}
+            width={633}
+            height={1335}
             sizes="(max-width: 768px) 60vw, 300px"
             className="float-gently h-auto w-[min(58vw,300px)] drop-shadow-[0_24px_48px_rgba(22,41,31,0.45)]"
           />

@@ -34,7 +34,7 @@ const DISHES: Dish[] = [
     blurb:
       "Off the spit, double-grilled, finished with the garlic sauce people drive across the valley for.",
     image: "/images/dishes/chicken-shawarma.webp",
-    imageAlt: "Chicken shawarma wrap tied with twine, parsley scattered around it",
+    imageAlt: "Chicken shawarma wrap halves stacked on a plate, garlic sauce spilling from the cut",
   },
   {
     itemId: "gyro-wrap",

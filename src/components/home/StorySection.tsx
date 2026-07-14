@@ -55,7 +55,7 @@ export default function StorySection() {
         <ParallaxImage className="relative aspect-[4/5] rounded-[2px]">
           <Image
             src="/images/story-ingredients.webp"
-            alt="Grilled chicken, pita, pickles, and herbs suspended mid-air around the spit's smoke"
+            alt="Chicken shawarma stacked on twin vertical spits, roasting in the kitchen"
             fill
             sizes="(max-width: 768px) 100vw, 40vw"
             className="object-cover"

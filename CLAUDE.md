@@ -104,4 +104,4 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 
 - Frame extraction used portable ffmpeg with `delogo=x=1124:y=568:w=72:h=64` (removes a baked-in watermark sparkle, bottom-right) — re-run on any new video export with `-f image2` forced (ffmpeg 8 otherwise writes a single animated webp).
 - Logo knockout script: scratchpad `pdfwork/logo-knockout.js` (distance-from-white matte + unpremultiply).
-- Gallery stills live in scratchpad `stills/` — video-derived placeholders until real photography arrives.
+- Site imagery (`public/images/`) is the owner-approved generated brand set (July 2026), styled after the real kitchen's food (pita + spring mix/red onion/tomato, sesame falafel, kraft + twine). `shawarma-cutout.webp` came from a flood-fill knockout (scratchpad `pdfwork/process-brand-images.js`, TOL 24). Real photography still welcome as it arrives.
