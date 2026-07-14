@@ -41,22 +41,24 @@ const DISHES: Dish[] = [
     title: "Beef Shawarma & Gyros",
     blurb:
       "Beef and lamb roasted vertical and shaved thin — tzatziki on the gyro, tahini on the beef.",
-    image: "/brand/shawarma-hero.png",
-    imageAlt: "Wrapped shawarma cone in kraft paper tied with twine",
+    image: "/images/dishes/beef-gyro.webp",
+    imageAlt: "Gyro pita piled with shaved beef and lamb under a spoonful of tzatziki",
   },
   {
     itemId: "falafel-wrap",
     title: "Falafel",
     blurb:
       "Chickpeas and fava ground with herbs and sesame, fried to order. Crisp shell, green heart.",
-    motif: "falafel",
+    image: "/images/dishes/falafel.webp",
+    imageAlt: "Sesame-crusted falafel on a plate, one broken open to its green herb interior",
   },
   {
     itemId: "fattoush",
     title: "Fresh Salads",
     blurb:
       "Tabbouleh heavy on the parsley, fattoush under crispy pita, pomegranate dressing made here.",
-    motif: "salad",
+    image: "/images/dishes/fresh-salads.webp",
+    imageAlt: "Fattoush salad under crispy pita chips and pomegranate seeds, tabbouleh behind",
   },
 ];
 
