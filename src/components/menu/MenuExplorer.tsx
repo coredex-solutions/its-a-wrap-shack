@@ -182,12 +182,12 @@ function MenuCard({
     >
       <div className={item.featured ? "grid md:grid-cols-[1fr_auto]" : ""}>
         {item.image && item.featured && (
-          <div className="relative order-2 hidden min-h-[220px] md:block md:w-[300px]">
+          <div className="relative aspect-[16/10] md:order-2 md:aspect-auto md:min-h-[220px] md:w-[300px]">
             <Image
               src={item.image}
               alt={item.name}
               fill
-              sizes="300px"
+              sizes="(max-width: 767px) 100vw, 300px"
               className="object-cover"
             />
           </div>
