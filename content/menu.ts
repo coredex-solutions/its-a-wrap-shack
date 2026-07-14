@@ -82,6 +82,7 @@ export const menu: MenuItem[] = [
       "Beef and lamb slow-roasted on the spit, sliced to order with mixed greens, fresh tomato, and onion under a spoonful of tzatziki.",
     price: 13.99,
     dietary: [],
+    image: "/images/dishes/beef-gyro.webp",
   },
   {
     id: "kefta-kebab-wrap",

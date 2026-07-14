@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   getSite,
   getCatering,
@@ -40,39 +41,51 @@ export default async function CateringPage() {
 
       {/* opening chapter */}
       <section className="bg-forest text-cream">
-        <div className="mx-auto max-w-[1100px] px-5 pb-14 pt-28 md:px-10 md:pb-24 md:pt-44">
-          <p className="eyebrow text-gold" data-reveal>
-            Catering
-          </p>
-          <h1 className="sr-only">Catering — The Wrap Shack</h1>
-          <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
-            Feed the whole table. We&rsquo;ll bring the spit&rsquo;s best.
-          </PullLine>
-          <p
-            className="body-copy mt-8 max-w-[58ch] text-[16.5px] leading-[1.85] text-sage"
-            data-reveal
-          >
-            Platters, bowls, and mezza trays built for ten — shawarma off the
-            spit, skewers from the grill, dips with warm pita, baklava to
-            finish. Everything 100% halal, cooked the same way we cook for the
-            counter.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-10" data-reveal>
-            <a
-              href={site.phoneHref}
-              className="group inline-flex items-center gap-3 rounded-full bg-cream px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.1em] text-forest transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)]"
-            >
-              Call {site.phone}
-              <span
-                aria-hidden
-                className="inline-block transition-transform duration-250 ease-brand group-hover:translate-x-1"
-              >
-                →
-              </span>
-            </a>
-            <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-tahini">
-              {leadTime}
+        <div className="mx-auto grid max-w-[1100px] gap-10 px-5 pb-14 pt-28 md:grid-cols-[1fr_380px] md:items-center md:gap-16 md:px-10 md:pb-24 md:pt-44">
+          <div>
+            <p className="eyebrow text-gold" data-reveal>
+              Catering
             </p>
+            <h1 className="sr-only">Catering — The Wrap Shack</h1>
+            <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
+              Feed the whole table. We&rsquo;ll bring the spit&rsquo;s best.
+            </PullLine>
+            <p
+              className="body-copy mt-8 max-w-[58ch] text-[16.5px] leading-[1.85] text-sage"
+              data-reveal
+            >
+              Platters, bowls, and mezza trays built for ten — shawarma off the
+              spit, skewers from the grill, dips with warm pita, baklava to
+              finish. Everything 100% halal, cooked the same way we cook for the
+              counter.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-10" data-reveal>
+              <a
+                href={site.phoneHref}
+                className="group inline-flex items-center gap-3 rounded-full bg-cream px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.1em] text-forest transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)]"
+              >
+                Call {site.phone}
+                <span
+                  aria-hidden
+                  className="inline-block transition-transform duration-250 ease-brand group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </a>
+              <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-tahini">
+                {leadTime}
+              </p>
+            </div>
+          </div>
+          <div className="relative aspect-[4/3] md:aspect-[4/5]" data-reveal>
+            <Image
+              src="/images/menu/lamb-chop-plate.webp"
+              alt="Grilled lamb chops over saffron rice with hummus, salad, and pita"
+              fill
+              priority
+              sizes="(max-width: 767px) 100vw, 380px"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
