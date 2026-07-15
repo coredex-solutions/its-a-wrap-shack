@@ -49,13 +49,23 @@ export default function Header() {
       return;
     }
     setOverHero(true);
+    // two independent "go solid" signals — combined so neither can undo the
+    // other: past the sentinel OR the hero film is in its light end-phase
+    let pastHero = false;
+    let creamPhase = false;
+    const update = () => setOverHero(!pastHero && !creamPhase);
     const io = new IntersectionObserver(
-      ([entry]) => setOverHero(entry.boundingClientRect.top > 72),
+      ([entry]) => {
+        pastHero = entry.boundingClientRect.top <= 72;
+        update();
+      },
       { rootMargin: "-72px 0px 0px 0px" },
     );
     io.observe(sentinel);
-    const onCream = (e: Event) =>
-      setOverHero(!(e as CustomEvent<{ solid: boolean }>).detail.solid);
+    const onCream = (e: Event) => {
+      creamPhase = (e as CustomEvent<{ solid: boolean }>).detail.solid;
+      update();
+    };
     window.addEventListener("hero:creamphase", onCream);
     return () => {
       io.disconnect();

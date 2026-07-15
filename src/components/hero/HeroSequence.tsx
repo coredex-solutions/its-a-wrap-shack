@@ -13,27 +13,30 @@ import { initGsap, prefersReducedMotion } from "@/lib/gsap";
  * - Frames preload progressively: every 5th first, then backfill; decoded
  *   with createImageBitmap where supported. No loader UI — the poster covers.
  * - `sm` set on small viewports / Save-Data. Pin: 300vh desktop, 150vh touch.
- * - Frames are rendered procedurally from real assets (scripts/hero-render.js):
- *   parsley and peppercorns converge while the kraft wrap rises and settles
- *   under steam. The sequence is clean end-to-end, so the scrub uses the full
- *   range; the final hold crossfades to a cream DOM overlay with the REAL logo.
+ * - Frames come from the owner-approved generated film (public/brand/
+ *   hero-source.mp4): ingredients assemble into the wrap, which settles and
+ *   dissolves into the REAL logo on white — the logo was image-conditioned,
+ *   so the ending is faithful and the scrub uses the full range. The film
+ *   owns the finale (no DOM logo overlay); the green vignette fades out and
+ *   the header ink flips solid as the field turns light (~66%).
  * - prefers-reduced-motion: no pin, no scrub — a static wrap still (art-
  *   directed via <picture>) with the same overlay content.
  */
 
 const SETS = {
-  lg: { dir: "lg", end: 150, native: 150 },
-  sm: { dir: "sm", end: 80, native: 80 },
+  lg: { dir: "lg", end: 146, native: 146 },
+  sm: { dir: "sm", end: 78, native: 78 },
 } as const;
 
 const HERO_ALT =
-  "A chicken shawarma wrap in kraft paper, floating over a deep green studio haze";
+  "Shawarma ingredients assembling into a kraft-wrapped wrap over a deep green studio haze";
 
 export default function HeroSequence() {
   const pinRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
+  const vignetteRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const [canvasReady, setCanvasReady] = useState(false);
@@ -178,9 +181,9 @@ export default function HeroSequence() {
         pin: true,
         anticipatePin: 1,
         onUpdate: (self) => {
-          // once the cream end-field is fading in, the transparent header's
-          // cream ink would vanish — tell it to go solid
-          const solid = self.progress > 0.86;
+          // once the film dissolves to its light logo field, the transparent
+          // header's cream ink would vanish — tell it to go solid
+          const solid = self.progress > 0.68;
           if (solid !== creamPhase) {
             creamPhase = solid;
             window.dispatchEvent(
@@ -222,16 +225,22 @@ export default function HeroSequence() {
       ).to(captionRef.current, { opacity: 0, y: -18, duration: 0.06 }, 0.53);
     }
 
-    // 86–100%: cream field fades up first, then the REAL logo lands on it
-    if (endRef.current) {
-      tl.fromTo(endRef.current, { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0.86);
+    // ~62–72%: the film dissolves to its light logo field — fade the green
+    // vignette out so it doesn't tint the white ending
+    if (vignetteRef.current)
+      tl.to(vignetteRef.current, { opacity: 0, duration: 0.1 }, 0.6);
+
+    // small screens: the 16:9 logo finale would center-crop to a sliver on a
+    // portrait viewport — fade the cream field + real logo over it instead
+    if (cfg === SETS.sm && endRef.current) {
+      tl.fromTo(endRef.current, { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0.78);
       const logo = endRef.current.querySelector("img");
       if (logo)
         tl.fromTo(
           logo,
           { opacity: 0, y: 24 },
           { opacity: 1, y: 0, duration: 0.07 },
-          0.92,
+          0.85,
         );
     }
 
@@ -301,8 +310,10 @@ export default function HeroSequence() {
           }}
         />
 
-        {/* warm vignette — the one permitted gradient */}
+        {/* warm vignette — the one permitted gradient; fades out for the
+            film's light logo ending */}
         <div
+          ref={vignetteRef}
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
@@ -353,12 +364,12 @@ export default function HeroSequence() {
           wrapped fresh, every single day
         </p>
 
-        {/* final hold: cream field + the real logo (the video's own logo
-            ending is a garbled AI rendition — never shown) */}
+        {/* small screens only: cream field + real logo covers the film's
+            16:9 logo finale, which would otherwise crop on portrait */}
         <div
           ref={endRef}
           aria-hidden
-          className="absolute inset-0 z-20 flex items-center justify-center bg-cream opacity-0 motion-reduce:hidden"
+          className="absolute inset-0 z-20 flex items-center justify-center bg-cream opacity-0 md:hidden motion-reduce:hidden"
         >
           <Image
             src="/brand/logo.png"

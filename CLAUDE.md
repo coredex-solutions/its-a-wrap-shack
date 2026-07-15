@@ -58,12 +58,12 @@ Rules:
 ## Hero (signature)
 
 - Pinned scroll-scrubbed **canvas frame sequence** (never scrub `video.currentTime`, never plain `<video>`).
-- Frames: `public/hero-frames/lg/f_001..150.webp` (1280w) & `sm/f_001..080.webp` (768w). `sm` when `(max-width: 767px)` or `saveData`.
+- Frames: `public/hero-frames/lg/f_001..146.webp` (1280w) & `sm/f_001..078.webp` (768w). `sm` when `(max-width: 767px)` or `saveData`.
 - Poster `public/hero-frames/hero-poster.webp` = frame 1, rendered via `next/image` `priority` → it is the LCP. Canvas fades in over it.
 - Progressive preload: every 5th frame first, then backfill; `createImageBitmap` where supported. No loader UI.
 - Pin ~300vh (200vh touch), `scrub: 0.5`, Lenis raf drives `ScrollTrigger.update`.
-- Frames are **procedurally rendered** by `scripts/hero-render.js` (sharp compositing: real wrap cutout + photographic parsley sprites + procedural steam/haze — every parameter a smooth function of t, so it scrubs cleanly both ways). Re-render: `node scripts/hero-render.js full` from a dir with sharp, then copy `hero-out/` over `public/hero-frames/`. Scrub uses the FULL frame range; final hold crossfades to a cream DOM overlay with the REAL `logo.png` (see `HeroSequence`).
-- Reduced motion: static hero (wrap still, not frame 1), same overlay content, no pin.
+- Frames extracted from the owner-approved generated film `public/brand/hero-source.mp4` (ingredients assemble into the wrap → dissolves into the REAL logo on white; the logo was image-conditioned so the ending is faithful — no garbling, no delogo needed). Scrub uses the FULL range; the film owns the logo finale (no DOM logo overlay); the vignette fades and the header ink flips solid ~66% as the field turns light. Fallback: `scripts/hero-render.js` renders a procedural sequence from real assets if new footage is ever needed.
+- Reduced motion: static hero (wrap still, not smoke frame 1), same overlay content, no pin.
 
 ## Signature details
 
