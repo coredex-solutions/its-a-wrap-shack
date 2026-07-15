@@ -47,7 +47,7 @@ export default function Footer() {
             rel="noopener"
             className="group inline-flex items-center gap-2.5 self-start rounded-full bg-cream px-7 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-forest transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)] md:self-auto"
           >
-            Order on Clover
+            Order Online
             <span
               aria-hidden
               className="inline-block transition-transform duration-250 ease-brand group-hover:translate-x-1"

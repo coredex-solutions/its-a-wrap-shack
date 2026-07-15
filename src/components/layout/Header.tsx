@@ -15,20 +15,24 @@ const NAV = [
 ] as const;
 
 /**
- * Fixed header. Transparent (cream ink) while over the home hero, then a
- * cream, blurred, hairline-bordered bar once the hero releases — tracked via
- * an IntersectionObserver on the hero's [data-hero-sentinel].
+ * Fixed header, three phases on the home hero:
+ *  - "dark":  over the film's dark chapters — transparent bar, cream ink.
+ *  - "light": the film's cream logo finale — STILL transparent (a solid bar
+ *    would crop the film's logo), ink flips charcoal for contrast.
+ *  - "solid": hero released — cream, blurred, hairline-bordered bar. Tracked
+ *    via an IntersectionObserver on the hero's [data-hero-sentinel].
  *
  * The bar stays visible at all times while scrolling. The mobile menu is a
  * focus-trapped dialog that restores focus to its toggle on close.
  */
+type HeaderPhase = "dark" | "light" | "solid";
 export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const site = getSite();
   const cloverUrl = getCloverUrl();
 
-  const [overHero, setOverHero] = useState(isHome);
+  const [phase, setPhase] = useState<HeaderPhase>(isHome ? "dark" : "solid");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -40,20 +44,26 @@ export default function Header() {
     [pathname],
   );
 
-  // Scroll-state: transparent over the hero, solid after it releases.
+  // Scroll-state: transparent over the hero (ink follows the film's field),
+  // solid only after the hero releases.
   useEffect(() => {
     setMenuOpen(false);
     const sentinel = document.querySelector("[data-hero-sentinel]");
     if (!sentinel) {
-      setOverHero(false);
+      setPhase("solid");
       return;
     }
-    setOverHero(true);
-    // two independent "go solid" signals — combined so neither can undo the
-    // other: past the sentinel OR the hero film is in its light end-phase
+    setPhase("dark");
+    // three signals: pin released or sentinel passed → solid bar; film in its
+    // light end-phase while still pinned → bar stays transparent (a solid bar
+    // would crop the film's logo), only the ink flips dark
     let pastHero = false;
+    let released = false;
     let creamPhase = false;
-    const update = () => setOverHero(!pastHero && !creamPhase);
+    const update = () =>
+      setPhase(
+        pastHero || released ? "solid" : creamPhase ? "light" : "dark",
+      );
     const io = new IntersectionObserver(
       ([entry]) => {
         pastHero = entry.boundingClientRect.top <= 72;
@@ -66,10 +76,16 @@ export default function Header() {
       creamPhase = (e as CustomEvent<{ solid: boolean }>).detail.solid;
       update();
     };
+    const onReleased = (e: Event) => {
+      released = (e as CustomEvent<{ released: boolean }>).detail.released;
+      update();
+    };
     window.addEventListener("hero:creamphase", onCream);
+    window.addEventListener("hero:released", onReleased);
     return () => {
       io.disconnect();
       window.removeEventListener("hero:creamphase", onCream);
+      window.removeEventListener("hero:released", onReleased);
     };
   }, [pathname]);
 
@@ -129,7 +145,10 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  const transparent = overHero && !menuOpen;
+  // bar chrome and ink color are independent: the film's cream finale keeps
+  // the bar transparent (so the film's logo isn't cropped) with charcoal ink
+  const transparent = phase !== "solid" && !menuOpen;
+  const creamInk = phase === "dark" && !menuOpen;
 
   return (
     <>
@@ -155,7 +174,7 @@ export default function Header() {
             className="shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           >
             <Image
-              src={transparent ? "/brand/logo-cream.png" : "/brand/logo.png"}
+              src={creamInk ? "/brand/logo-cream.png" : "/brand/logo.png"}
               alt="The Wrap Shack — Mediterranean Eats"
               width={92}
               height={74}
@@ -176,7 +195,7 @@ export default function Header() {
                       className={[
                         "eyebrow group relative py-2 outline-none transition-colors duration-250",
                         "focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-4 focus-visible:ring-offset-transparent",
-                        transparent
+                        creamInk
                           ? "text-cream hover:text-tahini"
                           : "text-charcoal hover:text-forest",
                       ].join(" ")}
@@ -187,7 +206,7 @@ export default function Header() {
                         aria-hidden
                         className={[
                           "absolute -bottom-0.5 left-0 h-px w-full origin-center transition-transform duration-300 ease-brand",
-                          transparent ? "bg-cream" : "bg-gold-ink",
+                          creamInk ? "bg-cream" : "bg-gold-ink",
                           active
                             ? "scale-x-100"
                             : "scale-x-0 group-hover:scale-x-100",
@@ -208,7 +227,7 @@ export default function Header() {
               className={[
                 "group hidden items-center gap-2.5 rounded-full px-7 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] outline-none transition-[background-color,box-shadow,color] duration-250 ease-brand sm:inline-flex",
                 "focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-4 focus-visible:ring-offset-transparent",
-                transparent
+                creamInk
                   ? "bg-cream text-forest hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)]"
                   : "bg-forest text-cream hover:bg-forest-deep hover:shadow-[inset_0_0_0_1px_var(--color-gold)]",
               ].join(" ")}
@@ -232,7 +251,7 @@ export default function Header() {
               className={[
                 "flex h-11 w-11 flex-col items-center justify-center gap-[5px] rounded-sm outline-none md:hidden",
                 "focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-                menuOpen || !transparent ? "text-charcoal" : "text-cream",
+                creamInk ? "text-cream" : "text-charcoal",
               ].join(" ")}
             >
               <span

@@ -48,7 +48,7 @@ export default async function MenuPage() {
           <div className="flex items-center gap-6 pb-2">
             <HalalBadge className="h-14 w-14" />
             <Button href={clover} external>
-              Order on Clover
+              Order Online
             </Button>
           </div>
         </div>

@@ -233,7 +233,7 @@ function MenuCard({
               rel="noopener"
               className="hidden text-[12px] font-semibold uppercase tracking-[0.1em] text-forest underline decoration-tahini underline-offset-4 transition-colors duration-250 hover:decoration-gold sm:inline"
             >
-              Order on Clover ↗
+              Order Online ↗
             </a>
           </div>
         </div>

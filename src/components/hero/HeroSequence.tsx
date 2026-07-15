@@ -182,7 +182,8 @@ export default function HeroSequence() {
         anticipatePin: 1,
         onUpdate: (self) => {
           // once the film dissolves to its light logo field, the transparent
-          // header's cream ink would vanish — tell it to go solid
+          // header's cream ink would vanish — tell it to flip ink (the bar
+          // itself stays transparent so it never crops the film's logo)
           const solid = self.progress > 0.68;
           if (solid !== creamPhase) {
             creamPhase = solid;
@@ -191,6 +192,17 @@ export default function HeroSequence() {
             );
           }
         },
+        // pin released / re-entered — the header bar goes solid only once the
+        // hero actually starts scrolling away (IO on the sentinel fires too
+        // late: the sentinel sits in-viewport for the whole scroll-out)
+        onLeave: () =>
+          window.dispatchEvent(
+            new CustomEvent("hero:released", { detail: { released: true } }),
+          ),
+        onEnterBack: () =>
+          window.dispatchEvent(
+            new CustomEvent("hero:released", { detail: { released: false } }),
+          ),
       },
     });
 
@@ -334,7 +346,7 @@ export default function HeroSequence() {
             className="display-hero hero-enter text-cream"
             style={{ animationDelay: "0.12s" }}
           >
-            <span className="block">Lebanese soul.</span>
+            <span className="block">Mediterranean soul.</span>
             <span className="block italic">California sun.</span>
           </h1>
           <div className="hero-enter mt-10" style={{ animationDelay: "0.24s" }}>
@@ -344,7 +356,7 @@ export default function HeroSequence() {
               rel="noopener"
               className="group inline-flex items-center gap-3 rounded-full bg-cream px-8 py-[15px] text-[13px] font-semibold uppercase tracking-[0.1em] text-forest transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)]"
             >
-              Order on Clover
+              Order Online
               <span
                 aria-hidden
                 className="inline-block transition-transform duration-250 ease-brand group-hover:translate-x-1"
@@ -361,7 +373,7 @@ export default function HeroSequence() {
           aria-hidden
           className="absolute inset-x-0 top-[68%] z-10 px-6 text-center font-display text-[clamp(1.6rem,3vw,2.4rem)] italic text-cream opacity-0 motion-reduce:hidden"
         >
-          wrapped fresh, every single day
+          wrapped fresh, every single moment
         </p>
 
         {/* small screens only: cream field + real logo covers the film's

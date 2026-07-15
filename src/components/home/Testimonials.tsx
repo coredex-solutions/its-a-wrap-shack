@@ -148,7 +148,7 @@ export default function Testimonials() {
                   }}
                   aria-hidden={i !== index}
                   className={[
-                    "absolute inset-0 flex flex-col transition-opacity duration-700 ease-brand motion-reduce:transition-none",
+                    "absolute inset-0 flex flex-col overflow-y-auto transition-opacity duration-700 ease-brand motion-reduce:transition-none",
                     i === index ? "opacity-100" : "pointer-events-none opacity-0",
                   ].join(" ")}
                 >

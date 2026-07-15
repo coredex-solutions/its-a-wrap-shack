@@ -48,7 +48,7 @@ export default async function CateringPage() {
             </p>
             <h1 className="sr-only">Catering — The Wrap Shack</h1>
             <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
-              Feed the whole table. We&rsquo;ll bring the spit&rsquo;s best.
+              Feed the whole family. We&rsquo;ll bring the spit&rsquo;s best.
             </PullLine>
             <p
               className="body-copy mt-8 max-w-[58ch] text-[16.5px] leading-[1.85] text-sage"

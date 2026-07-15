@@ -125,7 +125,7 @@ export default async function AboutPage() {
               See the menu
             </Button>
             <Button href={clover} external>
-              Order on Clover
+              Order Online
             </Button>
           </div>
         </div>

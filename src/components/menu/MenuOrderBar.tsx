@@ -64,7 +64,7 @@ export default function MenuOrderBar() {
           tabIndex={shown ? 0 : -1}
           className="group inline-flex flex-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-full bg-cream px-5 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-forest outline-none transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)] focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-forest"
         >
-          Order on Clover
+          Order Online
           <span
             aria-hidden
             className="inline-block transition-transform duration-250 ease-brand group-hover:translate-x-1"
