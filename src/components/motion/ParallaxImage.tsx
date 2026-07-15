@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { initGsap, prefersReducedMotion } from "@/lib/gsap";
+import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
 /**
  * The ONE parallax moment outside the hero (story section imagery drifting
@@ -23,24 +23,29 @@ export default function ParallaxImage({
     const inner = innerRef.current;
     if (!frame || !inner) return;
 
-    const { gsap } = initGsap();
-    const tween = gsap.fromTo(
-      inner,
-      { yPercent: -5 },
-      {
-        yPercent: 5,
-        ease: "none",
-        scrollTrigger: {
-          trigger: frame,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
+    let tween: ReturnType<GsapBundle["gsap"]["fromTo"]> | null = null;
+    let cancelled = false;
+    initGsap().then(({ gsap }) => {
+      if (cancelled) return;
+      tween = gsap.fromTo(
+        inner,
+        { yPercent: -5 },
+        {
+          yPercent: 5,
+          ease: "none",
+          scrollTrigger: {
+            trigger: frame,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
         },
-      },
-    );
+      );
+    });
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      cancelled = true;
+      tween?.scrollTrigger?.kill();
+      tween?.kill();
     };
   }, []);
 

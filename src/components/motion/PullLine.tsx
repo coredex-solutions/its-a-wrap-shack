@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import {
+  initGsap,
+  prefersReducedMotion,
+  EASE,
+  type GsapBundle,
+} from "@/lib/gsap";
 
 /**
  * Cormorant italic editorial pull-line with a SplitText line reveal.
@@ -21,30 +26,32 @@ export default function PullLine({
     const el = ref.current;
     if (!el) return;
 
-    const { gsap, SplitText } = initGsap();
-    let split: InstanceType<typeof SplitText> | null = null;
+    let split: InstanceType<GsapBundle["SplitText"]> | null = null;
 
     // wait for fonts so line breaks are measured against the real face
+    // (and for gsap, which loads lazily off the boot path)
     let cancelled = false;
-    document.fonts.ready.then(() => {
-      if (cancelled) return;
-      split = SplitText.create(el, {
-        type: "lines",
-        mask: "lines",
-        linesClass: "pull-line",
-        // default "auto" stamps aria-label on the <p>, which ARIA prohibits
-        // on paragraph roles; the split text nodes stay readable as-is
-        aria: "none",
-      });
-      gsap.set(el, { opacity: 1 });
-      gsap.from(split.lines, {
-        yPercent: 110,
-        duration: 0.9,
-        ease: EASE,
-        stagger: 0.09,
-        scrollTrigger: { trigger: el, start: "top 75%", once: true },
-      });
-    });
+    Promise.all([initGsap(), document.fonts.ready]).then(
+      ([{ gsap, SplitText }]) => {
+        if (cancelled) return;
+        split = SplitText.create(el, {
+          type: "lines",
+          mask: "lines",
+          linesClass: "pull-line",
+          // default "auto" stamps aria-label on the <p>, which ARIA prohibits
+          // on paragraph roles; the split text nodes stay readable as-is
+          aria: "none",
+        });
+        gsap.set(el, { opacity: 1 });
+        gsap.from(split.lines, {
+          yPercent: 110,
+          duration: 0.9,
+          ease: EASE,
+          stagger: 0.09,
+          scrollTrigger: { trigger: el, start: "top 75%", once: true },
+        });
+      },
+    );
 
     return () => {
       cancelled = true;

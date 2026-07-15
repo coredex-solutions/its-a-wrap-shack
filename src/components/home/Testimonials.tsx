@@ -2,15 +2,29 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getTestimonials, getSite } from "@/lib/content";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import {
+  initGsap,
+  gsapNow,
+  prefersReducedMotion,
+  EASE,
+  type GsapBundle,
+} from "@/lib/gsap";
 
 const INTERVAL = 7; // seconds per quote
 
 function Stars({ n = 5, className = "" }: { n?: number; className?: string }) {
   return (
-    <span className={`inline-flex gap-1 text-gold-ink ${className}`} aria-hidden>
+    <span
+      className={`inline-flex gap-1 text-gold-ink ${className}`}
+      aria-hidden
+    >
       {Array.from({ length: n }).map((_, i) => (
-        <svg key={i} viewBox="0 0 20 20" className="h-full w-auto" fill="currentColor">
+        <svg
+          key={i}
+          viewBox="0 0 20 20"
+          className="h-full w-auto"
+          fill="currentColor"
+        >
           <path d="M10 1.5l2.47 5.26 5.53.66-4.09 3.9 1.08 5.68L10 14.9l-4.99 2.5 1.08-5.68L2 7.42l5.53-.66L10 1.5z" />
         </svg>
       ))}
@@ -63,8 +77,9 @@ export default function Testimonials() {
     if (prefersReducedMotion()) return;
     const el = itemsRef.current[index];
     if (!el) return;
-    const { gsap } = initGsap();
-    gsap.fromTo(el, { y: 26 }, { y: 0, duration: 0.8, ease: EASE });
+    const bundle = gsapNow();
+    if (bundle)
+      bundle.gsap.fromTo(el, { y: 26 }, { y: 0, duration: 0.8, ease: EASE });
   }, [index]);
 
   // auto-advance driven by the progress bar; pause halts the fill in place
@@ -72,21 +87,26 @@ export default function Testimonials() {
     if (prefersReducedMotion() || count < 2 || !inView) return;
     const bar = fillRef.current;
     if (!bar) return;
-    const { gsap } = initGsap();
-    const tween = gsap.fromTo(
-      bar,
-      { scaleX: 0 },
-      {
-        scaleX: 1,
-        duration: INTERVAL,
-        ease: "none",
-        transformOrigin: "left center",
-        onComplete: () => go(1),
-      },
-    );
-    if (paused) tween.pause();
+    let tween: ReturnType<GsapBundle["gsap"]["fromTo"]> | null = null;
+    let cancelled = false;
+    initGsap().then(({ gsap }) => {
+      if (cancelled) return;
+      tween = gsap.fromTo(
+        bar,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: INTERVAL,
+          ease: "none",
+          transformOrigin: "left center",
+          onComplete: () => go(1),
+        },
+      );
+      if (paused) tween.pause();
+    });
     return () => {
-      tween.kill();
+      cancelled = true;
+      tween?.kill();
     };
   }, [index, paused, count, go, inView]);
 
@@ -96,7 +116,11 @@ export default function Testimonials() {
   };
 
   return (
-    <section ref={rootRef} aria-label="Customer reviews" className="grain bg-cream">
+    <section
+      ref={rootRef}
+      aria-label="Customer reviews"
+      className="grain bg-cream"
+    >
       <div
         className="mx-auto max-w-[1000px] px-5 py-16 md:py-32"
         onMouseEnter={() => setPaused(true)}
@@ -110,7 +134,10 @@ export default function Testimonials() {
           <p className="eyebrow text-gold-ink" data-reveal>
             From the counter
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2" data-reveal>
+          <div
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2"
+            data-reveal
+          >
             <Stars className="h-4" />
             <span className="font-display text-[1.9rem] font-medium leading-none text-charcoal">
               {avg}
@@ -163,7 +190,9 @@ export default function Testimonials() {
                   aria-hidden={i !== index}
                   className={[
                     "absolute inset-0 flex flex-col overflow-y-auto transition-opacity duration-700 ease-brand motion-reduce:transition-none",
-                    i === index ? "opacity-100" : "pointer-events-none opacity-0",
+                    i === index
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-0",
                   ].join(" ")}
                 >
                   <p className="font-display text-[clamp(1.4rem,2.6vw,2.15rem)] font-medium italic leading-[1.45] text-charcoal">
@@ -171,9 +200,13 @@ export default function Testimonials() {
                   </p>
                   <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-8">
                     <Stars className="h-3.5" n={q.rating ?? 5} />
-                    <span className="eyebrow text-charcoal">{q.attribution}</span>
+                    <span className="eyebrow text-charcoal">
+                      {q.attribution}
+                    </span>
                     {q.source && (
-                      <span className="eyebrow text-charcoal-60/70">{q.source}</span>
+                      <span className="eyebrow text-charcoal-60/70">
+                        {q.source}
+                      </span>
                     )}
                   </div>
                 </blockquote>
@@ -183,19 +216,37 @@ export default function Testimonials() {
         </div>
 
         {/* controls: arrows + progress track */}
-        <div className="mt-7 flex items-center md:mt-9 justify-center gap-6" data-reveal>
+        <div
+          className="mt-7 flex items-center md:mt-9 justify-center gap-6"
+          data-reveal
+        >
           <button
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous review"
             className="flex h-11 w-11 items-center justify-center rounded-full text-forest shadow-[inset_0_0_0_1px_var(--color-tahini)] transition-[background-color,box-shadow] duration-250 ease-brand hover:shadow-[inset_0_0_0_1px_var(--color-olive)] hover:bg-garlic"
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
-              <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              aria-hidden
+            >
+              <path
+                d="M15 5l-7 7 7 7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
 
-          <div className="flex items-center gap-2.5" role="tablist" aria-label="Choose a review">
+          <div
+            className="flex items-center gap-2.5"
+            role="tablist"
+            aria-label="Choose a review"
+          >
             {quotes.map((q, i) =>
               i === index ? (
                 <span
@@ -230,8 +281,19 @@ export default function Testimonials() {
             aria-label="Next review"
             className="flex h-11 w-11 items-center justify-center rounded-full text-forest shadow-[inset_0_0_0_1px_var(--color-tahini)] transition-[background-color,box-shadow] duration-250 ease-brand hover:shadow-[inset_0_0_0_1px_var(--color-olive)] hover:bg-garlic"
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
-              <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              aria-hidden
+            >
+              <path
+                d="M9 5l7 7-7 7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>

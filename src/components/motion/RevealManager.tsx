@@ -16,10 +16,14 @@ export default function RevealManager() {
     if (prefersReducedMotion()) return;
 
     let cleanup: (() => void) | null = null;
-    const cancel = whenIdle(() => {
-      cleanup = setup();
+    let cancelled = false;
+    const cancel = whenIdle(async () => {
+      const result = await setup();
+      if (cancelled) result?.();
+      else cleanup = result;
     });
     return () => {
+      cancelled = true;
       cancel();
       cleanup?.();
     };
@@ -28,31 +32,31 @@ export default function RevealManager() {
   return null;
 }
 
-function setup(): (() => void) | null {
-  const { gsap, ScrollTrigger } = initGsap();
+async function setup(): Promise<(() => void) | null> {
+  const { gsap, ScrollTrigger } = await initGsap();
 
   const els = gsap.utils.toArray<HTMLElement>("[data-reveal]");
   if (!els.length) return null;
 
   const batch = ScrollTrigger.batch(els, {
-      start: "top 75%",
-      once: true,
-      onEnter: (targets) => {
-        gsap.to(targets, {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          ease: EASE,
-          stagger: 0.08,
-          overwrite: true,
-          onComplete: () => {
-            targets.forEach((t) => {
-              (t as HTMLElement).style.willChange = "auto";
-            });
-          },
-        });
-      },
-    });
+    start: "top 75%",
+    once: true,
+    onEnter: (targets) => {
+      gsap.to(targets, {
+        opacity: 1,
+        y: 0,
+        duration: 0.85,
+        ease: EASE,
+        stagger: 0.08,
+        overwrite: true,
+        onComplete: () => {
+          targets.forEach((t) => {
+            (t as HTMLElement).style.willChange = "auto";
+          });
+        },
+      });
+    },
+  });
 
   // Images inside revealing cards get the slow 1.04 → 1.0 scale-settle.
   const imgTweens = gsap.utils

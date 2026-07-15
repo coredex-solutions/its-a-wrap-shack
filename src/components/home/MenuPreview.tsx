@@ -2,8 +2,18 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { getMenu, formatPrice, type Dietary, type MenuItem } from "@/lib/content";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import {
+  getMenu,
+  formatPrice,
+  type Dietary,
+  type MenuItem,
+} from "@/lib/content";
+import {
+  gsapNow,
+  prefersReducedMotion,
+  EASE,
+  type GsapBundle,
+} from "@/lib/gsap";
 import DietaryBadge from "@/components/ui/DietaryBadge";
 import Button from "@/components/ui/Button";
 
@@ -27,14 +37,16 @@ const FILTERS: { key: Dietary; label: string }[] = [
 /** Shared pill + Flip filtering — the same behavior the menu page uses. */
 export function useDietaryFilter(listRef: React.RefObject<HTMLElement | null>) {
   const [active, setActive] = useState<ReadonlySet<Dietary>>(new Set());
-  const flipState = useRef<ReturnType<
-    ReturnType<typeof initGsap>["Flip"]["getState"]
-  > | null>(null);
+  const flipState = useRef<ReturnType<GsapBundle["Flip"]["getState"]> | null>(
+    null,
+  );
 
   const toggle = (k: Dietary) => {
-    if (listRef.current && !prefersReducedMotion()) {
-      const { Flip } = initGsap();
-      flipState.current = Flip.getState(
+    // gsapNow(): Flip.getState must run synchronously BEFORE the re-render;
+    // if gsap hasn't idle-loaded yet the filter still works, just unanimated
+    const bundle = gsapNow();
+    if (listRef.current && !prefersReducedMotion() && bundle) {
+      flipState.current = bundle.Flip.getState(
         listRef.current.querySelectorAll("[data-item]"),
       );
     }
@@ -48,7 +60,9 @@ export function useDietaryFilter(listRef: React.RefObject<HTMLElement | null>) {
 
   useLayoutEffect(() => {
     if (!flipState.current) return;
-    const { gsap, Flip } = initGsap();
+    const bundle = gsapNow();
+    if (!bundle) return;
+    const { gsap, Flip } = bundle;
     const state = flipState.current;
     flipState.current = null;
     Flip.from(state, {
@@ -80,7 +94,11 @@ export function FilterPills({
   onToggle: (k: Dietary) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2.5" role="group" aria-label="Dietary filters">
+    <div
+      className="flex flex-wrap gap-2.5"
+      role="group"
+      aria-label="Dietary filters"
+    >
       {FILTERS.map((f) => {
         const on = active.has(f.key);
         return (

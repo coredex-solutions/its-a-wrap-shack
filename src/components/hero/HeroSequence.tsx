@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image, { getImageProps } from "next/image";
 import { getCloverUrl } from "@/lib/content";
-import { initGsap, prefersReducedMotion } from "@/lib/gsap";
+import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
 /**
  * The site's signature: a pinned, scroll-scrubbed canvas playback of the
@@ -52,8 +52,6 @@ export default function HeroSequence() {
     if (!pinEl || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    const { gsap, ScrollTrigger } = initGsap();
 
     const small = window.matchMedia("(max-width: 767px)").matches;
     const saveData =
@@ -180,122 +178,127 @@ export default function HeroSequence() {
       if (!disposed) draw(Math.round(state.frame), true);
     })();
 
-    // ——— the scrub timeline ———
-    let creamPhase = false;
-    // when the field turns light and the header's cream ink must flip dark:
-    // desktop tracks the film (~66%); mobile tracks the earlier cream sweep
-    // (~48%) so the cream logo/hamburger never sit invisibly on the cream field
-    const creamAt = cfg === SETS.sm ? 0.5 : 0.68;
-    const tl = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: pinEl,
-        start: "top top",
-        end: `+=${pinVh}%`,
-        scrub: 0.5,
-        pin: true,
-        // our own server-rendered spacer: without it, ScrollTrigger wraps the
-        // pinned element in a new div at hydration, and that DOM reparent
-        // makes Chrome re-register the headline as a NEW (late) LCP candidate
-        pinSpacer: spacerRef.current ?? undefined,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          // once the field turns light, the transparent header's cream ink
-          // would vanish — tell it to flip ink (the bar itself stays
-          // transparent so it never crops the film's logo)
-          const solid = self.progress > creamAt;
-          if (solid !== creamPhase) {
-            creamPhase = solid;
+    // ——— the scrub timeline (gsap loads lazily — the pinned poster and CSS
+    // entrance carry the hero until it lands, ~100 ms after idle) ———
+    let tl: ReturnType<GsapBundle["gsap"]["timeline"]> | null = null;
+    initGsap().then(({ gsap }) => {
+      if (disposed) return;
+      let creamPhase = false;
+      // when the field turns light and the header's cream ink must flip dark:
+      // desktop tracks the film (~66%); mobile tracks the earlier cream sweep
+      // (~48%) so the cream logo/hamburger never sit invisibly on the cream field
+      const creamAt = cfg === SETS.sm ? 0.5 : 0.68;
+      tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: pinEl,
+          start: "top top",
+          end: `+=${pinVh}%`,
+          scrub: 0.5,
+          pin: true,
+          // our own server-rendered spacer: without it, ScrollTrigger wraps the
+          // pinned element in a new div at hydration, and that DOM reparent
+          // makes Chrome re-register the headline as a NEW (late) LCP candidate
+          pinSpacer: spacerRef.current ?? undefined,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            // once the field turns light, the transparent header's cream ink
+            // would vanish — tell it to flip ink (the bar itself stays
+            // transparent so it never crops the film's logo)
+            const solid = self.progress > creamAt;
+            if (solid !== creamPhase) {
+              creamPhase = solid;
+              window.dispatchEvent(
+                new CustomEvent("hero:creamphase", { detail: { solid } }),
+              );
+            }
+          },
+          // pin released / re-entered — the header bar goes solid only once the
+          // hero actually starts scrolling away (IO on the sentinel fires too
+          // late: the sentinel sits in-viewport for the whole scroll-out)
+          onLeave: () =>
             window.dispatchEvent(
-              new CustomEvent("hero:creamphase", { detail: { solid } }),
-            );
-          }
+              new CustomEvent("hero:released", { detail: { released: true } }),
+            ),
+          onEnterBack: () =>
+            window.dispatchEvent(
+              new CustomEvent("hero:released", { detail: { released: false } }),
+            ),
         },
-        // pin released / re-entered — the header bar goes solid only once the
-        // hero actually starts scrolling away (IO on the sentinel fires too
-        // late: the sentinel sits in-viewport for the whole scroll-out)
-        onLeave: () =>
-          window.dispatchEvent(
-            new CustomEvent("hero:released", { detail: { released: true } }),
-          ),
-        onEnterBack: () =>
-          window.dispatchEvent(
-            new CustomEvent("hero:released", { detail: { released: false } }),
-          ),
-      },
-    });
+      });
 
-    // full frame range across the scrub
-    tl.to(
-      state,
-      {
-        frame: cfg.end - 1,
-        duration: 1,
-        onUpdate: () => draw(Math.round(state.frame)),
-      },
-      0,
-    );
-
-    // 0–15%: intro overlay rises out; scroll cue gone by 5%
-    if (cueRef.current)
-      tl.to(cueRef.current, { opacity: 0, duration: 0.04 }, 0.01);
-    if (introRef.current)
-      tl.fromTo(
-        introRef.current,
-        { opacity: 1, y: 0 },
-        { opacity: 0, y: -48, duration: 0.09, immediateRender: false },
-        0.055,
+      // full frame range across the scrub
+      tl.to(
+        state,
+        {
+          frame: cfg.end - 1,
+          duration: 1,
+          onUpdate: () => draw(Math.round(state.frame)),
+        },
+        0,
       );
 
-    // ~45%: italic caption drifts through
-    if (captionRef.current) {
-      tl.fromTo(
-        captionRef.current,
-        { opacity: 0, y: 26 },
-        { opacity: 1, y: 0, duration: 0.06 },
-        0.4,
-      ).to(captionRef.current, { opacity: 0, y: -18, duration: 0.06 }, 0.53);
-    }
-
-    // ~62–72%: the film dissolves to its light logo field — fade the green
-    // vignette out so it doesn't tint the white ending
-    if (vignetteRef.current)
-      tl.to(vignetteRef.current, { opacity: 0, duration: 0.1 }, 0.6);
-
-    // small screens: the film's wide logo-lockup finale center-crops to an
-    // illegible sliver on a portrait viewport. So once the wrap is fully
-    // assembled (~frame 42 / 55%) but BEFORE the film begins dissolving into
-    // that logo (~frame 48 / 62%), sweep an opaque cream field over the canvas
-    // and rise the real, correctly-sized logo into it — the cropped film logo
-    // never shows; mobile ends on a clean, complete brand lockup.
-    if (cfg === SETS.sm && endRef.current) {
-      tl.fromTo(
-        endRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.07 },
-        0.48,
-      );
-      const logo = endRef.current.querySelector("img");
-      if (logo)
+      // 0–15%: intro overlay rises out; scroll cue gone by 5%
+      if (cueRef.current)
+        tl.to(cueRef.current, { opacity: 0, duration: 0.04 }, 0.01);
+      if (introRef.current)
         tl.fromTo(
-          logo,
-          { opacity: 0, y: 24 },
-          { opacity: 1, y: 0, duration: 0.09 },
-          0.55,
+          introRef.current,
+          { opacity: 1, y: 0 },
+          { opacity: 0, y: -48, duration: 0.09, immediateRender: false },
+          0.055,
         );
-    }
 
-    // (the intro entrance is a CSS animation — see .hero-enter — so the
-    // headline paints before hydration and stays the fastest LCP candidate;
-    // triggers created before this pin recalibrate on ScrollTrigger's own
-    // window-load refresh)
+      // ~45%: italic caption drifts through
+      if (captionRef.current) {
+        tl.fromTo(
+          captionRef.current,
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.06 },
+          0.4,
+        ).to(captionRef.current, { opacity: 0, y: -18, duration: 0.06 }, 0.53);
+      }
+
+      // ~62–72%: the film dissolves to its light logo field — fade the green
+      // vignette out so it doesn't tint the white ending
+      if (vignetteRef.current)
+        tl.to(vignetteRef.current, { opacity: 0, duration: 0.1 }, 0.6);
+
+      // small screens: the film's wide logo-lockup finale center-crops to an
+      // illegible sliver on a portrait viewport. So once the wrap is fully
+      // assembled (~frame 42 / 55%) but BEFORE the film begins dissolving into
+      // that logo (~frame 48 / 62%), sweep an opaque cream field over the canvas
+      // and rise the real, correctly-sized logo into it — the cropped film logo
+      // never shows; mobile ends on a clean, complete brand lockup.
+      if (cfg === SETS.sm && endRef.current) {
+        tl.fromTo(
+          endRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.07 },
+          0.48,
+        );
+        const logo = endRef.current.querySelector("img");
+        if (logo)
+          tl.fromTo(
+            logo,
+            { opacity: 0, y: 24 },
+            { opacity: 1, y: 0, duration: 0.09 },
+            0.55,
+          );
+      }
+
+      // (the intro entrance is a CSS animation — see .hero-enter — so the
+      // headline paints before hydration and stays the fastest LCP candidate;
+      // triggers created before this pin recalibrate on ScrollTrigger's own
+      // window-load refresh)
+    });
 
     return () => {
       disposed = true;
       removeInteractionListeners();
       ro.disconnect();
-      tl.scrollTrigger?.kill();
-      tl.kill();
+      tl?.scrollTrigger?.kill();
+      tl?.kill();
       frames.forEach((f) => {
         if (f && "close" in f) (f as ImageBitmap).close();
       });

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { getCloverUrl, getSite } from "@/lib/content";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import { gsapNow, prefersReducedMotion, EASE } from "@/lib/gsap";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -62,9 +62,7 @@ export default function Header() {
     let released = false;
     let creamPhase = false;
     const update = () =>
-      setPhase(
-        pastHero || released ? "solid" : creamPhase ? "light" : "dark",
-      );
+      setPhase(pastHero || released ? "solid" : creamPhase ? "light" : "dark");
     const io = new IntersectionObserver(
       ([entry]) => {
         pastHero = entry.boundingClientRect.top <= 72;
@@ -93,12 +91,22 @@ export default function Header() {
   // Mobile overlay: scroll lock + staggered link reveal.
   useEffect(() => {
     document.documentElement.style.overflow = menuOpen ? "hidden" : "";
-    if (menuOpen && overlayRef.current && !prefersReducedMotion()) {
-      const { gsap } = initGsap();
+    // gsapNow(): loaded at idle long before anyone can tap the hamburger; on
+    // the off chance it isn't, the overlay simply appears without the stagger
+    const bundle = gsapNow();
+    if (menuOpen && overlayRef.current && !prefersReducedMotion() && bundle) {
+      const { gsap } = bundle;
       gsap.fromTo(
         overlayRef.current.querySelectorAll("[data-menu-item]"),
         { opacity: 0, y: 28 },
-        { opacity: 1, y: 0, duration: 0.7, ease: EASE, stagger: 0.07, delay: 0.12 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: EASE,
+          stagger: 0.07,
+          delay: 0.12,
+        },
       );
     }
     return () => {
@@ -115,7 +123,7 @@ export default function Header() {
     const focusables = () =>
       Array.from(
         overlay.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled])',
+          "a[href], button:not([disabled])",
         ),
       ).filter((el) => el.tabIndex !== -1);
 
@@ -181,6 +189,7 @@ export default function Header() {
               height={74}
               className="h-[52px] w-auto"
               priority
+              fetchPriority="high"
             />
           </Link>
 
@@ -310,7 +319,9 @@ export default function Header() {
                     <span
                       className={[
                         "relative font-display text-[2.75rem] font-medium leading-[1.15] transition-colors duration-250",
-                        active ? "text-gold" : "text-cream group-hover:text-tahini",
+                        active
+                          ? "text-gold"
+                          : "text-cream group-hover:text-tahini",
                       ].join(" ")}
                     >
                       {item.label}
@@ -354,7 +365,12 @@ export default function Header() {
             tabIndex={menuOpen ? 0 : -1}
             className="eyebrow inline-flex w-fit items-center gap-2 text-cream outline-none transition-colors duration-250 hover:text-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4 focus-visible:ring-offset-forest"
           >
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              className="h-3.5 w-3.5"
+              fill="none"
+              aria-hidden
+            >
               <path
                 d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A15 15 0 0 1 4.5 6a2 2 0 0 1 2-2z"
                 stroke="currentColor"

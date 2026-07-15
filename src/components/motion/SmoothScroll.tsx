@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
-import { initGsap, prefersReducedMotion, whenIdle } from "@/lib/gsap";
+import { initGsap, gsapNow, prefersReducedMotion, whenIdle } from "@/lib/gsap";
 import { setLenis } from "@/lib/lenis";
 
 /**
@@ -16,9 +16,11 @@ export default function SmoothScroll() {
 
     let lenis: Lenis | null = null;
     let raf: ((time: number) => void) | null = null;
+    let cancelled = false;
 
-    const cancel = whenIdle(() => {
-      const { gsap, ScrollTrigger } = initGsap();
+    const cancel = whenIdle(async () => {
+      const { gsap, ScrollTrigger } = await initGsap();
+      if (cancelled) return;
       lenis = new Lenis({
         duration: 1.1,
         easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -31,8 +33,9 @@ export default function SmoothScroll() {
     });
 
     return () => {
+      cancelled = true;
       cancel();
-      if (raf) initGsap().gsap.ticker.remove(raf);
+      if (raf) gsapNow()?.gsap.ticker.remove(raf);
       setLenis(null);
       lenis?.destroy();
     };

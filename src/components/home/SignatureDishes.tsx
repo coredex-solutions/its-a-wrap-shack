@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getMenu, formatPrice, type MenuItem } from "@/lib/content";
-import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
+import { gsapNow, prefersReducedMotion, EASE } from "@/lib/gsap";
 import DietaryBadge from "@/components/ui/DietaryBadge";
 import Button from "@/components/ui/Button";
 
@@ -34,7 +34,8 @@ const DISHES: Dish[] = [
     blurb:
       "Off the spit, double-grilled, finished with the garlic sauce people drive across the valley for.",
     image: "/images/dishes/chicken-shawarma.webp",
-    imageAlt: "Chicken shawarma wrap halves stacked on a plate, garlic sauce spilling from the cut",
+    imageAlt:
+      "Chicken shawarma wrap halves stacked on a plate, garlic sauce spilling from the cut",
   },
   {
     itemId: "gyro-wrap",
@@ -42,7 +43,8 @@ const DISHES: Dish[] = [
     blurb:
       "Beef and lamb roasted vertical and shaved thin — tzatziki on the gyro, tahini on the beef.",
     image: "/images/dishes/beef-gyro.webp",
-    imageAlt: "Gyro pita piled with shaved beef and lamb under a spoonful of tzatziki",
+    imageAlt:
+      "Gyro pita piled with shaved beef and lamb under a spoonful of tzatziki",
   },
   {
     itemId: "falafel-wrap",
@@ -50,7 +52,8 @@ const DISHES: Dish[] = [
     blurb:
       "Chickpeas and fava ground with herbs and sesame, fried to order. Crisp shell, green heart.",
     image: "/images/dishes/falafel.webp",
-    imageAlt: "Sesame-crusted falafel on a plate, one broken open to its green herb interior",
+    imageAlt:
+      "Sesame-crusted falafel on a plate, one broken open to its green herb interior",
   },
   {
     itemId: "fattoush",
@@ -58,7 +61,8 @@ const DISHES: Dish[] = [
     blurb:
       "Tabbouleh heavy on the parsley, fattoush under crispy pita, pomegranate dressing made here.",
     image: "/images/dishes/fresh-salads.webp",
-    imageAlt: "Fattoush salad under crispy pita chips and pomegranate seeds, tabbouleh behind",
+    imageAlt:
+      "Fattoush salad under crispy pita chips and pomegranate seeds, tabbouleh behind",
   },
 ];
 
@@ -84,7 +88,10 @@ export default function SignatureDishes() {
       return;
     }
     if (prefersReducedMotion()) return;
-    const { gsap } = initGsap();
+    // interaction-driven — gsap is idle-warmed well before the first tab tap
+    const bundle = gsapNow();
+    if (!bundle) return;
+    const { gsap } = bundle;
     if (captionRef.current) {
       gsap.fromTo(
         captionRef.current,
@@ -93,7 +100,12 @@ export default function SignatureDishes() {
       );
     }
     const vis = visualRefs.current[active];
-    if (vis) gsap.fromTo(vis, { scale: 1.05 }, { scale: 1, duration: 0.9, ease: EASE });
+    if (vis)
+      gsap.fromTo(
+        vis,
+        { scale: 1.05 },
+        { scale: 1, duration: 0.9, ease: EASE },
+      );
   }, [active]);
 
   const move = (dir: number) => {
@@ -123,10 +135,17 @@ export default function SignatureDishes() {
           <p className="eyebrow text-gold-ink" data-reveal>
             Signature dishes
           </p>
-          <h2 id="dishes-heading" className="display-section mt-4 text-charcoal" data-reveal>
+          <h2
+            id="dishes-heading"
+            className="display-section mt-4 text-charcoal"
+            data-reveal
+          >
             What we&rsquo;re known for
           </h2>
-          <p className="body-copy mt-5 text-[15.5px] leading-relaxed text-charcoal-60" data-reveal>
+          <p
+            className="body-copy mt-5 text-[15.5px] leading-relaxed text-charcoal-60"
+            data-reveal
+          >
             Four things worth the trip. Pick one to take a closer look.
           </p>
         </div>
@@ -176,7 +195,10 @@ export default function SignatureDishes() {
               {/* index marker */}
               <span className="pointer-events-none absolute left-5 top-5 z-10 text-[12px] font-semibold tracking-[0.14em] text-gold-ink mix-blend-multiply">
                 {String(active + 1).padStart(2, "0")}
-                <span className="text-charcoal-60/60"> / {String(count).padStart(2, "0")}</span>
+                <span className="text-charcoal-60/60">
+                  {" "}
+                  / {String(count).padStart(2, "0")}
+                </span>
               </span>
             </div>
 
@@ -217,93 +239,97 @@ export default function SignatureDishes() {
 
           {/* ——— RAIL ——— */}
           <div className="flex flex-col md:justify-between" data-reveal>
-          <div
-            role="tablist"
-            aria-label="Signature dishes"
-            aria-orientation="vertical"
-            onKeyDown={onRailKeyDown}
-            className="flex flex-col"
-          >
-            {dishes.map((d, i) => {
-              const on = i === active;
-              return (
-                <button
-                  key={d.itemId}
-                  ref={(el) => {
-                    tabRefs.current[i] = el;
-                  }}
-                  type="button"
-                  role="tab"
-                  id={`dish-tab-${i}`}
-                  aria-selected={on}
-                  aria-controls="dish-panel"
-                  tabIndex={on ? 0 : -1}
-                  onClick={() => setActive(i)}
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                  className={[
-                    "group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-tahini/70 py-5 text-left transition-colors duration-300 ease-brand first:border-t md:py-6",
-                    on ? "" : "hover:bg-garlic/50",
-                  ].join(" ")}
-                >
-                  <span
+            <div
+              role="tablist"
+              aria-label="Signature dishes"
+              aria-orientation="vertical"
+              onKeyDown={onRailKeyDown}
+              className="flex flex-col"
+            >
+              {dishes.map((d, i) => {
+                const on = i === active;
+                return (
+                  <button
+                    key={d.itemId}
+                    ref={(el) => {
+                      tabRefs.current[i] = el;
+                    }}
+                    type="button"
+                    role="tab"
+                    id={`dish-tab-${i}`}
+                    aria-selected={on}
+                    aria-controls="dish-panel"
+                    tabIndex={on ? 0 : -1}
+                    onClick={() => setActive(i)}
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
                     className={[
-                      "font-display text-[1.4rem] leading-none transition-colors duration-300",
-                      on ? "text-gold-ink" : "text-tahini",
+                      "group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-tahini/70 py-5 text-left transition-colors duration-300 ease-brand first:border-t md:py-6",
+                      on ? "" : "hover:bg-garlic/50",
                     ].join(" ")}
                   >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="min-w-0">
                     <span
                       className={[
-                        "block font-display text-[1.5rem] font-medium leading-tight transition-colors duration-300 md:text-[1.7rem]",
-                        on ? "text-charcoal" : "text-charcoal/70",
+                        "font-display text-[1.4rem] leading-none transition-colors duration-300",
+                        on ? "text-gold-ink" : "text-tahini",
                       ].join(" ")}
                     >
-                      {d.title}
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    {/* active-only teaser: price + dietary at a glance */}
-                    <span
-                      className={[
-                        "flex items-center gap-3 overflow-hidden transition-all duration-400 ease-brand",
-                        on ? "mt-1.5 max-h-12 opacity-100" : "max-h-0 opacity-0",
-                      ].join(" ")}
-                    >
-                      <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-charcoal-60">
-                        from {formatPrice(d.item)}
+                    <span className="min-w-0">
+                      <span
+                        className={[
+                          "block font-display text-[1.5rem] font-medium leading-tight transition-colors duration-300 md:text-[1.7rem]",
+                          on ? "text-charcoal" : "text-charcoal/70",
+                        ].join(" ")}
+                      >
+                        {d.title}
                       </span>
-                      {d.item.dietary.length > 0 && (
-                        <span className="flex items-center gap-2">
-                          {d.item.dietary.map((k) => (
-                            <DietaryBadge key={k} kind={k} />
-                          ))}
+                      {/* active-only teaser: price + dietary at a glance */}
+                      <span
+                        className={[
+                          "flex items-center gap-3 overflow-hidden transition-all duration-400 ease-brand",
+                          on
+                            ? "mt-1.5 max-h-12 opacity-100"
+                            : "max-h-0 opacity-0",
+                        ].join(" ")}
+                      >
+                        <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-charcoal-60">
+                          from {formatPrice(d.item)}
                         </span>
-                      )}
+                        {d.item.dietary.length > 0 && (
+                          <span className="flex items-center gap-2">
+                            {d.item.dietary.map((k) => (
+                              <DietaryBadge key={k} kind={k} />
+                            ))}
+                          </span>
+                        )}
+                      </span>
                     </span>
-                  </span>
-                  <span
-                    aria-hidden
-                    className={[
-                      "text-forest transition-all duration-300 ease-brand",
-                      on ? "translate-x-0 opacity-100" : "-translate-x-1 opacity-0 group-hover:opacity-60",
-                    ].join(" ")}
-                  >
-                    →
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                    <span
+                      aria-hidden
+                      className={[
+                        "text-forest transition-all duration-300 ease-brand",
+                        on
+                          ? "translate-x-0 opacity-100"
+                          : "-translate-x-1 opacity-0 group-hover:opacity-60",
+                      ].join(" ")}
+                    >
+                      →
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* section CTA — anchors the rail column beside the tall panel */}
-          <div className="mt-9 md:mt-0 md:pt-10">
-            <p className="body-copy mb-5 hidden text-[15px] leading-relaxed text-charcoal-60 md:block">
-              Forty-plus dishes in all — mezza, plates from the grill, bowls,
-              and sweets.
-            </p>
-            <Button href="/menu">See the full menu</Button>
-          </div>
+            {/* section CTA — anchors the rail column beside the tall panel */}
+            <div className="mt-9 md:mt-0 md:pt-10">
+              <p className="body-copy mb-5 hidden text-[15px] leading-relaxed text-charcoal-60 md:block">
+                Forty-plus dishes in all — mezza, plates from the grill, bowls,
+                and sweets.
+              </p>
+              <Button href="/menu">See the full menu</Button>
+            </div>
           </div>
         </div>
       </div>
