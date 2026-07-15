@@ -13,6 +13,7 @@ import {
   AddButton,
   SaveBar,
 } from "./ui";
+import ImageField from "./ImageField";
 
 function slug(name: string): string {
   return name
@@ -188,6 +189,19 @@ export default function MenuEditor({
                           onChange={(e) =>
                             setItem(it.id, { description: e.target.value })
                           }
+                        />
+                      </Field>
+                    </div>
+                    <div className="mt-4">
+                      <Field
+                        label="Photo"
+                        hint="Shown on the menu page. Landscape photos look best — big files are resized automatically. Save changes to publish."
+                      >
+                        <ImageField
+                          itemId={it.id}
+                          itemName={it.name}
+                          value={it.image}
+                          onChange={(image) => setItem(it.id, { image })}
                         />
                       </Field>
                     </div>

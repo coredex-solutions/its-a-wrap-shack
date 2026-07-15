@@ -25,3 +25,6 @@ npm-debug.log*
 
 # CMS runtime data (owner edits — not source)
 /data/cms/
+
+# dev-fallback image uploads (owner content — not source)
+/data/uploads/

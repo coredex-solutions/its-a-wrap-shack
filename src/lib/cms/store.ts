@@ -1,17 +1,17 @@
 /**
- * CMS store — server only (uses fs; never import from client components).
+ * CMS store — server only (SQLite via ./db; never import from client
+ * components).
  *
- * Content lives as a JSON overlay at `data/cms/content.json`, written by the
- * admin panel. Sections present in the overlay replace their seed from
- * `content/*` wholesale; missing sections fall back to the seed, so the site
- * runs identically with no overlay file at all.
+ * Content lives in `data/cms/cms.db` (one row per section, JSON text; see
+ * db.ts). Sections present in the DB replace their seed from `content/*`
+ * wholesale; missing sections fall back to the seed, so the site runs
+ * identically with an empty database. A legacy `content.json` overlay is
+ * migrated automatically on first open.
  *
  * NOTE: requires a persistent Node server (`next start`). On ephemeral
  * serverless filesystems, edits will not survive a redeploy.
  */
 
-import { promises as fs } from "fs";
-import path from "path";
 import { cache } from "react";
 import {
   defaultBundle,
@@ -20,23 +20,14 @@ import {
   type SiteData,
 } from "@/lib/content";
 import { overlaySchema, type Overlay } from "./schema";
+import { readSections, writeSections, latestSavedAt } from "./db";
 
-const FILE = path.join(process.cwd(), "data", "cms", "content.json");
-
-async function readOverlay(): Promise<Overlay | null> {
-  let raw: string;
-  try {
-    raw = await fs.readFile(FILE, "utf8");
-  } catch {
-    return null; // no overlay yet — seeds only
-  }
-  try {
-    const parsed = overlaySchema.safeParse(JSON.parse(raw));
-    if (parsed.success) return parsed.data;
-    console.error("[cms] overlay failed validation — using seeds:", parsed.error.message);
-  } catch (e) {
-    console.error("[cms] overlay is not valid JSON — using seeds:", e);
-  }
+function readOverlay(): Overlay | null {
+  const sections = readSections();
+  if (Object.keys(sections).length === 0) return null;
+  const parsed = overlaySchema.safeParse(sections);
+  if (parsed.success) return parsed.data;
+  console.error("[cms] stored content failed validation — using seeds:", parsed.error.message);
   return null;
 }
 
@@ -57,7 +48,7 @@ function mergeSite(base: SiteData, o: NonNullable<Overlay["site"]>): SiteData {
  * of every page/layout that renders content.
  */
 export const loadContent = cache(async (): Promise<ContentBundle> => {
-  const overlay = await readOverlay();
+  const overlay = readOverlay();
   const bundle: ContentBundle = !overlay
     ? defaultBundle
     : {
@@ -76,25 +67,18 @@ export const loadContent = cache(async (): Promise<ContentBundle> => {
   return bundle;
 });
 
-/** Merge a partial overlay into the file (atomic write via tmp + rename). */
+/** Persist the given sections (one SQLite transaction — atomic like the old
+    tmp+rename write, but only the touched sections change). */
 export async function saveOverlaySection(patch: Partial<Overlay>): Promise<void> {
-  const existing = (await readOverlay()) ?? {};
-  const next: Overlay = {
-    ...existing,
-    ...patch,
-    savedAt: new Date().toISOString(),
-  };
-  await fs.mkdir(path.dirname(FILE), { recursive: true });
-  const tmp = `${FILE}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(next, null, 2), "utf8");
-  await fs.rename(tmp, FILE);
+  const { savedAt: _ignored, ...sections } = patch;
+  writeSections(sections);
 }
 
-/** Overlay metadata for the admin dashboard. */
+/** Store metadata for the admin dashboard. */
 export async function overlayStatus(): Promise<{
   exists: boolean;
   savedAt: string | null;
 }> {
-  const overlay = await readOverlay();
-  return { exists: overlay !== null, savedAt: overlay?.savedAt ?? null };
+  const savedAt = latestSavedAt();
+  return { exists: savedAt !== null, savedAt };
 }

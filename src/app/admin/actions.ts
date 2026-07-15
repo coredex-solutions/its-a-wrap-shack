@@ -11,6 +11,10 @@ import {
 } from "@/lib/cms/auth";
 import { saveOverlaySection } from "@/lib/cms/store";
 import {
+  processAndStoreMenuImage,
+  sweepOrphanMenuImages,
+} from "@/lib/cms/images";
+import {
   siteEditableSchema,
   menuCategorySchema,
   menuItemSchema,
@@ -88,8 +92,43 @@ export async function saveMenuAndCategories(
   const items = z.array(menuItemSchema).min(1).safeParse(menu);
   if (!items.success) return { ok: false, error: firstIssue(items.error, "Item") };
   await saveOverlaySection({ categories: cats.data, menu: items.data });
+  // reclaim uploaded photos the saved menu no longer references (replace/
+  // remove/deleted items) — cleanup must never fail the save itself
+  await sweepOrphanMenuImages(items.data).catch(() => {});
   revalidateSite();
   return { ok: true };
+}
+
+export type UploadResult =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
+
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+
+/** Store a menu photo (R2 or local fallback). The returned URL only reaches
+    the public site once the owner saves the menu. */
+export async function uploadMenuImage(formData: FormData): Promise<UploadResult> {
+  await guard();
+  const file = formData.get("file");
+  const itemHint = String(formData.get("itemId") ?? "item");
+  if (!(file instanceof File) || file.size === 0)
+    return { ok: false, error: "No file received." };
+  if (file.size > MAX_UPLOAD_BYTES)
+    return { ok: false, error: "Photo is over 8 MB — please use a smaller image." };
+  if (!file.type.startsWith("image/"))
+    return { ok: false, error: "That file isn't an image." };
+  try {
+    // sharp re-encodes (and thereby validates) the bytes — the mime check
+    // above is UX, not the security boundary
+    const { url } = await processAndStoreMenuImage(
+      Buffer.from(await file.arrayBuffer()),
+      itemHint,
+    );
+    return { ok: true, url };
+  } catch (e) {
+    console.error("[cms] upload failed:", e);
+    return { ok: false, error: "Upload failed — please try again." };
+  }
 }
 
 export async function saveTestimonials(data: unknown): Promise<SaveResult> {

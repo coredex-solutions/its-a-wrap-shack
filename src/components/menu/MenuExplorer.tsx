@@ -181,13 +181,23 @@ function MenuCard({
       ].join(" ")}
     >
       <div className={item.featured ? "grid md:grid-cols-[1fr_auto]" : ""}>
-        {item.image && item.featured && (
-          <div className="relative m-3 mb-0 aspect-[16/10] overflow-hidden rounded-[12px] md:order-2 md:m-5 md:ml-0 md:aspect-auto md:min-h-[220px] md:w-[300px]">
+        {item.image && (
+          <div
+            className={
+              item.featured
+                ? "relative m-3 mb-0 aspect-[16/10] overflow-hidden rounded-[12px] md:order-2 md:m-5 md:ml-0 md:aspect-auto md:min-h-[220px] md:w-[300px]"
+                : "relative m-3 mb-0 aspect-[16/10] overflow-hidden rounded-[12px]"
+            }
+          >
             <Image
               src={item.image}
               alt={item.name}
               fill
-              sizes="(max-width: 767px) 100vw, 300px"
+              sizes={
+                item.featured
+                  ? "(max-width: 767px) 100vw, 300px"
+                  : "(max-width: 1023px) 100vw, 45vw"
+              }
               className="object-cover transition-transform duration-700 ease-brand group-hover:scale-[1.03]"
             />
           </div>
