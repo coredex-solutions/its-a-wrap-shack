@@ -34,9 +34,23 @@ export default function Testimonials() {
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(false);
+  const rootRef = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLQuoteElement | null)[]>([]);
   const fillRef = useRef<HTMLSpanElement>(null);
   const pointerX = useRef<number | null>(null);
+
+  // the carousel sits below the fold — don't burn main-thread frames on the
+  // progress tween until it's actually on screen
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) =>
+      setInView(entry.isIntersecting),
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const go = useCallback(
     (dir: number) => setIndex((i) => (i + dir + count) % count),
@@ -55,7 +69,7 @@ export default function Testimonials() {
 
   // auto-advance driven by the progress bar; pause halts the fill in place
   useEffect(() => {
-    if (prefersReducedMotion() || count < 2) return;
+    if (prefersReducedMotion() || count < 2 || !inView) return;
     const bar = fillRef.current;
     if (!bar) return;
     const { gsap } = initGsap();
@@ -74,7 +88,7 @@ export default function Testimonials() {
     return () => {
       tween.kill();
     };
-  }, [index, paused, count, go]);
+  }, [index, paused, count, go, inView]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") go(-1);
@@ -82,7 +96,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section aria-label="Customer reviews" className="grain bg-cream">
+    <section ref={rootRef} aria-label="Customer reviews" className="grain bg-cream">
       <div
         className="mx-auto max-w-[1000px] px-5 py-16 md:py-32"
         onMouseEnter={() => setPaused(true)}

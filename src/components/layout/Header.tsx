@@ -8,6 +8,7 @@ import { getCloverUrl, getSite } from "@/lib/content";
 import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
 
 const NAV = [
+  { href: "/", label: "Home" },
   { href: "/menu", label: "Menu" },
   { href: "/catering", label: "Catering" },
   { href: "/about", label: "Our Story" },
@@ -195,9 +196,15 @@ export default function Header() {
                       className={[
                         "eyebrow group relative py-2 outline-none transition-colors duration-250",
                         "focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-4 focus-visible:ring-offset-transparent",
+                        // active page reads as a highlight: full-strength ink +
+                        // the held underline; inactive links sit slightly muted
                         creamInk
-                          ? "text-cream hover:text-tahini"
-                          : "text-charcoal hover:text-forest",
+                          ? active
+                            ? "text-cream"
+                            : "text-cream/70 hover:text-cream"
+                          : active
+                            ? "text-forest"
+                            : "text-charcoal-60 hover:text-forest",
                       ].join(" ")}
                     >
                       {item.label}

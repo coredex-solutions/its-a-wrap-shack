@@ -21,7 +21,7 @@ export default function StorySection() {
             Our story
           </p>
           <PullLine className="mt-6 text-[clamp(2rem,3.8vw,3.4rem)] font-medium leading-[1.15]">
-            Recipes carried from Beirut to the desert — and never
+            Recipes carried from Middle East to the desert — and never
             &ldquo;updated.&rdquo;
           </PullLine>
           <div className="body-copy mt-8 space-y-5 text-[16px] leading-[1.8] text-sage">

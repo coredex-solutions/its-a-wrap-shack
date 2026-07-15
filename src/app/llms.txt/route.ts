@@ -11,6 +11,11 @@ import {
  * (per the llms.txt convention). Generated from the CMS-merged content so it
  * never drifts from the site; revalidated on every admin save.
  */
+
+// Next 15+ no longer caches GET handlers by default — without this the brief
+// would re-render (and re-read SQLite) on every crawl. Saves revalidate it.
+export const dynamic = "force-static";
+
 export async function GET() {
   const c = await loadContent();
   const s = c.site;
