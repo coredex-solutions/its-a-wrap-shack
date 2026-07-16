@@ -54,15 +54,14 @@ jobs:
           echo "=== pm2 log files ==="
           ls -la ~/.pm2/logs/ | grep -i "${APP_NAME:-itsawrapshack}" || ls -la ~/.pm2/logs/ | tail -8
 
-          echo "=== error log (last 40 lines, raw) ==="
-          tail -n 40 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error.log 2>/dev/null || echo "(absent)"
-
-          echo "=== out log (last 40 lines, raw) ==="
-          tail -n 40 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-out.log 2>/dev/null || echo "(absent)"
-
           echo "=== live repro: GET /admin against the local port ==="
           curl -s -o /dev/null -w "admin -> %{http_code}\n" "http://127.0.0.1:3060/admin" || true
           sleep 1
-          echo "=== error log delta after repro ==="
-          tail -n 25 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error.log 2>/dev/null || echo "(absent)"
+
+          # pm2 suffixes log names with the process id — use the glob
+          echo "=== error log (last 60 lines, raw) ==="
+          tail -n 60 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error*.log 2>/dev/null || echo "(absent)"
+
+          echo "=== out log (last 25 lines, raw) ==="
+          tail -n 25 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-out*.log 2>/dev/null || echo "(absent)"
           REMOTE
