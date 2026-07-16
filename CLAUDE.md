@@ -82,6 +82,7 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 - Next.js (App Router, latest) · React 19 · TS strict · Tailwind v4 · GSAP + Lenis · RHF + Zod (contact form + CMS validation).
 - Routes: `(site)/` group = `/`, `/menu`, `/catering`, `/about`, `/contact` (marketing chrome lives in `(site)/layout.tsx`); `/admin` = owner CMS with its own plain layout (noindex + robots-disallowed). Contact form posts to a route handler that is a clearly-marked TODO stub.
 - All content in typed files under `content/` (site.ts, menu.ts, catering.ts, testimonials.ts, faq.ts). Components consume ONLY via `lib/content.ts` accessors — never import content files directly. Catering ordering is by PHONE, 48h ahead — no Clover buttons on `/catering`.
+- Rendering: every public route is **statically prerendered** (build output must show `○` for all `(site)` pages + llms/sitemap/robots; only `/admin*`, `/api/contact`, `/uploads` are `ƒ`). CMS saves call `revalidatePath("/", "layout")` + `/llms.txt` = on-demand ISR — pages serve from the full-route cache (`x-nextjs-cache: HIT`) and refresh instantly after a save, no rebuild. Never add `cookies()`/`headers()`/`searchParams` to a `(site)` page. GET route handlers are NOT cached by default in Next 15+ — `llms.txt/route.ts` needs its `export const dynamic = "force-static"`.
 
 ## CMS (owner-only, custom)
 
@@ -99,7 +100,17 @@ Shopping cart/checkout/reservations/accounts/DB · tilt-on-hover cards · magnet
 - Menu data is the REAL menu transcribed from `public/brand/Wrap shack menu.pdf`.
 - SEO: per-route Metadata API, JSON-LD (Restaurant, Menu/MenuItem, FAQPage, BreadcrumbList) sourced from `content/site.ts`, sitemap.ts, robots.ts, canonical `https://itsawrapshack.com`.
 - Analytics: env-gated GA4 via `next/script` (`NEXT_PUBLIC_GA_ID`, renders nothing unset). Deploy-agnostic — no Vercel-only APIs.
-- Performance: Lighthouse ≥95 ×4, mobile+desktop. LCP = hero poster. GSAP/Lenis loaded only where used.
+- Performance: Lighthouse ≥95 ×4, mobile+desktop. GSAP/Lenis loaded only where used.
+
+## Performance landmines (learned the hard way)
+
+- **sharp version MUST stay inside Next's own range** (`^0.34.5`, matching `next/package.json` optionalDependencies). The project once had sharp 0.35 alongside Next's nested 0.34 → two libvips natives in one process → the image optimizer failed silently and served ORIGINALS (tell: `Content-Disposition: attachment`, byte-identical responses at every `w=`). Keep one deduped copy; after changing sharp, verify an optimizer URL returns `image/avif`.
+- **GSAP is dynamically imported** — `initGsap()` (async) / `gsapNow()` (sync, for interaction handlers, may be null) in `lib/gsap.ts`. NEVER static-import "gsap" anywhere else: ~130 KB of eval on the boot path costs real mobile LCP/TBT.
+- **Never entrance-animate the hero `<h1>`** (opacity OR transform): Chrome records an animated element's LCP at animation END, ≈ +1s LCP. The eyebrow/CTA carry the entrance; the headline stands.
+- Hero frames preload only on FIRST interaction (scroll/wheel/touch/pointer/key) — the scrub is scroll-driven, so eager loading only starved the LCP (and every lab test) with ~2 MB.
+- ScrollTrigger's pin gets a server-rendered `pinSpacer` div (HeroSequence) so hydration never reparents the hero (a reparent re-registers the headline as a late LCP candidate).
+- Below-fold continuous animations (testimonials progress bar) must be IntersectionObserver-gated — a mounted GSAP tween burns main-thread frames even offscreen.
+- The Next image-optimizer cache (`.next/cache/images`) survives builds — after optimizer-related changes, clear it or stale (even broken-passthrough) responses persist.
 
 ## Asset pipeline notes
 
