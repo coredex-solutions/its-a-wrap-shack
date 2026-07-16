@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// The admin panel is auth-gated per request and must NEVER be prerendered.
+// Without this, a build run WITHOUT ADMIN_PASSWORD (CI never has secrets)
+// takes isAdmin()'s cmsEnabled() early-return before cookies() is reached,
+// so Next statically prerenders every admin page as a login redirect; on the
+// server — where the password IS set — the first revalidatePath("/","layout")
+// invalidates those static entries and their regeneration hits cookies() in
+// a static context: DYNAMIC_SERVER_USAGE, and /admin 500s permanently.
+export const dynamic = "force-dynamic";
+
 const SECTIONS = [
   { href: "/admin/site", label: "Business info" },
   { href: "/admin/menu", label: "Menu" },
