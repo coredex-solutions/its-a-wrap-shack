@@ -40,6 +40,7 @@ export function useDietaryFilter(listRef: React.RefObject<HTMLElement | null>) {
   const flipState = useRef<ReturnType<GsapBundle["Flip"]["getState"]> | null>(
     null,
   );
+  const prevHeight = useRef<number | null>(null);
 
   const toggle = (k: Dietary) => {
     // gsapNow(): Flip.getState must run synchronously BEFORE the re-render;
@@ -49,6 +50,7 @@ export function useDietaryFilter(listRef: React.RefObject<HTMLElement | null>) {
       flipState.current = bundle.Flip.getState(
         listRef.current.querySelectorAll("[data-item]"),
       );
+      prevHeight.current = listRef.current.offsetHeight;
     }
     setActive((prev) => {
       const next = new Set(prev);
@@ -65,6 +67,27 @@ export function useDietaryFilter(listRef: React.RefObject<HTMLElement | null>) {
     const { gsap, Flip } = bundle;
     const state = flipState.current;
     flipState.current = null;
+
+    // absolute:true pulls every card out of flow mid-flip, which would
+    // collapse the list and yank the content below up and back down — so
+    // pin the list's height and tween it to its new size alongside the flip
+    const list = listRef.current;
+    if (list && prevHeight.current !== null) {
+      const from = prevHeight.current;
+      prevHeight.current = null;
+      const to = list.offsetHeight;
+      gsap.fromTo(
+        list,
+        { height: from },
+        {
+          height: to,
+          duration: 0.55,
+          ease: EASE,
+          onComplete: () => gsap.set(list, { clearProps: "height" }),
+        },
+      );
+    }
+
     Flip.from(state, {
       duration: 0.55,
       ease: EASE,
