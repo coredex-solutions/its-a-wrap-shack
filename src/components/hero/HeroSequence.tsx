@@ -351,7 +351,7 @@ export default function HeroSequence() {
           <canvas
             ref={canvasRef}
             aria-hidden
-            className={`absolute inset-0 h-full w-full transition-opacity duration-700 ${
+            className={`absolute inset-0 h-dvh w-full transition-opacity duration-700 ${
               canvasReady ? "opacity-100" : "opacity-0"
             }`}
           />
