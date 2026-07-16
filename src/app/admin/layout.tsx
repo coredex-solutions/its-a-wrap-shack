@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { isAdmin } from "@/lib/cms/auth";
 import { logout } from "./actions";
+import AdminNav from "@/components/admin/AdminNav";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -17,14 +18,6 @@ export const metadata: Metadata = {
 // invalidates those static entries and their regeneration hits cookies() in
 // a static context: DYNAMIC_SERVER_USAGE, and /admin 500s permanently.
 export const dynamic = "force-dynamic";
-
-const SECTIONS = [
-  { href: "/admin/site", label: "Business info" },
-  { href: "/admin/menu", label: "Menu" },
-  { href: "/admin/catering", label: "Catering" },
-  { href: "/admin/testimonials", label: "Reviews" },
-  { href: "/admin/faq", label: "FAQ" },
-] as const;
 
 /** Owner-only CMS chrome — deliberately plain, no marketing motion. */
 export default async function AdminLayout({
@@ -46,19 +39,7 @@ export default async function AdminLayout({
               />
               <span className="eyebrow text-charcoal">Admin</span>
             </Link>
-            {authed && (
-              <nav aria-label="Admin sections" className="hidden gap-6 sm:flex">
-                {SECTIONS.map((s) => (
-                  <Link
-                    key={s.href}
-                    href={s.href}
-                    className="text-[13px] font-semibold uppercase tracking-[0.08em] text-charcoal-60 transition-colors duration-250 hover:text-forest"
-                  >
-                    {s.label}
-                  </Link>
-                ))}
-              </nav>
-            )}
+            {authed && <AdminNav />}
           </div>
           <div className="flex items-center gap-5">
             <Link
