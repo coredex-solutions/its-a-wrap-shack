@@ -431,6 +431,7 @@ export default function HeroSequence() {
                 width={420}
                 height={337}
                 sizes="66vw"
+                quality={60}
                 className="h-auto w-[min(66vw,400px)]"
               />
             )}

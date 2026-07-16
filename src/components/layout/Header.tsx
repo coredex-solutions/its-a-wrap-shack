@@ -182,11 +182,16 @@ export default function Header() {
             aria-label="The Wrap Shack — home"
             className="shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold-ink focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
           >
+            {/* intrinsic size = rendered size (65×52 CSS px) and sizes="65px",
+                so the optimizer serves the 96/128 buckets instead of 256;
+                q60 — flat brand art, visually identical at half the bytes */}
             <Image
               src={creamInk ? "/brand/logo-cream.png" : "/brand/logo.png"}
               alt="The Wrap Shack — Mediterranean Eats"
-              width={92}
-              height={74}
+              width={65}
+              height={52}
+              sizes="65px"
+              quality={60}
               className="h-[52px] w-auto"
               priority
               fetchPriority="high"

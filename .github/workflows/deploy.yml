@@ -70,6 +70,18 @@ jobs:
           test -f deploy/server.js
           test -f deploy/node_modules/better-sqlite3/build/Release/better_sqlite3.node
 
+      - name: Precompress immutable static assets (brotli + zopfli gzip)
+        # nginx serves /_next/static straight from disk with brotli_static /
+        # gzip_static: compress ONCE here at maximum effort (brotli -q11,
+        # zopfli), so the VPS never spends CPU compressing these again.
+        # Fonts/images are skipped — they're already compressed formats.
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y -qq brotli zopfli >/dev/null
+          find deploy/.next/static -type f \( -name '*.js' -o -name '*.css' \) -print0 \
+            | xargs -0 -P "$(nproc)" -I{} sh -c 'brotli -f -q 11 -o "{}.br" "{}" && zopfli "{}"'
+          echo "precompressed: $(find deploy/.next/static -name '*.br' | wc -l) br / $(find deploy/.next/static -name '*.gz' | wc -l) gz"
+
       - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:

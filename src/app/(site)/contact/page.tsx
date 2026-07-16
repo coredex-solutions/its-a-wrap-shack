@@ -5,8 +5,9 @@ import { getSite, getFaq } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
 import BrandMap from "@/components/home/BrandMap";
 
-// Code-split: react-hook-form + zod are a heavy client chunk that must not
-// sit in the boot-critical preload list — the SSR'd markup paints either way.
+// Code-split: keeps the form's JS out of the boot-critical preload list —
+// the SSR'd markup paints either way, and the chunk (now dependency-free)
+// stays tiny for the router prefetch every other page performs.
 const ContactForm = dynamic(() => import("@/components/contact/ContactForm"));
 import Divider from "@/components/ui/Divider";
 import OpenNow from "@/components/ui/OpenNow";

@@ -80,17 +80,25 @@ Delivery details the setup workflow also owns (re-run it to reapply):
 
 - **HTTP/2** is appended to certbot's TLS `listen` lines post-issuance
   (nginx 1.18 has no `http2 on;` directive). The sed is idempotent.
-- **`/hero-frames/`, `/images/`, `/brand/`, `/og.jpg`** get
-  `Cache-Control: public, max-age=2592000` via `proxy_hide_header` + `add_header`
-  (Next serves `public/` with `max-age=0`; without this every repeat visit
-  revalidates ~150 hero frames). These URLs are treated as immutable-by-name:
-  **replacing a public asset requires a new filename**, or returning visitors
-  see the old one for up to 30 days. `/_next/static` needs nothing — Next
-  already serves it `immutable`.
-- Compression (gzip) comes from the Node standalone server itself; images are
-  pre-compressed formats. The Next image optimizer emits AVIF (30-day
-  `minimumCacheTTL` set in `next.config.ts`), and its disk cache survives
-  deploys via the rsync `.next/cache/` exclude.
+- **Static is served from disk, not proxied** (the dr-bilal pattern,
+  completed): `/_next/static/` aliases the deploy dir with
+  `Cache-Control: immutable` and serves the **CI-precompressed** `.br`
+  (brotli -q11) / `.gz` (zopfli) siblings via `brotli_static`/`gzip_static` —
+  the VPS never spends CPU compressing hashed assets. `/hero-frames/`,
+  `/images/`, `/brand/`, `/og.jpg` come from `public/` on disk with a 30-day
+  Cache-Control. These URLs are immutable-by-name: **replacing a public asset
+  requires a new filename**, or returning visitors see the old one for up to
+  30 days.
+- **Brotli**: the provisioning script loads nginx's brotli modules when the
+  OS provides them (falls back to gzip cleanly via empty include-snippets —
+  the site config is identical either way). With brotli active, nginx strips
+  `Accept-Encoding` toward Node so HTML/JSON get brotli (or gzip) chosen
+  per-client at the edge; without it, Node's own gzip serves HTML as before.
+  Compression directives are scoped to this server block — other sites on
+  the box are untouched.
+- Node keeps only what must be dynamic: HTML/ISR, `/api/*`, `/uploads/*`,
+  and the image optimizer (AVIF, 30-day `minimumCacheTTL`; its disk cache
+  survives deploys via the rsync `.next/cache/` exclude).
 - The deploy bundle **prunes `public/brand/` to the two logo files** — the raw
   film masters / menu PDF / reference photos in that folder never ship.
 

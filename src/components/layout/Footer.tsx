@@ -63,8 +63,10 @@ export default function Footer() {
             <Image
               src="/brand/logo-cream.png"
               alt="The Wrap Shack — Mediterranean Eats"
-              width={140}
-              height={112}
+              width={128}
+              height={103}
+              sizes="128px"
+              quality={60}
               className="h-auto w-[128px]"
             />
             <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-sage">

@@ -1,27 +1,61 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema, type ContactInput } from "@/lib/contact-schema";
+import type { ContactInput } from "@/lib/contact-schema";
+
+/**
+ * Zero-dependency form: the ~75 KB react-hook-form + zod pair is deliberate
+ * overkill for four fields, and this chunk gets PREFETCHED by every page
+ * that links to /contact (all of them). Client-side checks below mirror
+ * `lib/contact-schema.ts` 1:1 — the zod schema stays the authoritative
+ * contract where it matters, in the API route.
+ */
 
 const inputCls =
   "w-full border border-tahini bg-cream px-4 py-3 text-[15px] text-charcoal " +
   "placeholder:text-charcoal-60/60 transition-[border-color,box-shadow] duration-250 " +
   "focus:border-olive focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-ink";
 
+type Errors = Partial<Record<keyof ContactInput, string>>;
+
+/** Mirrors contactSchema (name ≥2, valid email, message ≥10; maxima native). */
+function validate(data: ContactInput): Errors {
+  const errors: Errors = {};
+  if (data.name.trim().length < 2) errors.name = "Please tell us your name";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()))
+    errors.email = "That email doesn't look right";
+  if (data.message.trim().length < 10)
+    errors.message = "Give us a little more to go on";
+  return errors;
+}
+
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle",
   );
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ContactInput>({ resolver: zodResolver(contactSchema) });
+  const [errors, setErrors] = useState<Errors>({});
 
-  const onSubmit = async (data: ContactInput) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const data: ContactInput = {
+      name: String(fd.get("name") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
+      message: String(fd.get("message") ?? ""),
+    };
+
+    const nextErrors = validate(data);
+    setErrors(nextErrors);
+    const firstInvalid = (["name", "email", "message"] as const).find(
+      (k) => nextErrors[k],
+    );
+    if (firstInvalid) {
+      (form.elements.namedItem(firstInvalid) as HTMLElement | null)?.focus();
+      return;
+    }
+
     setStatus("sending");
     try {
       const res = await fetch("/api/contact", {
@@ -31,14 +65,14 @@ export default function ContactForm() {
       });
       if (!res.ok) throw new Error("bad status");
       setStatus("sent");
-      reset();
+      form.reset();
     } catch {
       setStatus("error");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+    <form onSubmit={onSubmit} noValidate className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="cf-name" className="eyebrow mb-2 block text-charcoal-60">
@@ -46,16 +80,17 @@ export default function ContactForm() {
           </label>
           <input
             id="cf-name"
+            name="name"
             type="text"
             autoComplete="name"
+            maxLength={120}
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? "cf-name-err" : undefined}
             className={inputCls}
-            {...register("name")}
           />
           {errors.name && (
             <p id="cf-name-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
-              {errors.name.message}
+              {errors.name}
             </p>
           )}
         </div>
@@ -65,16 +100,17 @@ export default function ContactForm() {
           </label>
           <input
             id="cf-email"
+            name="email"
             type="email"
             autoComplete="email"
+            maxLength={254}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? "cf-email-err" : undefined}
             className={inputCls}
-            {...register("email")}
           />
           {errors.email && (
             <p id="cf-email-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
-              {errors.email.message}
+              {errors.email}
             </p>
           )}
         </div>
@@ -86,10 +122,11 @@ export default function ContactForm() {
         </label>
         <input
           id="cf-phone"
+          name="phone"
           type="tel"
           autoComplete="tel"
+          maxLength={40}
           className={inputCls}
-          {...register("phone")}
         />
       </div>
 
@@ -99,15 +136,16 @@ export default function ContactForm() {
         </label>
         <textarea
           id="cf-message"
+          name="message"
           rows={5}
+          maxLength={4000}
           aria-invalid={!!errors.message}
           aria-describedby={errors.message ? "cf-message-err" : undefined}
           className={inputCls}
-          {...register("message")}
         />
         {errors.message && (
           <p id="cf-message-err" role="alert" className="mt-1.5 text-[13px] text-gold-ink">
-            {errors.message.message}
+            {errors.message}
           </p>
         )}
       </div>

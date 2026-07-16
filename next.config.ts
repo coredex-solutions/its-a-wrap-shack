@@ -30,10 +30,17 @@ const nextConfig: NextConfig = {
     // menu photo uploads arrive through a server action; the 1 MB default
     // would reject most phone photos
     serverActions: { bodySizeLimit: "10mb" },
+    // The whole site shares one ~11 KB stylesheet — inlining it removes the
+    // only render-blocking request (a full RTT off FCP/LCP on mobile). The
+    // per-page HTML cost (~3 KB gzipped) is far cheaper than the round trip.
+    inlineCss: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [390, 640, 768, 1024, 1280, 1536, 1920],
+    // q75 default for photography; q60 exists for flat brand art (logos),
+    // where AVIF at 60 is visually identical and roughly half the bytes.
+    qualities: [60, 75],
     // Optimizer responses default to max-age=60 — pointless revalidation
     // churn for sources that never change in place (public/ assets get new
     // filenames; CMS uploads are content-hashed). 30 days.

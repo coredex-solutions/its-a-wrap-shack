@@ -40,9 +40,48 @@ jobs:
 
           mkdir -p /var/backups/itsawrapshack
 
-          # ---- nginx server block (no default_server: 000-catchall owns it) ----
+          # ---- Brotli: use the module if nginx has it or the OS can provide it.
+          # Everything brotli-conditional lives in include-snippets, so the main
+          # config below is identical (and valid) either way.
+          NEED_RESTART=0
+          if nginx -V 2>&1 | grep -q http_brotli; then
+            BROTLI_OK=1
+          elif apt-get install -y -qq libnginx-mod-http-brotli-filter libnginx-mod-http-brotli-static >/dev/null 2>&1; then
+            BROTLI_OK=1; NEED_RESTART=1   # new .so needs a master restart, not reload
+          else
+            BROTLI_OK=0
+          fi
+          mkdir -p /etc/nginx/snippets
+          if [ "$BROTLI_OK" = 1 ]; then
+            cat > /etc/nginx/snippets/itsawrapshack-brotli-dyn.conf <<'BR'
+          brotli on;
+          brotli_comp_level 5;
+          brotli_min_length 1024;
+          brotli_types text/plain text/css text/markdown application/javascript application/json application/xml application/rss+xml image/svg+xml application/manifest+json;
+          BR
+            echo "brotli_static on;" > /etc/nginx/snippets/itsawrapshack-brotli-static.conf
+            # upstream sends identity so nginx picks brotli or gzip per client
+            echo 'proxy_set_header Accept-Encoding "";' > /etc/nginx/snippets/itsawrapshack-upstream-ae.conf
+            echo "brotli: enabled (module present)"
+          else
+            : > /etc/nginx/snippets/itsawrapshack-brotli-dyn.conf
+            : > /etc/nginx/snippets/itsawrapshack-brotli-static.conf
+            : > /etc/nginx/snippets/itsawrapshack-upstream-ae.conf
+            echo "::warning::no brotli module available — serving gzip (Node for HTML, gzip_static for assets)"
+          fi
+
+          # ---- nginx site (no default_server: 000-catchall owns it) ----
           cat > /etc/nginx/sites-available/itsawrapshack.conf <<'NGINX'
-          # The Wrap Shack — itsawrapshack.coredex.solutions -> 127.0.0.1:3060 (PM2)
+          # The Wrap Shack — itsawrapshack.coredex.solutions
+          # Static assets straight from disk (precompressed in CI); only HTML,
+          # ISR, APIs and /uploads reach Node. Compression scoped to this site.
+
+          upstream itsawrapshack_app {
+              server 127.0.0.1:3060;
+              keepalive 32;
+              keepalive_timeout 4s;   # below Node's 5s so nginx never reuses a dead conn
+          }
+
           server {
               listen 80;
               listen [::]:80;
@@ -55,34 +94,54 @@ jobs:
               # keep this host out of search indexes. REMOVE at the apex switch.
               add_header X-Robots-Tag "noindex, nofollow" always;
 
+              # -------- compression (scoped to this server block) --------
+              gzip on;
+              gzip_vary on;
+              gzip_comp_level 6;
+              gzip_min_length 1024;
+              gzip_proxied any;
+              gzip_types text/plain text/css text/markdown application/javascript application/json application/xml application/rss+xml image/svg+xml application/manifest+json;
+              include /etc/nginx/snippets/itsawrapshack-brotli-dyn.conf;
+
+              # -------- Next.js hashed immutable assets: disk + precompressed --------
+              location /_next/static/ {
+                  alias /var/www/itsawrapshack/.next/static/;
+                  access_log off;
+                  gzip_static on;   # serves CI-built .gz (zopfli); falls back to dynamic gzip
+                  include /etc/nginx/snippets/itsawrapshack-brotli-static.conf;
+                  add_header Cache-Control "public, max-age=31536000, immutable";
+                  add_header X-Robots-Tag "noindex, nofollow" always;
+              }
+
+              # -------- un-hashed but immutable-by-name public assets: disk, 30 days --------
+              location ~ ^/(hero-frames|images|brand)/ {
+                  root /var/www/itsawrapshack/public;
+                  access_log off;
+                  add_header Cache-Control "public, max-age=2592000, stale-while-revalidate=86400";
+                  add_header X-Robots-Tag "noindex, nofollow" always;
+              }
+              location = /og.jpg {
+                  root /var/www/itsawrapshack/public;
+                  add_header Cache-Control "public, max-age=2592000";
+                  add_header X-Robots-Tag "noindex, nofollow" always;
+              }
+
+              # -------- everything dynamic -> Node (keep-alive upstream) --------
               location / {
-                  proxy_pass http://127.0.0.1:3060;
+                  proxy_pass http://itsawrapshack_app;
                   proxy_http_version 1.1;
+                  proxy_set_header Connection "";
+                  include /etc/nginx/snippets/itsawrapshack-upstream-ae.conf;
                   proxy_set_header Host              $host;
                   proxy_set_header X-Real-IP         $remote_addr;
                   proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
                   proxy_set_header X-Forwarded-Proto $scheme;
               }
-
-              # Un-hashed but effectively-immutable public assets (hero frame
-              # sequence, brand imagery, OG card): Next serves public/ with
-              # max-age=0, which makes every repeat visit revalidate ~150 hero
-              # frames. hide+add — never stack a second Cache-Control on
-              # Next's own. (/_next/static needs nothing: Next already sends
-              # max-age=31536000, immutable for hashed assets.)
-              location ~ ^/(hero-frames/|images/|brand/|og\.jpg) {
-                  proxy_pass http://127.0.0.1:3060;
-                  proxy_http_version 1.1;
-                  proxy_set_header Host $host;
-                  proxy_hide_header Cache-Control;
-                  add_header Cache-Control "public, max-age=2592000, stale-while-revalidate=86400";
-                  add_header X-Robots-Tag "noindex, nofollow" always;
-              }
           }
           NGINX
           ln -sfn /etc/nginx/sites-available/itsawrapshack.conf /etc/nginx/sites-enabled/itsawrapshack.conf
           nginx -t
-          systemctl reload nginx
+          if [ "$NEED_RESTART" = 1 ]; then systemctl restart nginx; else systemctl reload nginx; fi
           echo "nginx configured"
 
           # ---- HTTPS (DNS must already resolve; safe to re-run) ----
