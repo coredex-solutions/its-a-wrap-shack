@@ -13,8 +13,10 @@ import {
  */
 
 // Next 15+ no longer caches GET handlers by default — without this the brief
-// would re-render (and re-read SQLite) on every crawl. Saves revalidate it.
+// would re-render (and re-read SQLite) on every crawl. Saves revalidate it
+// on-demand; hourly ISR matches the marketing routes as a safety net.
 export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export async function GET() {
   const c = await loadContent();

@@ -18,6 +18,12 @@ function r2RemotePatterns() {
 }
 
 const nextConfig: NextConfig = {
+  // Self-contained production bundle: the VPS receives only .next/standalone
+  // (compiled server + traced node_modules) — no source code, no full deps.
+  output: "standalone",
+  // Pin tracing to this package so server.js always lands at
+  // .next/standalone/server.js, even if a parent directory has a lockfile.
+  outputFileTracingRoot: process.cwd(),
   // native module — must stay external to the server bundle
   serverExternalPackages: ["better-sqlite3"],
   experimental: {

@@ -9,6 +9,12 @@ import Footer from "@/components/layout/Footer";
  * Marketing-site chrome: smooth scrolling, reveals, header/footer — kept out
  * of the root layout so /admin renders without any of it.
  */
+
+// ISR for every marketing route: admin saves revalidate instantly via
+// revalidatePath (actions.ts); the hourly re-render is the safety net for
+// content that changed outside a save (DB restored from backup, redeploy
+// whose build ran against a stale/empty database).
+export const revalidate = 3600;
 export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

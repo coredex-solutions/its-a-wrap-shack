@@ -1,0 +1,127 @@
+name: Deploy to VPS
+
+# Build on GitHub's runners (the shared VPS does no npm/build work), ship only
+# the Next.js standalone bundle over SSH, hot-reload PM2, then revalidate so
+# the live CMS content replaces the seed HTML baked into the CI build.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never run two deploys at once; let an in-flight deploy finish.
+concurrency:
+  group: deploy-vps-itsawrapshack
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    # Pinned to 22.04 to match the VPS glibc, in case a native module
+    # (sharp, better-sqlite3) ever falls back to a source compile.
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Align with the VPS node major (server runs v20.x) — better-sqlite3
+          # ships a prebuilt binary per Node ABI.
+          node-version: ${{ vars.NODE_VERSION || '20' }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (standalone)
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          # Build-time: next.config.ts derives images.remotePatterns from this
+          # and the standalone server freezes the resolved config. MUST equal
+          # the R2_PUBLIC_URL in the VPS .env.local or R2-hosted menu photos
+          # 400 through next/image.
+          R2_PUBLIC_URL: ${{ vars.R2_PUBLIC_URL }}
+          # Inlined into the client bundle; renders nothing when unset.
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+
+      - name: Assemble deploy bundle
+        run: |
+          set -euo pipefail
+          rm -rf deploy && mkdir -p deploy
+          # Standalone server + its minimal traced node_modules:
+          cp -r .next/standalone/. deploy/
+          # Static assets Next does NOT copy into standalone:
+          mkdir -p deploy/.next
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public
+          # Process definition travels with the bundle:
+          cp ecosystem.config.cjs deploy/ecosystem.config.cjs
+          # The CI prerender touched an empty CMS db in the workspace — be
+          # certain no data/ ships (rsync also excludes it; belt and braces).
+          rm -rf deploy/data
+          # Prove the bundle is complete before shipping it:
+          test -f deploy/server.js
+          test -f deploy/node_modules/better-sqlite3/build/Release/better_sqlite3.node
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust the VPS host key
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          # Reachability probe first — a clear message if host/port is wrong
+          # or firewalled (GitHub runner IPs are dynamic; VPS must allow :22).
+          if ! nc -z -w 8 "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_PORT }}"; then
+            echo "::error::Cannot reach ${{ secrets.VPS_HOST }}:${{ secrets.VPS_PORT }} from the runner. Check VPS_HOST/VPS_PORT secrets and the VPS firewall."
+            exit 1
+          fi
+          ssh-keyscan -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts \
+            || echo "::warning::ssh-keyscan returned no keys; relying on StrictHostKeyChecking=accept-new"
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Rsync bundle to the VPS
+        # data/ (SQLite CMS + local uploads) and .env.local are the server's
+        # persistent state — excluded from --delete. .next/cache keeps the
+        # image-optimizer cache warm across deploys (avoids a sharp CPU burst
+        # on the shared box). --checksum: CI checkouts refresh every mtime, so
+        # without it the ~90 MB public/ dir would re-upload on every deploy.
+        run: |
+          rsync -az --delete --checksum \
+            --exclude='.env.local' --exclude='data/' --exclude='.next/cache/' \
+            -e "ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=accept-new" \
+            deploy/ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      - name: Reload PM2 and revalidate live content
+        # No shell-sourcing of .env.local (quoting/CRLF hazards): the
+        # standalone server loads it itself at boot. The revalidate call hits
+        # 127.0.0.1 directly — works before DNS/TLS exist — and retries
+        # because a PM2 fork reload is kill-and-restart.
+        run: |
+          ssh -p "${{ secrets.VPS_PORT }}" -o StrictHostKeyChecking=accept-new \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' APP_NAME='${{ vars.APP_NAME }}' APP_PORT='${{ vars.APP_PORT }}' bash -s" <<'REMOTE'
+          set -euo pipefail
+          cd "$DEPLOY_PATH"
+          APP_NAME="$APP_NAME" PORT="$APP_PORT" pm2 startOrReload ecosystem.config.cjs --update-env
+          pm2 save
+          TOKEN=$(grep '^REVALIDATE_TOKEN=' .env.local | cut -d= -f2- | tr -d '"' | tr -d "'" | tr -d '\r' || true)
+          if [ -z "$TOKEN" ]; then
+            echo "REVALIDATE_TOKEN missing in .env.local — skipping revalidate" >&2
+            exit 0
+          fi
+          for i in $(seq 1 15); do
+            if curl -fsS -X POST -H "Authorization: Bearer $TOKEN" \
+                 "http://127.0.0.1:$APP_PORT/api/revalidate" >/dev/null 2>&1; then
+              echo "app reloaded and live content revalidated"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "app did not respond to /api/revalidate within 30s" >&2
+          pm2 describe "$APP_NAME" || true
+          exit 1
+          REMOTE
