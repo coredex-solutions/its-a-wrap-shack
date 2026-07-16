@@ -309,7 +309,15 @@ export default function HeroSequence() {
 
   // Art-directed hero image: poster (frame 1) is the LCP; reduced-motion
   // users get the wrap still instead — single request either way.
-  const common = { alt: HERO_ALT, width: 1280, height: 720, sizes: "100vw" };
+  // q60: atmosphere shot behind a vignette, and the canvas covers it on the
+  // first scroll — ~30% off the LCP image's bytes for invisible loss.
+  const common = {
+    alt: HERO_ALT,
+    width: 1280,
+    height: 720,
+    sizes: "100vw",
+    quality: 60,
+  };
   const { props: staticProps } = getImageProps({
     ...common,
     src: "/images/hero-static.webp",
@@ -431,7 +439,7 @@ export default function HeroSequence() {
                 width={420}
                 height={337}
                 sizes="66vw"
-                quality={60}
+                quality={50}
                 className="h-auto w-[min(66vw,400px)]"
               />
             )}

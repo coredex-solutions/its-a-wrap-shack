@@ -38,9 +38,11 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [390, 640, 768, 1024, 1280, 1536, 1920],
-    // q75 default for photography; q60 exists for flat brand art (logos),
-    // where AVIF at 60 is visually identical and roughly half the bytes.
-    qualities: [60, 75],
+    // Three deliberate tiers: 75 = appetite/product photography (menu cards,
+    // signature dishes — the selling surface); 60 = editorial/atmosphere
+    // photography (story, gallery, page heroes), where AVIF artifacts are
+    // invisible at rendered sizes; 50 = flat brand art (logos).
+    qualities: [50, 60, 75],
     // Optimizer responses default to max-age=60 — pointless revalidation
     // churn for sources that never change in place (public/ assets get new
     // filenames; CMS uploads are content-hashed). 30 days.

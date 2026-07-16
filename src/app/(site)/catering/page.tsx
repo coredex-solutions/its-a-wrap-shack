@@ -88,6 +88,7 @@ export default async function CateringPage() {
               fill
               priority
               sizes="(max-width: 767px) 100vw, 380px"
+              quality={60}
               className="object-cover"
             />
           </div>

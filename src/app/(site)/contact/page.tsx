@@ -49,6 +49,7 @@ export default async function ContactPage() {
           fill
           priority
           sizes="100vw"
+          quality={60}
           className="object-cover object-right md:object-center"
         />
         {/* flat mobile-only veil: the display text can reach the wrap on

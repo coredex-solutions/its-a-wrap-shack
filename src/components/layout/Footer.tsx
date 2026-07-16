@@ -66,7 +66,7 @@ export default function Footer() {
               width={128}
               height={103}
               sizes="128px"
-              quality={60}
+              quality={50}
               className="h-auto w-[128px]"
             />
             <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-sage">

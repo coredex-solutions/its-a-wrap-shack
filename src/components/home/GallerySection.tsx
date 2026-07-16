@@ -30,6 +30,7 @@ export default function GallerySection() {
                   alt={s.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, 33vw"
+                  quality={60}
                   className="object-cover transition-transform duration-700 ease-brand group-hover:scale-[1.03]"
                 />
               </div>

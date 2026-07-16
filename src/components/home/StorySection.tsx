@@ -58,6 +58,7 @@ export default function StorySection() {
             alt="Chicken shawarma stacked on twin vertical spits, roasting in the kitchen"
             fill
             sizes="(max-width: 768px) 100vw, 40vw"
+            quality={60}
             className="object-cover"
           />
         </ParallaxImage>

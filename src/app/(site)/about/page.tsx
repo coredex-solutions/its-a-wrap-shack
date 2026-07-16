@@ -98,6 +98,7 @@ export default async function AboutPage() {
           alt=""
           fill
           sizes="100vw"
+          quality={60}
           className="object-cover"
         />
       </section>

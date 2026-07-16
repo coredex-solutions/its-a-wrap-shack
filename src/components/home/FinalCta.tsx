@@ -49,6 +49,7 @@ export default function FinalCta() {
             width={633}
             height={1335}
             sizes="(max-width: 768px) 60vw, 300px"
+            quality={60}
             className="float-gently h-auto w-[min(58vw,300px)] drop-shadow-[0_24px_48px_rgba(22,41,31,0.45)]"
           />
         </div>
