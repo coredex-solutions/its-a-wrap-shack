@@ -1,17 +1,25 @@
 name: VPS unban
 
-# Emergency lever: the VPS fail2ban bans client IPs after SSH connection
-# bursts, and a ban blocks ALL ports — including plain HTTPS browsing of the
-# site. This unbans ONE specific IP (ours) and whitelists it for good; all
-# other bans stay untouched. Runs from a GitHub runner, so it works
-# precisely when we're the ones banned.
+# The VPS bans client IPs after SSH connection bursts, and a ban blocks ALL
+# ports — including plain HTTPS browsing of the site. Runs from a GitHub
+# runner, so it works precisely when we're the ones banned.
+#
+#   mode=diagnose  READ-ONLY: which ban tooling exists, and every firewall
+#                  entry mentioning the IP. Changes nothing.
+#   mode=fix       fail2ban only, exactly as approved: whitelist the one IP
+#                  (drop-in file) and unban it. No other bans touched, no
+#                  other systems touched.
 
 on:
   workflow_dispatch:
     inputs:
       ip:
-        description: "Our IP to unban and permanently whitelist"
+        description: "Our IP to diagnose / unban"
         required: true
+      mode:
+        description: "diagnose (read-only) or fix"
+        required: true
+        default: "diagnose"
 
 jobs:
   unban:
@@ -22,22 +30,43 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Unban + whitelist the one IP
+      - name: ${{ inputs.mode }} for the one IP
         run: |
           ssh -p "${{ secrets.VPS_PORT }}" -o StrictHostKeyChecking=accept-new \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
-            "WLIP='${{ inputs.ip }}' bash -s" <<'REMOTE'
-          set -euo pipefail
+            "WLIP='${{ inputs.ip }}' MODE='${{ inputs.mode }}' bash -s" <<'REMOTE'
+          set -uo pipefail
           case "$WLIP" in
             *[!0-9.]*|"") echo "not a valid IPv4: $WLIP" >&2; exit 1 ;;
           esac
-          # drop-in whitelist — touches no existing fail2ban config
+
+          if [ "$MODE" = "diagnose" ]; then
+            echo "== ban tooling on this box:"
+            command -v fail2ban-client >/dev/null && { echo "fail2ban: PRESENT"; fail2ban-client status 2>&1 | head -5; } || echo "fail2ban: absent"
+            command -v csf >/dev/null && echo "csf: PRESENT" || echo "csf: absent"
+            systemctl list-units --type=service --state=running 2>/dev/null \
+              | grep -iE "fail2ban|csf|lfd|sshguard|firewalld|crowdsec" || echo "(no known ban services running)"
+            echo "== firewall entries mentioning $WLIP:"
+            iptables-save 2>/dev/null | grep -F -- "$WLIP" || echo "(none in iptables)"
+            nft list ruleset 2>/dev/null | grep -F -- "$WLIP" || echo "(none in nftables)"
+            for s in $(ipset list -n 2>/dev/null); do
+              ipset test "$s" "$WLIP" 2>/dev/null && echo "ipset: $WLIP IS in set $s"
+            done
+            echo "== diagnose complete (nothing changed)"
+            exit 0
+          fi
+
+          # ---- mode=fix: fail2ban only, per explicit approval ----
+          if ! command -v fail2ban-client >/dev/null 2>&1; then
+            echo "fail2ban not installed — run diagnose and fix the actual system" >&2
+            exit 1
+          fi
+          mkdir -p /etc/fail2ban/jail.d
           printf '[DEFAULT]\nignoreip = 127.0.0.1/8 ::1 %s\n' "$WLIP" \
             > /etc/fail2ban/jail.d/coredex-whitelist.conf
-          fail2ban-client reload
-          echo "whitelisted: $WLIP"
-          # unban ONLY this IP, in every jail it appears in
-          fail2ban-client unban "$WLIP" \
-            && echo "unbanned: $WLIP" \
-            || echo "IP was not banned (fine)"
+          fail2ban-client reload >/dev/null 2>&1 || systemctl restart fail2ban
+          echo "fail2ban: whitelisted $WLIP"
+          fail2ban-client unban "$WLIP" >/dev/null 2>&1 \
+            && echo "fail2ban: unbanned $WLIP" \
+            || echo "fail2ban: $WLIP was not banned"
           REMOTE
