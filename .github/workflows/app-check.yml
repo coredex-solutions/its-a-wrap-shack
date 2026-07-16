@@ -1,0 +1,57 @@
+name: VPS app check
+
+# READ-ONLY health snapshot of the running app and its persistent state
+# (PM2 process, CMS SQLite database, uploads, backups, recent error logs).
+# Changes nothing on the server.
+
+on: workflow_dispatch
+
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Inspect app state (read-only)
+        run: |
+          ssh -p "${{ secrets.VPS_PORT }}" -o StrictHostKeyChecking=accept-new \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' APP_NAME='${{ vars.APP_NAME }}' bash -s" <<'REMOTE'
+          set -uo pipefail
+          cd "$DEPLOY_PATH"
+
+          echo "=== PM2 ==="
+          pm2 jlist 2>/dev/null | python3 -c "
+          import json,sys
+          for p in json.load(sys.stdin):
+              if p['name'] == '${APP_NAME:-itsawrapshack}':
+                  e = p['pm2_env']; m = p['monit']
+                  print(f\"status={e['status']} restarts={e['restart_time']} uptime_since={e.get('pm_uptime')} mem={m['memory']//1048576}MB cpu={m['cpu']}%\")
+          " || pm2 describe "${APP_NAME:-itsawrapshack}" | head -20
+
+          echo "=== CMS database ==="
+          if [ -f data/cms/cms.db ]; then
+            ls -la data/cms/
+            echo "integrity: $(sqlite3 data/cms/cms.db 'PRAGMA integrity_check;')"
+            echo "sections rows: $(sqlite3 data/cms/cms.db 'SELECT COUNT(*) FROM sections;')"
+            echo "images rows:   $(sqlite3 data/cms/cms.db 'SELECT COUNT(*) FROM images;')"
+            echo "last save:     $(sqlite3 data/cms/cms.db 'SELECT MAX(saved_at) FROM sections;')"
+            echo "section keys:  $(sqlite3 data/cms/cms.db 'SELECT GROUP_CONCAT(section) FROM sections;')"
+          else
+            echo "data/cms/cms.db DOES NOT EXIST (no owner edits yet — seeds serve)"
+            ls -la data/ 2>/dev/null || echo "data/ missing entirely"
+          fi
+
+          echo "=== uploads ==="
+          [ -d data/uploads ] && du -sh data/uploads && find data/uploads -type f | wc -l || echo "no local uploads dir (R2 mode or none yet)"
+
+          echo "=== nightly backups ==="
+          ls -la /var/backups/itsawrapshack/ 2>/dev/null | tail -5 || echo "no backups yet (cron runs 03:20)"
+
+          echo "=== recent app errors (filtered) ==="
+          tail -n 200 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error.log 2>/dev/null \
+            | grep -aiE "error|cms|sqlite|EACCES|ENOENT" | tail -10 || echo "(error log clean/absent)"
+          REMOTE
