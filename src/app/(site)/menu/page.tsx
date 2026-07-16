@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import MenuExplorer from "@/components/menu/MenuExplorer";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import MenuOrderBar from "@/components/menu/MenuOrderBar";
+
+// Code-split: the explorer's JS loads during hydration, after the
+// prerendered menu (and its priority card image, the LCP) has painted.
+const MenuExplorer = dynamic(() => import("@/components/menu/MenuExplorer"));
 import Button from "@/components/ui/Button";
 import HalalBadge from "@/components/ui/HalalBadge";
+import ContentHydrator from "@/components/ContentHydrator";
 import { getSite, getCloverUrl } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
 import { JsonLd, pageGraph } from "@/lib/jsonld";
@@ -18,11 +24,15 @@ export const metadata: Metadata = {
 };
 
 export default async function MenuPage() {
-  await loadContent(); // prime the content snapshot before anything renders
+  // prime the server snapshot; hydrate the sections the explorer reads
+  const content = await loadContent();
   const site = getSite();
   const clover = getCloverUrl();
   return (
-    <div className="grain bg-cream">
+    <ContentHydrator
+      data={{ menu: content.menu, categories: content.categories }}
+    >
+      <div className="grain bg-cream">
       <JsonLd
         data={pageGraph({
           path: "/menu",
@@ -55,7 +65,11 @@ export default async function MenuPage() {
         {/* once this leaves the viewport, the mobile order bar slides in */}
         <span data-orderbar-sentinel aria-hidden />
       </header>
-      <MenuExplorer />
+      {/* Suspense: the explorer hydrates as its own interruptible task
+          instead of one long main-thread block (HTML is prerendered) */}
+      <Suspense>
+        <MenuExplorer />
+      </Suspense>
 
       {/* catering pointer — group orders live on their own page (phone, 48h) */}
       <section
@@ -82,7 +96,8 @@ export default async function MenuPage() {
         </div>
       </section>
 
-      <MenuOrderBar />
-    </div>
+        <MenuOrderBar />
+      </div>
+    </ContentHydrator>
   );
 }

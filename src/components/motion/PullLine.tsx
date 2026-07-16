@@ -11,18 +11,24 @@ import {
 /**
  * Cormorant italic editorial pull-line with a SplitText line reveal.
  * Lines rise from behind a masked edge — once, at 75% viewport.
+ *
+ * `immediate`: no reveal, paints with the page. REQUIRED when the line sits
+ * above the fold — a hidden-until-GSAP pull-line up there becomes the page's
+ * LCP element and records seconds late (GSAP loads at idle, off-boot-path).
  */
 export default function PullLine({
   children,
   className = "",
+  immediate = false,
 }: {
   children: ReactNode;
   className?: string;
+  immediate?: boolean;
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (immediate || prefersReducedMotion()) return;
     const el = ref.current;
     if (!el) return;
 
@@ -57,10 +63,14 @@ export default function PullLine({
       cancelled = true;
       split?.revert();
     };
-  }, []);
+  }, [immediate]);
 
   return (
-    <p ref={ref} className={`font-display italic ${className}`} data-pullline>
+    <p
+      ref={ref}
+      className={`font-display italic ${className}`}
+      data-pullline={immediate ? undefined : ""}
+    >
       {children}
     </p>
   );

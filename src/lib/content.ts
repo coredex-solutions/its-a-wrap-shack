@@ -94,9 +94,15 @@ export const defaultBundle: ContentBundle = {
 
 let current: ContentBundle = defaultBundle;
 
-/** Internal — called by the CMS store (server) and ContentHydrator (client). */
-export function __setContent(bundle: ContentBundle) {
-  current = bundle;
+/**
+ * Internal — called by the CMS store (server, full bundle) and
+ * ContentHydrator (client, partial). Partial merges let each page hydrate
+ * only the sections its client components actually read (the seeds below
+ * remain the fallback), instead of shipping the whole CMS bundle in every
+ * page's flight payload and re-parsing it during hydration.
+ */
+export function __setContent(bundle: Partial<ContentBundle>) {
+  current = { ...current, ...bundle };
 }
 
 export function getSite(): SiteData {

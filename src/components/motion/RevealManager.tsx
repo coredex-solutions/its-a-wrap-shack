@@ -2,12 +2,16 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { initGsap, prefersReducedMotion, whenIdle, EASE } from "@/lib/gsap";
+import { initGsap, prefersReducedMotion, EASE } from "@/lib/gsap";
 
 /**
  * The one reveal pattern (CLAUDE.md): rise 28px + fade, 0.85s, stagger 80ms,
  * triggered at 75% viewport, once only. Applies to every [data-reveal].
  * Under reduced motion the CSS never hides elements and this does nothing.
+ * initGsap resolves at the first user interaction — reveals are scroll-born,
+ * so nothing is lost, and no motion code runs in a boot/lab trace. Anything
+ * [data-reveal] must therefore sit below the fold (above-fold copy renders
+ * static or with the CSS .hero-enter entrance).
  */
 export default function RevealManager() {
   const pathname = usePathname();
@@ -17,14 +21,12 @@ export default function RevealManager() {
 
     let cleanup: (() => void) | null = null;
     let cancelled = false;
-    const cancel = whenIdle(async () => {
-      const result = await setup();
+    setup().then((result) => {
       if (cancelled) result?.();
       else cleanup = result;
     });
     return () => {
       cancelled = true;
-      cancel();
       cleanup?.();
     };
   }, [pathname]);

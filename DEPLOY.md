@@ -76,6 +76,24 @@ nginx's 1 MB default would 413 it. While on the temporary subdomain the block
 sends `X-Robots-Tag: noindex, nofollow` (the site's canonical URLs point at
 itsawrapshack.com) — **remove that header at the apex switch**.
 
+Delivery details the setup workflow also owns (re-run it to reapply):
+
+- **HTTP/2** is appended to certbot's TLS `listen` lines post-issuance
+  (nginx 1.18 has no `http2 on;` directive). The sed is idempotent.
+- **`/hero-frames/`, `/images/`, `/brand/`, `/og.jpg`** get
+  `Cache-Control: public, max-age=2592000` via `proxy_hide_header` + `add_header`
+  (Next serves `public/` with `max-age=0`; without this every repeat visit
+  revalidates ~150 hero frames). These URLs are treated as immutable-by-name:
+  **replacing a public asset requires a new filename**, or returning visitors
+  see the old one for up to 30 days. `/_next/static` needs nothing — Next
+  already serves it `immutable`.
+- Compression (gzip) comes from the Node standalone server itself; images are
+  pre-compressed formats. The Next image optimizer emits AVIF (30-day
+  `minimumCacheTTL` set in `next.config.ts`), and its disk cache survives
+  deploys via the rsync `.next/cache/` exclude.
+- The deploy bundle **prunes `public/brand/` to the two logo files** — the raw
+  film masters / menu PDF / reference photos in that folder never ship.
+
 ## 5. Updating the site
 
 Just push to `main` (or run the workflow manually — it has

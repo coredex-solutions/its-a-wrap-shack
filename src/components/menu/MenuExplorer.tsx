@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   getCategories,
@@ -9,175 +6,84 @@ import {
   getCloverUrl,
   type MenuItem,
 } from "@/lib/content";
-import { FilterPills, useDietaryFilter } from "@/components/home/MenuPreview";
+import MenuShell from "@/components/menu/MenuShell";
 import DietaryBadge from "@/components/ui/DietaryBadge";
 import Divider from "@/components/ui/Divider";
 
 /**
  * The full menu: sticky category rail + dietary filter pills, with GSAP
  * Flip layout transitions on filter changes (no jarring pops).
+ *
+ * SERVER component: the card list (the page's heaviest DOM) renders to
+ * plain HTML and never hydrates. All interactivity lives in MenuShell,
+ * which filters these cards through their data attributes.
  */
 export default function MenuExplorer() {
   const categories = getCategories();
   const clover = getCloverUrl();
-  const listRef = useRef<HTMLDivElement>(null);
-  const { active, toggle, matches } = useDietaryFilter(listRef);
-  const [current, setCurrent] = useState(categories[0].id);
-
-  // track which category heading is in view for the rail's active state
-  useEffect(() => {
-    const sections = document.querySelectorAll("[data-menu-category]");
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setCurrent(
-              (e.target as HTMLElement).dataset.menuCategory as typeof current,
-            );
-          }
-        }
-      },
-      { rootMargin: "-25% 0px -65% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, []);
-
-  const jump = (id: string) => {
-    document
-      .getElementById(`cat-${id}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   return (
-    <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-      {/* filter pills — sticky below the header on all viewports */}
-      <div className="sticky top-[72px] z-30 -mx-5 border-b border-tahini bg-cream/95 px-5 py-4 backdrop-blur-sm md:-mx-10 md:px-10">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <nav
-            aria-label="Menu categories"
-            className="-mx-1 w-full min-w-0 overflow-x-auto scrollbar-none md:hidden"
+    <MenuShell categories={categories.map(({ id, label }) => ({ id, label }))}>
+      {categories.map((cat, ci) => {
+        const items = getMenuByCategory(cat.id);
+        return (
+          <section
+            key={cat.id}
+            id={`cat-${cat.id}`}
+            data-menu-category={cat.id}
+            aria-labelledby={`cat-${cat.id}-h`}
+            className={`scroll-mt-[150px] ${ci > 0 ? "mt-12 md:mt-20" : ""}`}
           >
-            <ul className="flex gap-1 whitespace-nowrap px-1">
-              {categories.map((c) => (
-                <li key={c.id}>
-                  <button
-                    type="button"
-                    onClick={() => jump(c.id)}
-                    aria-current={current === c.id}
-                    className={[
-                      "rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors duration-250",
-                      current === c.id
-                        ? "bg-forest text-cream"
-                        : "text-charcoal-60 hover:text-forest",
-                    ].join(" ")}
-                  >
-                    {c.label}
-                  </button>
-                </li>
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+              <h2
+                id={`cat-${cat.id}-h`}
+                className="font-display text-[clamp(2rem,3.2vw,2.8rem)] font-medium text-charcoal"
+              >
+                {cat.label}
+              </h2>
+              {cat.note && (
+                <p className="text-[13px] text-charcoal-60">{cat.note}</p>
+              )}
+            </div>
+            <Divider tone="olive" className="mt-4 max-w-[120px]" />
+
+            <ul className="mt-6 grid gap-4 md:mt-8 md:gap-5 lg:grid-cols-2">
+              {items.map((item, i) => (
+                <MenuCard
+                  key={item.id}
+                  item={item}
+                  clover={clover}
+                  // first cards of the first category sit above the fold —
+                  // their photo is usually the page's LCP element and must
+                  // be preloaded, not native-lazy
+                  eager={ci === 0 && i < 2}
+                />
               ))}
             </ul>
-          </nav>
-          <FilterPills active={active} onToggle={toggle} />
-          <p className="hidden text-[13px] text-charcoal-60 lg:block">
-            Everything on this menu is 100% halal.
-          </p>
-        </div>
-      </div>
-
-      <div className="grid gap-8 pb-16 pt-8 md:grid-cols-[220px_1fr] md:gap-16 md:pb-28 md:pt-12">
-        {/* desktop rail */}
-        <nav aria-label="Menu categories" className="hidden md:block">
-          <ul className="sticky top-[160px] space-y-1">
-            {categories.map((c) => (
-              <li key={c.id}>
-                <button
-                  type="button"
-                  onClick={() => jump(c.id)}
-                  aria-current={current === c.id}
-                  className={[
-                    "group flex w-full items-center gap-3 py-2 text-left text-[13px] font-semibold uppercase tracking-[0.1em] transition-colors duration-250",
-                    current === c.id
-                      ? "text-forest"
-                      : "text-charcoal-60 hover:text-forest",
-                  ].join(" ")}
-                >
-                  <span
-                    aria-hidden
-                    className={[
-                      "h-px bg-gold-ink transition-[width] duration-300 ease-brand",
-                      current === c.id ? "w-6" : "w-0 group-hover:w-3",
-                    ].join(" ")}
-                  />
-                  {c.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* item sections */}
-        <div ref={listRef}>
-          {categories.map((cat, ci) => {
-            const items = getMenuByCategory(cat.id);
-            const visible = items.filter(matches);
-            return (
-              <section
-                key={cat.id}
-                id={`cat-${cat.id}`}
-                data-menu-category={cat.id}
-                aria-labelledby={`cat-${cat.id}-h`}
-                className={`scroll-mt-[150px] ${visible.length === 0 ? "hidden" : ""} ${ci > 0 ? "mt-12 md:mt-20" : ""}`}
-              >
-                <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-                  <h2
-                    id={`cat-${cat.id}-h`}
-                    className="font-display text-[clamp(2rem,3.2vw,2.8rem)] font-medium text-charcoal"
-                  >
-                    {cat.label}
-                  </h2>
-                  {cat.note && (
-                    <p className="text-[13px] text-charcoal-60">{cat.note}</p>
-                  )}
-                </div>
-                <Divider tone="olive" className="mt-4 max-w-[120px]" />
-
-                <ul className="mt-6 grid gap-4 md:mt-8 md:gap-5 lg:grid-cols-2">
-                  {items.map((item) => (
-                    <MenuCard
-                      key={item.id}
-                      item={item}
-                      clover={clover}
-                      hidden={!matches(item)}
-                    />
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+          </section>
+        );
+      })}
+    </MenuShell>
   );
 }
 
 function MenuCard({
   item,
   clover,
-  hidden,
+  eager = false,
 }: {
   item: MenuItem;
   clover: string;
-  hidden: boolean;
+  eager?: boolean;
 }) {
   return (
     <li
       data-item
-      aria-hidden={hidden}
+      data-dietary={item.dietary.join(" ")}
+      aria-hidden="false"
       className={[
         "group relative flex flex-col bg-garlic transition-colors duration-300 ease-brand hover:bg-tahini/40",
         item.featured ? "lg:col-span-2" : "",
-        hidden ? "hidden" : "",
       ].join(" ")}
     >
       <div className={item.featured ? "grid md:grid-cols-[1fr_auto]" : ""}>
@@ -193,6 +99,7 @@ function MenuCard({
               src={item.image}
               alt={item.name}
               fill
+              priority={eager}
               sizes={
                 item.featured
                   ? "(max-width: 767px) 100vw, 300px"

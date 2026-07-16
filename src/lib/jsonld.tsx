@@ -59,7 +59,11 @@ function restaurantNode() {
     alternateName: `${site.name} — ${site.descriptor}`,
     description: site.seo.description,
     url: site.url,
-    image: [`${site.url}/og.jpg`, `${site.url}/brand/shawarma-hero.png`],
+    image: [
+      `${site.url}/og.jpg`,
+      `${site.url}/images/dishes/chicken-shawarma-wrap.webp`,
+      `${site.url}/images/dishes/lamb-chop-plate.webp`,
+    ],
     logo: `${site.url}/brand/logo.png`,
     telephone: site.phoneHref.replace("tel:", ""),
     email: site.email,

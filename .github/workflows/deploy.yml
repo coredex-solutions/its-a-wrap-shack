@@ -56,6 +56,11 @@ jobs:
           mkdir -p deploy/.next
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
+          # public/brand holds raw source material (film masters, the menu PDF,
+          # reference photos) — ~75 MB that must never ship or be publicly
+          # served. Only the two logo assets are referenced by the site.
+          find deploy/public/brand -type f \
+            ! -name 'logo.png' ! -name 'logo-cream.png' -delete
           # Process definition travels with the bundle:
           cp ecosystem.config.cjs deploy/ecosystem.config.cjs
           # The CI prerender touched an empty CMS db in the workspace — be

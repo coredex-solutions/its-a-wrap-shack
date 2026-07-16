@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [390, 640, 768, 1024, 1280, 1536, 1920],
+    // Optimizer responses default to max-age=60 — pointless revalidation
+    // churn for sources that never change in place (public/ assets get new
+    // filenames; CMS uploads are content-hashed). 30 days.
+    minimumCacheTTL: 2592000,
     ...r2RemotePatterns(),
   },
 };

@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
-import { initGsap, gsapNow, prefersReducedMotion, whenIdle } from "@/lib/gsap";
+import type Lenis from "lenis";
+import {
+  initGsap,
+  gsapNow,
+  prefersReducedMotion,
+  afterFirstInteraction,
+} from "@/lib/gsap";
 import { setLenis } from "@/lib/lenis";
 
 /**
  * Site-wide Lenis smooth scrolling, driving GSAP ScrollTrigger from its raf.
- * Skipped entirely under prefers-reduced-motion; started off the hydration
- * critical path (native scroll covers the first few hundred ms).
+ * Skipped entirely under prefers-reduced-motion. Both libraries load at the
+ * FIRST user interaction (initGsap self-gates; lenis rides the same gate) —
+ * native scroll covers the handful of frames before they land, and nothing
+ * motion-related ever sits on the boot path.
  */
 export default function SmoothScroll() {
   useEffect(() => {
@@ -18,8 +25,11 @@ export default function SmoothScroll() {
     let raf: ((time: number) => void) | null = null;
     let cancelled = false;
 
-    const cancel = whenIdle(async () => {
-      const { gsap, ScrollTrigger } = await initGsap();
+    (async () => {
+      const [{ gsap, ScrollTrigger }, { default: Lenis }] = await Promise.all([
+        initGsap(),
+        afterFirstInteraction().then(() => import("lenis")),
+      ]);
       if (cancelled) return;
       lenis = new Lenis({
         duration: 1.1,
@@ -30,11 +40,10 @@ export default function SmoothScroll() {
       gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);
       setLenis(lenis);
-    });
+    })();
 
     return () => {
       cancelled = true;
-      cancel();
       if (raf) gsapNow()?.gsap.ticker.remove(raf);
       setLenis(null);
       lenis?.destroy();

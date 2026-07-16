@@ -43,23 +43,26 @@ export default async function CateringPage() {
       <section className="bg-forest text-cream">
         <div className="mx-auto grid max-w-[1100px] gap-10 px-5 pb-14 pt-28 md:grid-cols-[1fr_380px] md:items-center md:gap-16 md:px-10 md:pb-24 md:pt-44">
           <div>
-            <p className="eyebrow text-gold" data-reveal>
-              Catering
-            </p>
+            {/* Above the fold: no [data-reveal] — LCP copy paints with the
+                HTML; eyebrow + CTA carry the CSS entrance (home-hero rule). */}
+            <p className="eyebrow hero-enter text-gold">Catering</p>
             <h1 className="sr-only">Catering — The Wrap Shack</h1>
-            <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
+            <PullLine
+              immediate
+              className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]"
+            >
               Feed the whole family. We&rsquo;ll bring the spit&rsquo;s best.
             </PullLine>
-            <p
-              className="body-copy mt-8 max-w-[58ch] text-[16.5px] leading-[1.85] text-sage"
-              data-reveal
-            >
+            <p className="body-copy mt-8 max-w-[58ch] text-[16.5px] leading-[1.85] text-sage">
               Platters, bowls, and mezza trays built for ten — shawarma off the
               spit, skewers from the grill, dips with warm pita, baklava to
               finish. Everything 100% halal, cooked the same way we cook for the
               counter.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-10" data-reveal>
+            <div
+              className="hero-enter mt-8 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-10"
+              style={{ animationDelay: "0.24s" }}
+            >
               <a
                 href={site.phoneHref}
                 className="group inline-flex items-center gap-3 rounded-full bg-cream px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.1em] text-forest transition-[background-color,box-shadow] duration-250 ease-brand hover:bg-garlic hover:shadow-[inset_0_0_0_1px_var(--color-gold)]"
@@ -77,10 +80,8 @@ export default async function CateringPage() {
               </p>
             </div>
           </div>
-          <div
-            className="relative aspect-[4/3] overflow-hidden rounded-[14px] md:aspect-[4/5] md:rounded-b-[14px] md:rounded-t-[190px]"
-            data-reveal
-          >
+          {/* priority image, above the fold on desktop — never [data-reveal] */}
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[14px] md:aspect-[4/5] md:rounded-b-[14px] md:rounded-t-[190px]">
             <Image
               src="/images/menu/lamb-chop-plate.webp"
               alt="Grilled lamb chops over saffron rice with hummus, salad, and pita"

@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { getSite, getFaq } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
-import ContactForm from "@/components/contact/ContactForm";
 import BrandMap from "@/components/home/BrandMap";
+
+// Code-split: react-hook-form + zod are a heavy client chunk that must not
+// sit in the boot-critical preload list — the SSR'd markup paints either way.
+const ContactForm = dynamic(() => import("@/components/contact/ContactForm"));
 import Divider from "@/components/ui/Divider";
 import OpenNow from "@/components/ui/OpenNow";
 import { JsonLd, pageGraph } from "@/lib/jsonld";

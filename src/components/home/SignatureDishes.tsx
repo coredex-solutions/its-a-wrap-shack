@@ -81,6 +81,27 @@ export default function SignatureDishes() {
   const didMount = useRef(false);
   const pointerX = useRef<number | null>(null);
 
+  // The four panel photos are stacked (crossfade), so native lazy-loading
+  // fetches all of them at boot — ~330 KB competing with the hero LCP from
+  // 3000px below the fold. Mount them only once the section is near.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // transition on change (skip the very first render — RevealManager owns entry)
   useEffect(() => {
     if (!didMount.current) {
@@ -128,7 +149,11 @@ export default function SignatureDishes() {
   const priceItem: MenuItem = activeDish.item;
 
   return (
-    <section aria-labelledby="dishes-heading" className="grain bg-cream">
+    <section
+      ref={sectionRef}
+      aria-labelledby="dishes-heading"
+      className="grain bg-cream"
+    >
       <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-32">
         {/* header */}
         <div className="max-w-[60ch]">
@@ -179,13 +204,15 @@ export default function SignatureDishes() {
                   ].join(" ")}
                 >
                   {d.image ? (
-                    <Image
-                      src={d.image}
-                      alt={d.imageAlt ?? d.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 55vw"
-                      className="object-cover"
-                    />
+                    near && (
+                      <Image
+                        src={d.image}
+                        alt={d.imageAlt ?? d.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 55vw"
+                        className="object-cover"
+                      />
+                    )
                   ) : (
                     <DishMotif kind={d.motif!} title={d.title} />
                   )}

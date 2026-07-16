@@ -18,10 +18,13 @@ export const revalidate = 3600;
 export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // CMS-merged content: primes the server snapshot and hydrates the client one
+  // CMS-merged content: primes the server snapshot; the client gets only
+  // what the chrome's client components read (pages layer their own sections)
   const content = await loadContent();
   return (
-    <ContentHydrator data={content}>
+    <ContentHydrator
+      data={{ site: content.site, cloverUrl: content.cloverUrl }}
+    >
       <a href="#main" className="skip-link">
         Skip to content
       </a>

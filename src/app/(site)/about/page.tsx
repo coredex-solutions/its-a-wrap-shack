@@ -53,15 +53,19 @@ export default async function AboutPage() {
       {/* opening chapter */}
       <section className="bg-forest text-cream">
         <div className="mx-auto max-w-[1100px] px-5 pb-16 pt-28 md:px-10 md:pb-32 md:pt-44">
-          <p className="eyebrow text-gold" data-reveal>
-            Our story
-          </p>
+          {/* Above the fold: no [data-reveal] here — this copy is the page's
+              LCP and must paint with the HTML, not after GSAP idles in. The
+              eyebrow's CSS entrance carries the choreography (home-hero rule). */}
+          <p className="eyebrow hero-enter text-gold">Our story</p>
           <h1 className="sr-only">Our Story — The Wrap Shack</h1>
-          <PullLine className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]">
+          <PullLine
+            immediate
+            className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]"
+          >
             A Lebanese kitchen that crossed an ocean and kept its accent.
           </PullLine>
           <div className="body-copy mt-8 space-y-5 md:mt-10 md:space-y-6 text-[16.5px] leading-[1.85] text-sage">
-            <p data-reveal>
+            <p>
               The Wrap Shack began the way most Lebanese cooking does — at a
               family table, with recipes nobody ever wrote down properly because
               everybody already knew them. When our family settled in the
@@ -69,12 +73,12 @@ export default async function AboutPage() {
               the overnight marinades, the garlic sauce whipped patiently until
               it stands on its own.
             </p>
-            <p data-reveal>
+            <p>
               We opened on Washington Street to cook that food the way it
               deserves — fast enough for a lunch break, never faster than the
               food allows.
             </p>
-            <p data-reveal>
+            <p>
               The menu leans fresh and health-conscious: local ingredients
               where the valley provides them, a deep bench of vegan options
               led by our falafel, and a freshly prepared tahini sauce that
