@@ -1,0 +1,101 @@
+name: One-time VPS setup
+
+# Manual provisioning of the deploy target (run once, or again to re-provision):
+# deploy dir, runtime .env.local (from the SERVER_ENV_B64 secret — delete that
+# secret after a successful run), nginx server block, HTTPS cert, nightly CMS
+# database backup cron. The regular deploy workflow never touches any of this.
+
+on: workflow_dispatch
+
+jobs:
+  provision:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Write runtime .env.local
+        # Base64 keeps the secret's newlines/special chars intact end-to-end;
+        # GitHub masks the value in logs and nothing here echoes it.
+        run: |
+          if [ -z "${{ secrets.SERVER_ENV_B64 }}" ]; then
+            echo "SERVER_ENV_B64 secret not set — skipping env file write"
+          else
+            echo "${{ secrets.SERVER_ENV_B64 }}" | ssh -p "${{ secrets.VPS_PORT }}" -o StrictHostKeyChecking=accept-new \
+              "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+              "mkdir -p '${{ secrets.DEPLOY_PATH }}/data' \
+               && base64 -d > '${{ secrets.DEPLOY_PATH }}/.env.local' \
+               && chmod 600 '${{ secrets.DEPLOY_PATH }}/.env.local' \
+               && echo 'env file written:' \$(wc -l < '${{ secrets.DEPLOY_PATH }}/.env.local') lines"
+          fi
+
+      - name: Nginx + HTTPS + backup cron
+        run: |
+          ssh -p "${{ secrets.VPS_PORT }}" -o StrictHostKeyChecking=accept-new \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "DEPLOY_PATH='${{ secrets.DEPLOY_PATH }}' APP_NAME='${{ vars.APP_NAME }}' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          mkdir -p /var/backups/itsawrapshack
+
+          # ---- nginx server block (no default_server: 000-catchall owns it) ----
+          cat > /etc/nginx/sites-available/itsawrapshack.conf <<'NGINX'
+          # The Wrap Shack — itsawrapshack.coredex.solutions -> 127.0.0.1:3060 (PM2)
+          server {
+              listen 80;
+              listen [::]:80;
+              server_name itsawrapshack.coredex.solutions;
+
+              # CMS photo uploads are 10 MB server actions — nginx default (1m) would 413.
+              client_max_body_size 12m;
+
+              # Temporary subdomain: canonical URLs point at itsawrapshack.com, so
+              # keep this host out of search indexes. REMOVE at the apex switch.
+              add_header X-Robots-Tag "noindex, nofollow" always;
+
+              location / {
+                  proxy_pass http://127.0.0.1:3060;
+                  proxy_http_version 1.1;
+                  proxy_set_header Host              $host;
+                  proxy_set_header X-Real-IP         $remote_addr;
+                  proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+
+              # Long-cache Next's immutable hashed assets.
+              location /_next/static/ {
+                  proxy_pass http://127.0.0.1:3060;
+                  add_header Cache-Control "public, max-age=31536000, immutable";
+                  add_header X-Robots-Tag "noindex, nofollow" always;
+              }
+          }
+          NGINX
+          ln -sfn /etc/nginx/sites-available/itsawrapshack.conf /etc/nginx/sites-enabled/itsawrapshack.conf
+          nginx -t
+          systemctl reload nginx
+          echo "nginx configured"
+
+          # ---- HTTPS (DNS must already resolve; safe to re-run) ----
+          certbot --nginx -d itsawrapshack.coredex.solutions --redirect -n --agree-tos -m coredexers@gmail.com \
+            && echo "certbot OK" \
+            || echo "::warning::certbot did not issue a cert (DNS not propagated yet?) — re-run this workflow later"
+
+          # ---- nightly WAL-safe CMS db backup, prune after 14 days ----
+          command -v sqlite3 >/dev/null || apt-get install -y -qq sqlite3 >/dev/null
+          cat > /etc/cron.d/itsawrapshack-backup <<'CRON'
+          20 3 * * * root [ -f /var/www/itsawrapshack/data/cms/cms.db ] && sqlite3 /var/www/itsawrapshack/data/cms/cms.db ".backup /var/backups/itsawrapshack/cms-$(date +\%F).db" && find /var/backups/itsawrapshack -name 'cms-*.db' -mtime +14 -delete
+          CRON
+          chmod 644 /etc/cron.d/itsawrapshack-backup
+          echo "backup cron installed"
+
+          # ---- pick up the new env if the app is already running ----
+          cd "$DEPLOY_PATH"
+          if [ -f ecosystem.config.cjs ]; then
+            APP_NAME="${APP_NAME:-itsawrapshack}" PORT=3060 pm2 startOrReload ecosystem.config.cjs --update-env
+            pm2 save
+          else
+            echo "app not deployed yet — the deploy workflow will start it"
+          fi
+          REMOTE
