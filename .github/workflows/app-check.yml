@@ -59,9 +59,42 @@ jobs:
           sleep 1
 
           # pm2 suffixes log names with the process id — use the glob
-          echo "=== error log (last 60 lines, raw) ==="
-          tail -n 60 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error*.log 2>/dev/null || echo "(absent)"
+          echo "=== error log (last 15 lines, raw) ==="
+          tail -n 15 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-error*.log 2>/dev/null || echo "(absent)"
 
-          echo "=== out log (last 25 lines, raw) ==="
-          tail -n 25 ~/.pm2/logs/${APP_NAME:-itsawrapshack}-out*.log 2>/dev/null || echo "(absent)"
+          echo "=== R2 round-trip (creds -> put -> public URL -> delete) ==="
+          # values come straight from the server's own .env.local and are
+          # passed as env to node — never echoed
+          getv() { grep "^$1=" .env.local | cut -d= -f2- | tr -d '\r' | tr -d '"' | tr -d "'"; }
+          R2_ACCOUNT_ID="$(getv R2_ACCOUNT_ID)" \
+          R2_ACCESS_KEY_ID="$(getv R2_ACCESS_KEY_ID)" \
+          R2_SECRET_ACCESS_KEY="$(getv R2_SECRET_ACCESS_KEY)" \
+          R2_BUCKET="$(getv R2_BUCKET)" \
+          R2_PUBLIC_URL="$(getv R2_PUBLIC_URL)" \
+          node -e '
+            const { S3Client, HeadBucketCommand, ListObjectsV2Command,
+                    PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+            (async () => {
+              const c = new S3Client({
+                region: "auto",
+                endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+                credentials: { accessKeyId: process.env.R2_ACCESS_KEY_ID,
+                               secretAccessKey: process.env.R2_SECRET_ACCESS_KEY },
+              });
+              const Bucket = process.env.R2_BUCKET;
+              await c.send(new HeadBucketCommand({ Bucket }));
+              console.log("head-bucket: OK");
+              const ls = await c.send(new ListObjectsV2Command({ Bucket, MaxKeys: 5 }));
+              console.log("objects in bucket:", ls.KeyCount ?? 0,
+                (ls.Contents || []).map(o => o.Key).join(", ") || "(empty)");
+              const Key = `healthcheck/appcheck-${Date.now()}.txt`;
+              await c.send(new PutObjectCommand({ Bucket, Key, Body: "ok", ContentType: "text/plain" }));
+              console.log("put-object: OK (", Key, ")");
+              const pub = `${process.env.R2_PUBLIC_URL.replace(/\/+$/, "")}/${Key}`;
+              const res = await fetch(pub);
+              console.log("public URL fetch:", res.status, res.status === 200 ? await res.text() : "");
+              await c.send(new DeleteObjectCommand({ Bucket, Key }));
+              console.log("delete-object: OK — bucket left as found");
+            })().catch(e => { console.error("R2 CHECK FAILED:", e.name, e.message); process.exit(1); });
+          '
           REMOTE
