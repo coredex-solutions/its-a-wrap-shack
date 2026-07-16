@@ -17,18 +17,25 @@ const MenuPreview = dynamic(() => import("@/components/home/MenuPreview"));
 const Testimonials = dynamic(() => import("@/components/home/Testimonials"));
 import Divider from "@/components/ui/Divider";
 import ContentHydrator from "@/components/ContentHydrator";
+import { HOME_MENU_IDS } from "@/components/home/home-menu-ids";
 import { JsonLd, pageGraph } from "@/lib/jsonld";
 import { loadContent } from "@/lib/cms/store";
 import { getSite } from "@/lib/content";
 
 export default async function HomePage() {
-  // prime the server snapshot; hydrate the extra sections THIS page's client
-  // components read (dishes/preview → menu, carousel → testimonials)
+  // prime the server snapshot; hydrate the extra data THIS page's client
+  // components read: the carousel's testimonials and ONLY the menu items the
+  // dishes/preview sections look up by id — the other ~45 items are dead
+  // bytes in the flight payload (client render stays identical: those
+  // sections .find() by id, so a superset-consistent subset can't mismatch)
   const content = await loadContent();
   const site = getSite();
   return (
     <ContentHydrator
-      data={{ menu: content.menu, testimonials: content.testimonials }}
+      data={{
+        menu: content.menu.filter((m) => HOME_MENU_IDS.has(m.id)),
+        testimonials: content.testimonials,
+      }}
     >
       <JsonLd
         data={pageGraph({

@@ -7,6 +7,7 @@ import { getMenu, formatPrice, type MenuItem } from "@/lib/content";
 import { gsapNow, prefersReducedMotion, EASE } from "@/lib/gsap";
 import DietaryBadge from "@/components/ui/DietaryBadge";
 import Button from "@/components/ui/Button";
+import type { SignatureId } from "@/components/home/home-menu-ids";
 
 /**
  * Featured showcase: a large focus panel paired with a selectable rail.
@@ -19,7 +20,9 @@ import Button from "@/components/ui/Button";
 type Motif = "falafel" | "salad";
 
 interface Dish {
-  itemId: string;
+  // typed against home-menu-ids so a new dish id must be added there first
+  // (that list drives what the home page hydrates for this section to read)
+  itemId: SignatureId;
   title: string;
   blurb: string;
   image?: string;
