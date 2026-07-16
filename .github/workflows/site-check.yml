@@ -1,0 +1,45 @@
+name: Site health check
+
+# Read-only external verification of the live site (public HTTP GETs from a
+# runner — no SSH, no secrets). Useful because office/dev IPs are sometimes
+# edge-blocked by the host while the site is fine for everyone else.
+
+on: workflow_dispatch
+
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Fetch pages + assets and print delivery headers
+        run: |
+          set -uo pipefail
+          BASE="https://itsawrapshack.coredex.solutions"
+
+          echo "=== HTML (/) ==="
+          curl -sI -H "Accept-Encoding: br, gzip" "$BASE/" | tr -d '\r' \
+            | grep -iE "^HTTP|content-encoding|cache-control|x-nextjs|vary" || true
+
+          echo "=== stylesheet links vs inline style ==="
+          html=$(curl -s --compressed "$BASE/")
+          echo "stylesheet links: $(printf '%s' "$html" | grep -c 'rel="stylesheet"' || true)"
+          echo "inline <style> blocks: $(printf '%s' "$html" | grep -c '<style' || true)"
+
+          echo "=== first JS chunk ==="
+          chunk=$(printf '%s' "$html" | grep -oE '/_next/static/chunks/[a-zA-Z0-9._-]+\.js' | head -1)
+          echo "chunk: $chunk"
+          curl -sI -H "Accept-Encoding: br, gzip" "$BASE$chunk" | tr -d '\r' \
+            | grep -iE "^HTTP|content-encoding|content-length|cache-control|etag|vary" || true
+
+          echo "=== hero poster (public asset from disk) ==="
+          curl -sI "$BASE/hero-frames/hero-poster.webp" | tr -d '\r' \
+            | grep -iE "^HTTP|cache-control|content-type|content-length" || true
+
+          echo "=== header logo via optimizer (q60) ==="
+          curl -sI -H "Accept: image/avif,image/webp,*/*" \
+            "$BASE/_next/image?url=%2Fbrand%2Flogo-cream.png&w=128&q=60" | tr -d '\r' \
+            | grep -iE "^HTTP|content-type|content-length|cache-control" || true
+
+          echo "=== all 5 routes return 200 ==="
+          for p in / /menu /catering /about /contact; do
+            printf '%s -> %s\n' "$p" "$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")"
+          done
