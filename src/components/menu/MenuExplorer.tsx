@@ -40,10 +40,16 @@ export default function MenuExplorer() {
             >
               {cat.label}
             </h2>
-            {/* add-on line — on its own row under the title, label-weight so
-                it reads as an offer, not a footnote */}
+            {/* add-on offer — a filled pill under the title so it reads as a
+                deliberate offer the eye lands on, not a footnote */}
             {cat.note && (
-              <p className="mt-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-gold-ink">
+              <p className="mt-3.5 inline-flex items-center gap-2.5 rounded-full bg-forest py-2 pl-2.5 pr-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-cream">
+                <span
+                  aria-hidden
+                  className="grid size-5 shrink-0 place-items-center rounded-full bg-cream/15 text-[14px] leading-none text-gold"
+                >
+                  +
+                </span>
                 {cat.note}
               </p>
             )}
@@ -130,6 +136,16 @@ function MenuCard({
           <p className="body-copy mt-2 text-[14.5px] leading-relaxed text-charcoal-60">
             {item.description}
           </p>
+          {/* item-specific add-on — outlined chip, same offer language as the
+              category pill but one register quieter */}
+          {item.addOn && (
+            <p className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-olive/60 bg-cream px-3.5 py-1.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] text-forest">
+              <span aria-hidden className="text-[13px] leading-none text-gold-ink">
+                +
+              </span>
+              {item.addOn}
+            </p>
+          )}
           <div className="mt-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-3 md:pt-5">
             <span className="flex flex-wrap items-center gap-3">
               {item.dietary.map((k) => (

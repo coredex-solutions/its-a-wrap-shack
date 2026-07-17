@@ -147,7 +147,10 @@ export default function MenuEditor({
                       onChange={(e) => setCat(cat.id, { label: e.target.value })}
                     />
                   </Field>
-                  <Field label="Category note (small print, optional)">
+                  <Field
+                    label="Category add-on offer (optional)"
+                    hint="Shown as the green pill under the category title, e.g. “Add extra protein to any wrap · $4.99”"
+                  >
                     <TextInput
                       value={cat.note ?? ""}
                       onChange={(e) =>
@@ -188,6 +191,19 @@ export default function MenuEditor({
                           value={it.description}
                           onChange={(e) =>
                             setItem(it.id, { description: e.target.value })
+                          }
+                        />
+                      </Field>
+                    </div>
+                    <div className="mt-4">
+                      <Field
+                        label="Add-on offer (optional)"
+                        hint="Shown as a highlighted chip on this item’s card, e.g. “Extra skewer · $7.50”"
+                      >
+                        <TextInput
+                          value={it.addOn ?? ""}
+                          onChange={(e) =>
+                            setItem(it.id, { addOn: e.target.value || undefined })
                           }
                         />
                       </Field>

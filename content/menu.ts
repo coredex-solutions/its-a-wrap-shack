@@ -34,6 +34,8 @@ export interface MenuItem {
   price: number | null;
   /** Qualifier printed before the price, e.g. "3 for". */
   priceNote?: string;
+  /** Paid add-on offer for THIS item, rendered as a highlighted chip on the card. */
+  addOn?: string;
   image?: string;
   dietary: Dietary[];
   featured?: boolean;
@@ -72,6 +74,7 @@ export const menu: MenuItem[] = [
     description:
       "Spice-blend beef shaved thin, with sautéed tomatoes, pickles, parsley, onion, and sumac. Tahini sauce, thin pita, no shortcuts.",
     price: 14.99,
+    image: "/images/menu/beef-shawarma-wrap.webp",
     dietary: [],
   },
   {
@@ -103,7 +106,7 @@ export const menu: MenuItem[] = [
       "Chickpeas and fava beans ground with herbs and sesame, fried crisp, with greens, tomato, pickled turnips, and tahini in thin pita.",
     price: 12.99,
     dietary: ["vegan", "vegetarian"],
-    image: "/images/gallery/falafel-pita.webp",
+    image: "/images/menu/falafel-wrap.webp",
     featured: true,
   },
 
@@ -156,7 +159,7 @@ export const menu: MenuItem[] = [
       "Your choice of chicken shawarma or gyro over rice with hummus, house salad, and warm pita.",
     price: 19.99,
     dietary: [],
-    image: "/images/dishes/beef-gyro.webp",
+    image: "/images/menu/chicken-shawarma-plate.webp",
     featured: true,
   },
   {
@@ -173,7 +176,8 @@ export const menu: MenuItem[] = [
     category: "plates",
     name: "Kebab Plate",
     description:
-      "Two skewers — chicken tawook, beef kefta, or beef tenderloin — over rice with hummus, house salad, and pita. Extra skewer $7.50.",
+      "Two skewers — chicken tawook, beef kefta, or beef tenderloin — over rice with hummus, house salad, and pita.",
+    addOn: "Extra skewer · $7.50",
     price: 20.99,
     dietary: [],
   },
@@ -184,6 +188,7 @@ export const menu: MenuItem[] = [
     description:
       "Falafel on a bed of rice with hummus, garbanzo bean salad, and warm pita.",
     price: 17.99,
+    image: "/images/menu/falafel-plate.webp",
     dietary: ["vegan", "vegetarian"],
   },
   {
@@ -191,7 +196,8 @@ export const menu: MenuItem[] = [
     category: "plates",
     name: "Gyro Fries or Chicken Shawarma Fries",
     description:
-      "Golden seasoned fries piled with gyro meat or chicken shawarma, chopped tomato, crumbled feta, and your pick of tzatziki or garlic sauce. Add extra protein $4.99.",
+      "Golden seasoned fries piled with gyro meat or chicken shawarma, chopped tomato, crumbled feta, and your pick of tzatziki or garlic sauce.",
+    addOn: "Add extra protein · $4.99",
     price: 16.99,
     dietary: [],
     image: "/images/menu/gyro-fries.webp",
@@ -202,7 +208,7 @@ export const menu: MenuItem[] = [
     category: "plates",
     name: "Breakfast Plate",
     description:
-      "Hummus, foul mudamas, labneh, olives, cheese, makdous, sliced tomato, cucumber, fresh mint, falafel, and baba ghanoush with warm pita.",
+      "Hummus, foul mudamas, labneh(thick cream yogurt), olives, cheese, makdous, sliced tomato, cucumber, fresh mint, falafel, and baba ghanoush with warm pitam.",
     price: 19.95,
     dietary: ["vegetarian", "contains-nuts"],
   },
@@ -231,7 +237,8 @@ export const menu: MenuItem[] = [
     category: "grill",
     name: "Grilled Lamb Chop Plate",
     description:
-      "Two bone-in chops grilled to medium, with garlic sauce or mint jelly, over rice with hummus, house salad, and pita. Extra chop $9.99.",
+      "Two bone-in chops grilled to medium, with garlic sauce or mint jelly, over rice with hummus, house salad, and pita.",
+    addOn: "Extra chop · $9.99",
     price: 26.99,
     dietary: [],
     image: "/images/menu/lamb-chop-plate.webp",
@@ -251,7 +258,8 @@ export const menu: MenuItem[] = [
     category: "grill",
     name: "Surf & Turf Plate",
     description:
-      "Pan-seared salmon and two grilled lamb chops over rice with baba ghanoush, hummus, house salad, and pita. Garlic or mint jelly, plus tahini. Extra chop $9.99.",
+      "Pan-seared salmon and two grilled lamb chops over rice with baba ghanoush, hummus, house salad, and pita. Garlic or mint jelly, plus tahini.",
+    addOn: "Extra chop · $9.99",
     price: 36.99,
     dietary: [],
   },

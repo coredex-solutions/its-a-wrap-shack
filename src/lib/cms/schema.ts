@@ -42,6 +42,7 @@ export const menuItemSchema = z.object({
   description: z.string(),
   price: z.number().nonnegative().nullable(),
   priceNote: z.string().optional(),
+  addOn: z.string().optional(),
   image: z.string().optional(),
   dietary: z.array(dietarySchema),
   featured: z.boolean().optional(),

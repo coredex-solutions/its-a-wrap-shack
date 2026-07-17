@@ -45,7 +45,7 @@ export default function FinalCta() {
         <div className="justify-self-center md:justify-self-end" data-reveal>
           <Image
             src="/images/shawarma-cutout.webp"
-            alt="Chicken shawarma wrap in kraft paper tied with twine"
+            alt="Chicken shawarma wrap in kraft paper"
             width={633}
             height={1335}
             sizes="(max-width: 768px) 60vw, 300px"

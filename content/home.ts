@@ -80,6 +80,6 @@ export const home: HomeContent = {
     eyebrow: "Ready when you are",
     headlineTop: "Skip the line.",
     headlineItalic: "Not the garlic sauce.",
-    body: "Order ahead for pickup or delivery — wrapped in kraft, tied with twine, and hot when it reaches you.",
+    body: "Order ahead for pickup or delivery — wrapped in kraft, and hot when it reaches you.",
   },
 };

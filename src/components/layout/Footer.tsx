@@ -10,7 +10,7 @@ import BackToTop from "@/components/ui/BackToTop";
 
 const NAV = [
   { href: "/menu", label: "Menu" },
-  { href: "/#mouneh", label: "The Mouneh Corner" },
+  { href: "/#retail", label: "The Retail Corner" },
   { href: "/catering", label: "Catering" },
   { href: "/about", label: "Our Story" },
   { href: "/contact", label: "Visit Us" },

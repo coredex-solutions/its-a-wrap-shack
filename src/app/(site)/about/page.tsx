@@ -7,9 +7,9 @@ import { getCloverUrl } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
 import { JsonLd, pageGraph } from "@/lib/jsonld";
 
-const TITLE = "Our Story · Lebanese Kitchen in the Desert";
+const TITLE = "Our Story · Mediterranean Kitchen in the Desert";
 const DESCRIPTION =
-  "The Wrap Shack is a family-run Lebanese kitchen in the Palm Desert area — shawarma stacked daily, fresh local ingredients, vegan options, garlic sauce from a family recipe, everything 100% halal.";
+  "The Wrap Shack is a family-run Mediterranean kitchen in the Palm Desert area — shawarma stacked daily, fresh local ingredients, vegan options, garlic sauce from a family recipe, everything 100% halal.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -62,11 +62,11 @@ export default async function AboutPage() {
             immediate
             className="mt-6 text-[clamp(2.2rem,4.6vw,4rem)] font-medium leading-[1.12]"
           >
-            A Lebanese kitchen that crossed an ocean and kept its accent.
+            A Mediterranean kitchen that crossed an ocean and kept its accent.
           </PullLine>
           <div className="body-copy mt-8 space-y-5 md:mt-10 md:space-y-6 text-[16.5px] leading-[1.85] text-sage">
             <p>
-              The Wrap Shack began the way most Lebanese cooking does — at a
+              The Wrap Shack began the way most Mediterranean cooking does — at a
               family table, with recipes nobody ever wrote down properly because
               everybody already knew them. When our family settled in the
               Coachella Valley, the recipes came along: the seven-spice blend,
