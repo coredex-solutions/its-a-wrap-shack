@@ -24,7 +24,7 @@ const VALUES = [
   },
   {
     title: "A sauce with a lineage",
-    body: "Our garlic sauce follows a family recipe from Beirut. Small batches, real garlic, no shortcuts, no jars.",
+    body: "Our garlic sauce follows a family recipe from Middle East. Small batches, real garlic, no shortcuts, no jars.",
   },
   {
     title: "Halal, entirely",

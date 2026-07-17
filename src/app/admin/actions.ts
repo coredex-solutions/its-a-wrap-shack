@@ -9,10 +9,10 @@ import {
   destroySession,
   isAdmin,
 } from "@/lib/cms/auth";
-import { saveOverlaySection } from "@/lib/cms/store";
+import { saveOverlaySection, loadContent } from "@/lib/cms/store";
 import {
   processAndStoreMenuImage,
-  sweepOrphanMenuImages,
+  sweepOrphanImages,
 } from "@/lib/cms/images";
 import {
   siteEditableSchema,
@@ -21,6 +21,7 @@ import {
   testimonialSchema,
   faqItemSchema,
   cateringSectionSchema,
+  homeSchema,
 } from "@/lib/cms/schema";
 import { z } from "zod";
 
@@ -92,11 +93,25 @@ export async function saveMenuAndCategories(
   const items = z.array(menuItemSchema).min(1).safeParse(menu);
   if (!items.success) return { ok: false, error: firstIssue(items.error, "Item") };
   await saveOverlaySection({ categories: cats.data, menu: items.data });
-  // reclaim uploaded photos the saved menu no longer references (replace/
-  // remove/deleted items) — cleanup must never fail the save itself
-  await sweepOrphanMenuImages(items.data).catch(() => {});
+  await sweepUploads();
   revalidateSite();
   return { ok: true };
+}
+
+/** Reclaim uploaded photos nothing references anymore (replace/remove/deleted
+    items). Uploads are shared across menu AND catering, so the sweep reads the
+    freshly-saved content bundle and keeps every URL either section still uses.
+    Cleanup must never fail the save itself. */
+async function sweepUploads(): Promise<void> {
+  try {
+    const c = await loadContent();
+    await sweepOrphanImages([
+      ...c.menu.map((i) => i.image),
+      ...c.catering.flatMap((s) => s.items.map((i) => i.image)),
+    ]);
+  } catch {
+    // never fail the save over cleanup
+  }
 }
 
 export type UploadResult =
@@ -146,10 +161,16 @@ export async function saveCatering(
   const lead = z.string().min(1).safeParse(leadTime);
   if (!lead.success) return { ok: false, error: "Lead-time note: cannot be empty" };
   await saveOverlaySection({ catering: parsed.data, cateringLeadTime: lead.data });
+  await sweepUploads();
   revalidateSite();
   return { ok: true };
 }
 
 export async function saveFaq(data: unknown): Promise<SaveResult> {
   return save(z.array(faqItemSchema), data, "faq", "Question");
+}
+
+/** Home-page copy: hero lines, the mouneh corner, the final CTA. */
+export async function saveHome(data: unknown): Promise<SaveResult> {
+  return save(homeSchema, data, "home", "Field");
 }

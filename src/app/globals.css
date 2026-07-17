@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* hide the scrollbar on horizontal snap rails (the affordance is the
+   peeking last item + edge fade, not a chrome scrollbar) */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme {
   /* ——— Brand palette (CLAUDE.md §Design tokens — exact) ——— */
   --color-forest: #1f3b2c;

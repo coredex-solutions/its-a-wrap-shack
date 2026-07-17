@@ -1,7 +1,9 @@
 /**
  * Catering menu (owner's July 2026 sheet) — trays and platters built for ten.
- * Code-only content (not CMS-editable); consumed via `lib/content` accessors.
- * Ordering is by phone, 48 hours in advance.
+ * SEED for the CMS `catering` section; consumed via `lib/content` accessors.
+ * Ordering is by phone, 48 hours in advance. Tray photos live in
+ * `public/images/catering/` (owner-approved generated set styled after the
+ * real kitchen's trays); the CMS can replace them via upload.
  */
 
 export interface CateringItem {
@@ -9,6 +11,7 @@ export interface CateringItem {
   name: string;
   price: number;
   description?: string;
+  image?: string;
 }
 
 export interface CateringSection {
@@ -32,6 +35,7 @@ export const catering: CateringSection[] = [
         price: 75,
         description:
           "A bed of mixed greens topped with fresh tomato, cucumber, onion, and feta. Served with pomegranate vinaigrette.",
+        image: "/images/catering/house-salad.webp",
       },
       {
         id: "tabouleh-salad",
@@ -39,6 +43,7 @@ export const catering: CateringSection[] = [
         price: 85,
         description:
           "Parsley and fresh mint folded with soaked bulgur, onion, tomato, and fresh lemon juice, drizzled with extra-virgin olive oil. Garnished with hearts of romaine.",
+        image: "/images/catering/tabouleh-salad.webp",
       },
       {
         id: "fattoush-salad",
@@ -109,6 +114,7 @@ export const catering: CateringSection[] = [
         price: 199,
         description:
           "30 mixed skewers — 10 kefta, 10 chicken kebab, and 10 beef kebab — served over a bed of rice with hummus, mixed salad, and pita bread. With garlic and tahini sauces.",
+        image: "/images/catering/mixed-grill-platter.webp",
       },
       {
         id: "shawarma-gyro-platter",
@@ -129,6 +135,7 @@ export const catering: CateringSection[] = [
         price: 55,
         description:
           "Mini puff-pastry pies filled with ground beef, chopped parsley, mint, and onion, finished with pomegranate glaze and tahini sauce.",
+        image: "/images/catering/lahm-bi-ajeen.webp",
       },
       {
         id: "sambousek",
@@ -150,6 +157,7 @@ export const catering: CateringSection[] = [
         price: 55,
         description:
           "Cured eggplant marinated in olive oil, stuffed with walnuts, garlic, chili, and red pepper. Served with pita bread.",
+        image: "/images/catering/makdous.webp",
       },
       {
         id: "hummus-tray",
@@ -157,6 +165,7 @@ export const catering: CateringSection[] = [
         price: 69,
         description:
           "Garbanzo-bean dip with tahini, topped with herbs and a drizzle of extra-virgin olive oil. Served with pita bread.",
+        image: "/images/catering/hummus-tray.webp",
       },
       {
         id: "baba-ghanoush-tray",
@@ -171,6 +180,7 @@ export const catering: CateringSection[] = [
         price: 69,
         description:
           "Fire-roasted red bell pepper dip with walnuts, pomegranate molasses, breadcrumbs, and olive oil. Served with pita bread.",
+        image: "/images/catering/muhamara-tray.webp",
       },
       {
         id: "mutabal-tray",
@@ -178,19 +188,32 @@ export const catering: CateringSection[] = [
         price: 69,
         description:
           "Fire-roasted eggplant blended with pomegranate molasses, tomato, fresh lemon juice, garlic, and herbs, with a drizzle of extra-virgin olive oil. Served with pita bread.",
+        image: "/images/catering/mutabal-tray.webp",
       },
-      { id: "rice-tray", name: "Basmati Rice Tray", price: 45 },
+      {
+        id: "rice-tray",
+        name: "Basmati Rice Tray",
+        price: 45,
+        image: "/images/catering/rice-tray.webp",
+      },
       {
         id: "grape-leaves",
         name: "Stuffed Grape Leaves · Dolma · 50 pieces",
         price: 69,
         description: "Stuffed with rice, parsley, and vegetables.",
+        image: "/images/catering/grape-leaves.webp",
       },
-      { id: "falafel-tray", name: "Falafel Tray · 25 pieces", price: 49.99 },
+      {
+        id: "falafel-tray",
+        name: "Falafel Tray · 25 pieces",
+        price: 49.99,
+        image: "/images/catering/falafel-tray.webp",
+      },
       {
         id: "pickles-tray",
         name: "Mixed Pickles & Pickled Turnips",
         price: 25,
+        image: "/images/catering/pickles-tray.webp",
       },
       {
         id: "dip-sauces",

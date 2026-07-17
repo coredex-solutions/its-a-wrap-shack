@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image, { getImageProps } from "next/image";
-import { getCloverUrl } from "@/lib/content";
+import { getCloverUrl, getHome } from "@/lib/content";
 import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
 /**
@@ -47,6 +47,7 @@ export default function HeroSequence() {
   // competes with the fonts/poster for LCP bandwidth
   const [warm, setWarm] = useState(false);
   const clover = getCloverUrl();
+  const hero = getHome().hero;
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -385,15 +386,15 @@ export default function HeroSequence() {
             className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
           >
             <p className="eyebrow hero-enter mb-6 text-tahini">
-              Palm Desert · 100% Halal
+              {hero.eyebrow}
             </p>
             {/* deliberately NOT animated in: the headline is the LCP element,
                 and Chrome records an entrance-animated element's paint only
                 when the animation ENDS — a ~1s LCP penalty. The eyebrow and
                 CTA rising around it carry the entrance choreography. */}
             <h1 className="display-hero text-cream">
-              <span className="block">Mediterranean soul.</span>
-              <span className="block italic">California sun.</span>
+              <span className="block">{hero.headlineTop}</span>
+              <span className="block italic">{hero.headlineBottom}</span>
             </h1>
             <div
               className="hero-enter mt-10"
@@ -422,7 +423,7 @@ export default function HeroSequence() {
             aria-hidden
             className="absolute inset-x-0 top-[68%] z-10 px-6 text-center font-display text-[clamp(1.6rem,3vw,2.4rem)] italic text-cream opacity-0 motion-reduce:hidden"
           >
-            wrapped fresh, every single moment
+            {hero.caption}
           </p>
 
           {/* small screens only: cream field + real logo covers the film's

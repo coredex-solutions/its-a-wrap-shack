@@ -11,9 +11,10 @@
  *    (NOT public/ — `next start` snapshots public/ at boot, so files written
  *    at runtime would 404 until a restart).
  *
- * Every stored object gets a row in the `images` table; after each menu save
- * the orphan sweep deletes objects no longer referenced by any menu item
- * (15-minute grace window protects just-uploaded, not-yet-saved photos).
+ * Every stored object gets a row in the `images` table; after each menu or
+ * catering save the orphan sweep deletes objects no longer referenced by any
+ * menu item or catering tray (15-minute grace window protects just-uploaded,
+ * not-yet-saved photos).
  */
 
 import fs from "fs/promises";
@@ -156,15 +157,17 @@ export async function processAndStoreMenuImage(
 const ORPHAN_GRACE_MS = 15 * 60 * 1000;
 
 /**
- * Delete uploaded images no longer referenced by any menu item. Each row is
- * removed via the backend it was stored under. Never throws — cleanup must
- * not fail a save.
+ * Delete uploaded images no longer referenced by the given URLs. Uploads are
+ * shared across sections (menu items + catering trays), so callers must pass
+ * EVERY image URL the current content references — not just the section that
+ * was saved. Each row is removed via the backend it was stored under. Never
+ * throws — cleanup must not fail a save.
  */
-export async function sweepOrphanMenuImages(
-  menu: { image?: string }[],
+export async function sweepOrphanImages(
+  referencedUrls: (string | undefined)[],
 ): Promise<void> {
   const referenced = new Set(
-    menu.map((i) => i.image).filter((u): u is string => Boolean(u)),
+    referencedUrls.filter((u): u is string => Boolean(u)),
   );
   for (const row of findOrphanImages(referenced, ORPHAN_GRACE_MS)) {
     try {

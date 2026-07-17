@@ -11,6 +11,7 @@ import {
   AddButton,
   SaveBar,
 } from "./ui";
+import ImageField from "./ImageField";
 
 function slug(name: string): string {
   return name
@@ -218,6 +219,19 @@ export default function CateringEditor({
                               description: e.target.value || undefined,
                             })
                           }
+                        />
+                      </Field>
+                    </div>
+                    <div className="mt-4">
+                      <Field
+                        label="Photo"
+                        hint="Shown beside the tray on the catering page. Landscape photos look best — big files are resized automatically. Save changes to publish."
+                      >
+                        <ImageField
+                          itemId={item.id}
+                          itemName={item.name}
+                          value={item.image}
+                          onChange={(image) => setItem(section.id, item.id, { image })}
                         />
                       </Field>
                     </div>

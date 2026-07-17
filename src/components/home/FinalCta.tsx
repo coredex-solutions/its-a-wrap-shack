@@ -1,28 +1,28 @@
 import Image from "next/image";
-import { getSite, getCloverUrl } from "@/lib/content";
+import { getSite, getCloverUrl, getHome } from "@/lib/content";
 
 export default function FinalCta() {
   const site = getSite();
   const clover = getCloverUrl();
+  const cta = getHome().finalCta;
   return (
     <section aria-labelledby="cta-heading" className="overflow-hidden bg-forest text-cream">
       <div className="mx-auto grid max-w-[1400px] items-center gap-8 px-5 py-16 md:grid-cols-[1fr_auto] md:gap-24 md:px-10 md:py-32">
         <div>
           <p className="eyebrow text-gold" data-reveal>
-            Ready when you are
+            {cta.eyebrow}
           </p>
           <h2
             id="cta-heading"
             className="mt-5 font-display text-[clamp(2.6rem,5vw,4.6rem)] font-medium leading-[1.02]"
             data-reveal
           >
-            Skip the line.
+            {cta.headlineTop}
             <br />
-            <span className="italic">Not the garlic sauce.</span>
+            <span className="italic">{cta.headlineItalic}</span>
           </h2>
           <p className="body-copy mt-6 text-[16px] leading-relaxed text-sage" data-reveal>
-            Order ahead for pickup or delivery — wrapped in kraft, tied with
-            twine, and hot when it reaches you. {site.hours.orderingWindow}.
+            {cta.body} {site.hours.orderingWindow}.
           </p>
           <div className="mt-8 md:mt-10" data-reveal>
             <a

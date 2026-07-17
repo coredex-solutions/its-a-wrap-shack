@@ -4,6 +4,7 @@ import HeroSequence from "@/components/hero/HeroSequence";
 import TrustStrip from "@/components/home/TrustStrip";
 import StorySection from "@/components/home/StorySection";
 import GallerySection from "@/components/home/GallerySection";
+import MounehCorner from "@/components/home/MounehCorner";
 import VisitSection from "@/components/home/VisitSection";
 import FinalCta from "@/components/home/FinalCta";
 
@@ -28,7 +29,11 @@ export default async function HomePage() {
   const site = getSite();
   return (
     <ContentHydrator
-      data={{ menu: content.menu, testimonials: content.testimonials }}
+      data={{
+        menu: content.menu,
+        testimonials: content.testimonials,
+        home: content.home,
+      }}
     >
       <JsonLd
         data={pageGraph({
@@ -57,6 +62,10 @@ export default async function HomePage() {
       <Suspense>
         <Testimonials />
       </Suspense>
+      <div className="grain bg-cream">
+        <Divider className="mx-auto max-w-[1100px] px-5" />
+      </div>
+      <MounehCorner />
       <div className="grain bg-cream">
         <Divider className="mx-auto max-w-[1100px] px-5" />
       </div>

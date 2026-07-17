@@ -34,17 +34,19 @@ export default function MenuExplorer() {
             aria-labelledby={`cat-${cat.id}-h`}
             className={`scroll-mt-[150px] ${ci > 0 ? "mt-12 md:mt-20" : ""}`}
           >
-            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-              <h2
-                id={`cat-${cat.id}-h`}
-                className="font-display text-[clamp(2rem,3.2vw,2.8rem)] font-medium text-charcoal"
-              >
-                {cat.label}
-              </h2>
-              {cat.note && (
-                <p className="text-[13px] text-charcoal-60">{cat.note}</p>
-              )}
-            </div>
+            <h2
+              id={`cat-${cat.id}-h`}
+              className="font-display text-[clamp(2rem,3.2vw,2.8rem)] font-medium text-charcoal"
+            >
+              {cat.label}
+            </h2>
+            {/* add-on line — on its own row under the title, label-weight so
+                it reads as an offer, not a footnote */}
+            {cat.note && (
+              <p className="mt-2 text-[13px] font-semibold uppercase tracking-[0.08em] text-gold-ink">
+                {cat.note}
+              </p>
+            )}
             <Divider tone="olive" className="mt-4 max-w-[120px]" />
 
             <ul className="mt-6 grid gap-4 md:mt-8 md:gap-5 lg:grid-cols-2">

@@ -77,6 +77,9 @@ export default async function ContactPage() {
                     {site.address.locality}, {site.address.region}{" "}
                     {site.address.postalCode}
                   </address>
+                  <span className="mt-1 block text-[14px] text-charcoal-60">
+                    Between Washington St &amp; Country Club Dr
+                  </span>
                 </dd>
               </div>
               <div data-reveal>

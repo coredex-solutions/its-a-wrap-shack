@@ -1,5 +1,6 @@
 import { loadContent } from "@/lib/cms/store";
 import SmoothScroll from "@/components/motion/SmoothScroll";
+import HashScroll from "@/components/motion/HashScroll";
 import RevealManager from "@/components/motion/RevealManager";
 import ContentHydrator from "@/components/ContentHydrator";
 import Header from "@/components/layout/Header";
@@ -29,6 +30,7 @@ export default async function SiteLayout({
         Skip to content
       </a>
       <SmoothScroll />
+      <HashScroll />
       <RevealManager />
       <Header />
       <main id="main">{children}</main>

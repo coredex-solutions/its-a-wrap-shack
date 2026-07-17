@@ -27,6 +27,13 @@ import {
   type CateringSection,
   type CateringItem,
 } from "@content/catering";
+import {
+  home as seedHome,
+  type HomeContent,
+  type HomeHero,
+  type HomeMouneh,
+  type HomeFinalCta,
+} from "@content/home";
 
 export type {
   CategoryId,
@@ -37,6 +44,10 @@ export type {
   FaqItem,
   CateringSection,
   CateringItem,
+  HomeContent,
+  HomeHero,
+  HomeMouneh,
+  HomeFinalCta,
 };
 
 /** `content/site.ts` with its literal types widened for CMS-edited values. */
@@ -79,6 +90,7 @@ export interface ContentBundle {
   faq: FaqItem[];
   catering: CateringSection[];
   cateringLeadTime: string;
+  home: HomeContent;
 }
 
 export const defaultBundle: ContentBundle = {
@@ -90,6 +102,7 @@ export const defaultBundle: ContentBundle = {
   faq: seedFaq,
   catering: seedCatering,
   cateringLeadTime: CATERING_LEAD_TIME,
+  home: seedHome,
 };
 
 let current: ContentBundle = defaultBundle;
@@ -150,6 +163,10 @@ export function getCatering(): CateringSection[] {
 
 export function getCateringLeadTime(): string {
   return current.cateringLeadTime;
+}
+
+export function getHome(): HomeContent {
+  return current.home;
 }
 
 export function formatCateringPrice(item: CateringItem): string {

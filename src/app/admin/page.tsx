@@ -10,6 +10,11 @@ const CARDS = [
     blurb: "Phone, email, hours, ordering link, and social profiles.",
   },
   {
+    href: "/admin/home",
+    title: "Home page",
+    blurb: "The hero lines, the mouneh corner, and the order call-out.",
+  },
+  {
     href: "/admin/menu",
     title: "Menu",
     blurb: "Items, prices, descriptions, dietary badges, and house favorites.",

@@ -135,7 +135,7 @@ export const menu: MenuItem[] = [
     description:
       "Chopped gyro over rice and greens with hummus, chickpeas, beans, red cabbage, carrots, cucumber, tomato, and feta, drizzled with tzatziki.",
     price: 16.99,
-    dietary: ["gluten-free"],
+    dietary: [],
   },
   {
     id: "vegetarian-bowl",
@@ -191,7 +191,7 @@ export const menu: MenuItem[] = [
     category: "plates",
     name: "Gyro Fries or Chicken Shawarma Fries",
     description:
-      "Golden seasoned fries piled with gyro meat or chicken shawarma, chopped tomato, crumbled feta, and your pick of tzatziki or garlic sauce.",
+      "Golden seasoned fries piled with gyro meat or chicken shawarma, chopped tomato, crumbled feta, and your pick of tzatziki or garlic sauce. Add extra protein $4.99.",
     price: 16.99,
     dietary: [],
     image: "/images/menu/gyro-fries.webp",
@@ -251,7 +251,7 @@ export const menu: MenuItem[] = [
     category: "grill",
     name: "Surf & Turf Plate",
     description:
-      "Pan-seared salmon and two grilled lamb chops over rice with baba ghanoush, hummus, house salad, and pita. Garlic or mint jelly, plus tahini.",
+      "Pan-seared salmon and two grilled lamb chops over rice with baba ghanoush, hummus, house salad, and pita. Garlic or mint jelly, plus tahini. Extra chop $9.99.",
     price: 36.99,
     dietary: [],
   },
@@ -271,7 +271,7 @@ export const menu: MenuItem[] = [
     category: "bakery",
     name: "Manakesh Za'atar",
     description:
-      "Flatbread baked with za'atar, sesame seeds, and extra-virgin olive oil — the way it comes out of ovens in Beirut.",
+      "Flatbread baked with za'atar, sesame seeds, and extra-virgin olive oil — the way it comes out of ovens in Middle East.",
     price: 8.99,
     dietary: ["vegan", "vegetarian"],
   },

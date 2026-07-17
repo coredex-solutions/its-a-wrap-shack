@@ -125,23 +125,39 @@ export default async function CateringPage() {
                     key={item.id}
                     className="border-b border-tahini/60 py-4 first:border-t md:py-5"
                   >
-                    <div className="flex items-baseline gap-3">
-                      <h3 className="font-display text-[1.35rem] font-medium leading-snug text-charcoal md:text-[1.5rem]">
-                        {item.name}
-                      </h3>
-                      <span
-                        aria-hidden
-                        className="mx-1 flex-1 border-b border-dotted border-tahini"
-                      />
-                      <span className="shrink-0 font-medium text-charcoal">
-                        {formatCateringPrice(item)}
-                      </span>
+                    <div className={item.image ? "flex items-start gap-4 md:gap-6" : undefined}>
+                      {item.image && (
+                        <div className="relative aspect-4/3 w-[96px] shrink-0 overflow-hidden rounded-[10px] border border-tahini/70 md:w-[140px]">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            sizes="140px"
+                            quality={70}
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline gap-3">
+                          <h3 className="font-display text-[1.35rem] font-medium leading-snug text-charcoal md:text-[1.5rem]">
+                            {item.name}
+                          </h3>
+                          <span
+                            aria-hidden
+                            className="mx-1 flex-1 border-b border-dotted border-tahini"
+                          />
+                          <span className="shrink-0 font-medium text-charcoal">
+                            {formatCateringPrice(item)}
+                          </span>
+                        </div>
+                        {item.description && (
+                          <p className="body-copy mt-1.5 max-w-[58ch] text-[14.5px] leading-relaxed text-charcoal-60">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    {item.description && (
-                      <p className="body-copy mt-1.5 max-w-[58ch] text-[14.5px] leading-relaxed text-charcoal-60">
-                        {item.description}
-                      </p>
-                    )}
                   </li>
                 ))}
               </ul>

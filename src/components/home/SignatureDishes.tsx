@@ -56,13 +56,13 @@ const DISHES: Dish[] = [
       "Sesame-crusted falafel on a plate, one broken open to its green herb interior",
   },
   {
-    itemId: "fattoush",
-    title: "Fresh Salads",
+    itemId: "tabouleh",
+    title: "Tabbouleh Salad",
     blurb:
-      "Tabbouleh heavy on the parsley, fattoush under crispy pita, pomegranate dressing made here.",
-    image: "/images/dishes/fresh-salads.webp",
+      "Parsley first, the way it should be — soaked bulgur, mint, tomato, and lemon under good olive oil.",
+    image: "/images/menu/tabouleh.webp",
     imageAlt:
-      "Fattoush salad under crispy pita chips and pomegranate seeds, tabbouleh behind",
+      "Bowl of tabbouleh — chopped parsley and bulgur studded with tomato, a spoon resting in it",
   },
 ];
 

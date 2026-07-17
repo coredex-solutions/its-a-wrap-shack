@@ -66,6 +66,7 @@ export const cateringItemSchema = z.object({
   name: z.string().min(1),
   price: z.number().nonnegative(),
   description: z.string().optional(),
+  image: z.string().optional(),
 });
 
 /** Section ids are fixed (the page anchors reference them); label/note/items edit. */
@@ -74,6 +75,28 @@ export const cateringSectionSchema = z.object({
   label: z.string().min(1),
   note: z.string().optional(),
   items: z.array(cateringItemSchema),
+});
+
+/** Home-page copy: hero lines, the mouneh corner, the final CTA. */
+export const homeSchema = z.object({
+  hero: z.object({
+    eyebrow: z.string().min(1),
+    headlineTop: z.string().min(1),
+    headlineBottom: z.string().min(1),
+    caption: z.string().min(1),
+  }),
+  mouneh: z.object({
+    intro: z.string().min(1),
+    goods: z.array(z.string().min(1)).min(1),
+    tags: z.array(z.string().min(1)).min(1),
+    note: z.string().min(1),
+  }),
+  finalCta: z.object({
+    eyebrow: z.string().min(1),
+    headlineTop: z.string().min(1),
+    headlineItalic: z.string().min(1),
+    body: z.string().min(1),
+  }),
 });
 
 export const siteEditableSchema = z.object({
@@ -107,6 +130,7 @@ export const overlaySchema = z.object({
   faq: z.array(faqItemSchema).optional(),
   catering: z.array(cateringSectionSchema).optional(),
   cateringLeadTime: z.string().min(1).optional(),
+  home: homeSchema.optional(),
 });
 
 export type SiteEditable = z.infer<typeof siteEditableSchema>;
