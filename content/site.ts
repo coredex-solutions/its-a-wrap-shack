@@ -62,7 +62,7 @@ export const site = {
     titleDefault: "The Wrap Shack · Halal Mediterranean Eats · Palm Desert",
     titleTemplate: "%s · The Wrap Shack",
     description:
-      "Lebanese wraps, shawarma, and mezza made fresh every day in the Palm Desert area. 100% Halal, family recipes, homemade garlic sauce. Order online for pickup.",
+      "Mediterranean wraps, shawarma, and mezza made fresh every day in the Palm Desert area. 100% Halal, family recipes, homemade garlic sauce. Order online for pickup.",
   },
 } as const;
 

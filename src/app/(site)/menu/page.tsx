@@ -115,7 +115,7 @@ export default async function MenuPage() {
               stocked on our shelves, sold at the counter.
             </p>
           </div>
-          <Button href="/#mouneh" variant="outline">
+          <Button href="/#retail" variant="outline">
             See the corner
           </Button>
         </div>

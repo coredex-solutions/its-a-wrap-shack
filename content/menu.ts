@@ -208,7 +208,7 @@ export const menu: MenuItem[] = [
     category: "plates",
     name: "Breakfast Plate",
     description:
-      "Hummus, foul mudamas, labneh(thick cream yogurt), olives, cheese, makdous, sliced tomato, cucumber, fresh mint, falafel, and baba ghanoush with warm pitam.",
+      "Hummus, foul mudamas, labneh (thick cream yogurt), olives, cheese, makdous, sliced tomato, cucumber, fresh mint, falafel, and baba ghanoush with warm pita.",
     price: 19.95,
     dietary: ["vegetarian", "contains-nuts"],
   },
@@ -219,6 +219,7 @@ export const menu: MenuItem[] = [
     description:
       "Two skewers each of kefta, chicken tawook, and beef kebab over rice with hummus, house salad, and pita. Ideal for three.",
     price: 56.99,
+    image: "/images/menu/mixed-grill-platter.webp",
     dietary: [],
   },
   {
@@ -272,6 +273,7 @@ export const menu: MenuItem[] = [
     description:
       "Baked flatbread topped with ground beef, minced tomato, bell pepper, onion, paprika, pomegranate glaze, and seven-spice.",
     price: 12.99,
+    image: "/images/menu/sfeeha.webp",
     dietary: [],
   },
   {
@@ -281,6 +283,7 @@ export const menu: MenuItem[] = [
     description:
       "Flatbread baked with za'atar, sesame seeds, and extra-virgin olive oil — the way it comes out of ovens in Middle East.",
     price: 8.99,
+    image: "/images/menu/manakesh-zaatar.webp",
     dietary: ["vegan", "vegetarian"],
   },
   {
@@ -290,6 +293,7 @@ export const menu: MenuItem[] = [
     description:
       "Flatbread baked with mozzarella, feta, and sumac.",
     price: 8.99,
+    image: "/images/menu/manakesh-cheese.webp",
     dietary: ["vegetarian"],
   },
   {
@@ -308,6 +312,7 @@ export const menu: MenuItem[] = [
     description:
       "Two puff-pastry beef pies with chopped parsley, mint, onion, pomegranate glaze, and tahini sauce.",
     price: 12.99,
+    image: "/images/menu/lahm-bi-ajeen.webp",
     dietary: [],
   },
   {
@@ -369,6 +374,7 @@ export const menu: MenuItem[] = [
     description:
       "Fire-roasted red pepper dip with walnuts, pomegranate molasses, breadcrumbs, and olive oil.",
     price: 6.99,
+    image: "/images/menu/muhamara.webp",
     dietary: ["vegan", "vegetarian", "contains-nuts"],
   },
   {
@@ -396,6 +402,7 @@ export const menu: MenuItem[] = [
     description:
       "Two crisp bulgur shells around spiced beef and onion.",
     price: 7.5,
+    image: "/images/menu/kibbeh.webp",
     priceNote: "2 for",
     dietary: [],
   },
@@ -475,6 +482,7 @@ export const menu: MenuItem[] = [
     name: "Stuffed Grape Leaves / Dolma",
     description: "Hand-rolled with rice, parsley, and vegetables.",
     price: 6.99,
+    image: "/images/menu/grape-leaves.webp",
     dietary: ["vegan", "vegetarian", "gluten-free"],
   },
   {
@@ -483,6 +491,7 @@ export const menu: MenuItem[] = [
     name: "Basmati Rice",
     description: "A generous side of seasoned basmati.",
     price: 4.5,
+    image: "/images/menu/basmati-rice.webp",
     dietary: ["vegan", "vegetarian", "gluten-free"],
   },
   {
@@ -499,6 +508,7 @@ export const menu: MenuItem[] = [
     name: "Warm Pita or Herb Pita Chips",
     description: "Warm pita bread, or crispy herb-dusted chips.",
     price: 1.59,
+    image: "/images/menu/pita.webp",
     dietary: ["vegan", "vegetarian"],
   },
   {
@@ -537,6 +547,7 @@ export const menu: MenuItem[] = [
     description:
       "Baked semolina cake with sugar syrup, butter, almond, and coconut flakes.",
     price: 6.99,
+    image: "/images/menu/basbousa.webp",
     priceNote: "2 pc",
     dietary: ["vegetarian", "contains-nuts"],
   },
@@ -546,6 +557,7 @@ export const menu: MenuItem[] = [
     name: "Burma Kataifi (2 pc)",
     description: "Shredded phyllo rolled around pistachios and cashews.",
     price: 7.5,
+    image: "/images/menu/burma-kataifi.webp",
     priceNote: "2 pc",
     dietary: ["vegetarian", "contains-nuts"],
   },
@@ -555,6 +567,7 @@ export const menu: MenuItem[] = [
     name: "Pistachio Ballourie Kataifi (2 pc)",
     description: "Blond-baked kataifi pressed with whole pistachios.",
     price: 7.5,
+    image: "/images/menu/ballourie-kataifi.webp",
     priceNote: "2 pc",
     dietary: ["vegetarian", "contains-nuts"],
   },
@@ -565,6 +578,7 @@ export const menu: MenuItem[] = [
     description:
       "Traditional semolina cookies filled with pistachios and walnuts, dusted with powdered sugar.",
     price: 2.95,
+    image: "/images/menu/maamoul.webp",
     dietary: ["vegetarian", "contains-nuts"],
   },
 
@@ -575,6 +589,7 @@ export const menu: MenuItem[] = [
     name: "Lebanese Lemonade",
     description: "Fresh mint and a whisper of rosewater.",
     price: 3.25,
+    image: "/images/menu/lebanese-lemonade.webp",
     dietary: ["vegan", "vegetarian", "gluten-free"],
   },
   {

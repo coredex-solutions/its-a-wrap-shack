@@ -71,7 +71,7 @@ export default function Footer() {
               className="h-auto w-[128px]"
             />
             <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-sage">
-              Lebanese wraps, shawarma, and mezza — made fresh every day on
+              Mediterranean wraps, shawarma, and mezza — made fresh every day on
               Washington Street.
             </p>
             <div className="mt-6 flex items-center gap-4">

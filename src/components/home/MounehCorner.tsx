@@ -18,8 +18,8 @@ export default function MounehCorner() {
   const { intro, goods, tags, note } = getHome().mouneh;
   return (
     <section
-      id="mouneh"
-      aria-labelledby="mouneh-heading"
+      id="retail"
+      aria-labelledby="retail-heading"
       className="grain scroll-mt-20 bg-cream"
     >
       <div className="mx-auto flex max-w-[1400px] flex-col px-5 py-16 md:grid md:grid-cols-2 md:items-center md:gap-20 md:px-10 md:py-32">
@@ -30,7 +30,7 @@ export default function MounehCorner() {
               The mouneh corner
             </p>
             <h2
-              id="mouneh-heading"
+              id="retail-heading"
               className="display-section mt-4 text-charcoal"
               data-reveal
             >

@@ -22,7 +22,7 @@ export const SIGNATURE_IDS = [
   "chicken-shawarma-wrap",
   "gyro-wrap",
   "falafel-wrap",
-  "fattoush",
+  "tabouleh",
 ] as const;
 
 export type SignatureId = (typeof SIGNATURE_IDS)[number];

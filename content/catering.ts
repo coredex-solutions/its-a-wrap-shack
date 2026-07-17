@@ -51,6 +51,7 @@ export const catering: CateringSection[] = [
         price: 75,
         description:
           "Lettuce, tomato, cucumber, parsley, mint, and onion tossed in pomegranate dressing, topped with crispy pita chips.",
+        image: "/images/catering/fattoush-salad.webp",
       },
     ],
   },
@@ -122,6 +123,7 @@ export const catering: CateringSection[] = [
         price: 199,
         description:
           "Sliced chicken shawarma and gyro served over a bed of rice with hummus, mixed green salad, and pita bread. With garlic sauce and tzatziki.",
+        image: "/images/catering/shawarma-gyro-platter.webp",
       },
     ],
   },
