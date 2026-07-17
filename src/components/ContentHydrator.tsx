@@ -9,10 +9,13 @@ import { __setContent, type ContentBundle } from "@/lib/content";
  * render (not an effect): descendants read the snapshot in their render.
  * Idempotent, so Strict Mode double-rendering is harmless.
  *
- * Pass ONLY the sections the page's client components read — the layout
+ * Pass ONLY the data the page's client components read — the layout
  * hydrates {site, cloverUrl} for the chrome; pages layer their own needs
- * (home: menu + testimonials; menu: menu + categories). Unhydrated sections
- * fall back to the compiled-in seeds, which no client component reads.
+ * (home: testimonials + just the menu items in home-menu-ids; menu: nothing
+ * extra — its card list is server HTML and MenuShell takes props). Whatever
+ * isn't hydrated falls back to the compiled-in seeds, which no client
+ * component may then read — every byte here ships in the flight payload
+ * of every page load, so audit reads before adding data.
  */
 export default function ContentHydrator({
   data,

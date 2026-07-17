@@ -8,7 +8,6 @@ import MenuOrderBar from "@/components/menu/MenuOrderBar";
 const MenuExplorer = dynamic(() => import("@/components/menu/MenuExplorer"));
 import Button from "@/components/ui/Button";
 import HalalBadge from "@/components/ui/HalalBadge";
-import ContentHydrator from "@/components/ContentHydrator";
 import { getSite, getCloverUrl } from "@/lib/content";
 import { loadContent } from "@/lib/cms/store";
 import { JsonLd, pageGraph } from "@/lib/jsonld";
@@ -24,15 +23,16 @@ export const metadata: Metadata = {
 };
 
 export default async function MenuPage() {
-  // prime the server snapshot; hydrate the sections the explorer reads
-  const content = await loadContent();
+  // prime the server snapshot (the explorer, JSON-LD, and this header all
+  // render on the server). NOTHING extra hydrates here: the card list is
+  // server HTML, MenuShell takes categories as a plain prop, and the order
+  // bar reads the cloverUrl the layout already hydrates — a {menu,categories}
+  // payload once rode along as ~15 KB of dead flight data
+  await loadContent();
   const site = getSite();
   const clover = getCloverUrl();
   return (
-    <ContentHydrator
-      data={{ menu: content.menu, categories: content.categories }}
-    >
-      <div className="grain bg-cream">
+    <div className="grain bg-cream">
       <JsonLd
         data={pageGraph({
           path: "/menu",
@@ -121,8 +121,7 @@ export default async function MenuPage() {
         </div>
       </section>
 
-        <MenuOrderBar />
-      </div>
-    </ContentHydrator>
+      <MenuOrderBar />
+    </div>
   );
 }

@@ -16,17 +16,9 @@ import {
 } from "@/lib/gsap";
 import DietaryBadge from "@/components/ui/DietaryBadge";
 import Button from "@/components/ui/Button";
-
-const PREVIEW_IDS = [
-  "chicken-shawarma-wrap",
-  "falafel-wrap",
-  "gyro-wrap",
-  "chicken-shawarma-bowl",
-  "hummus",
-  "fattoush",
-  "tabouleh",
-  "baklava",
-] as const;
+// shared with the home page, which hydrates exactly these items — an id
+// added here without going through home-menu-ids would render seed data
+import { PREVIEW_IDS } from "@/components/home/home-menu-ids";
 
 const FILTERS: { key: Dietary; label: string }[] = [
   { key: "vegan", label: "Vegan" },
