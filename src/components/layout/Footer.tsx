@@ -28,7 +28,7 @@ export default function Footer() {
 
   // Ordering opens 30 min after the kitchen and closes 30 min before it.
   const kitchenHours = `${fmt(site.hours.opens)} – ${fmt(site.hours.closes)}`;
-  const orderingHours = `${fmt(shiftHM(site.hours.opens, 30))} – ${fmt(shiftHM(site.hours.closes, -30))}`;
+  const orderingHours = `${fmt(site.hours.opens)} – ${fmt(site.hours.closes)}`;
 
   return (
     <footer className="overflow-hidden bg-forest text-cream">

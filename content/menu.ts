@@ -352,7 +352,7 @@ export const menu: MenuItem[] = [
     category: "mezza",
     name: "Baba Ghanoush",
     description:
-      "Fire-roasted eggplant blended with pomegranate molasses, tomato, lemon, garlic, and herbs, finished with olive oil.",
+      "Fire-roasted eggplant folded into tahini — smokier, silkier cousin of hummus.",
     price: 6.99,
     dietary: ["vegan", "vegetarian", "gluten-free"],
     image: "/images/menu/baba-ghanoush.webp",
@@ -363,7 +363,7 @@ export const menu: MenuItem[] = [
     category: "mezza",
     name: "Mutabal",
     description:
-      "Fire-roasted eggplant folded into tahini — smokier, silkier cousin of hummus.",
+      "Fire-roasted eggplant blended with pomegranate molasses, tomato, lemon, garlic, and herbs, finished with olive oil.",
     price: 6.99,
     dietary: ["vegan", "vegetarian", "gluten-free"],
   },
@@ -454,7 +454,7 @@ export const menu: MenuItem[] = [
       "Lettuce, tomato, cucumber, parsley, mint, and onion tossed in pomegranate dressing, topped with crispy pita chips.",
     price: 7.99,
     dietary: ["vegan", "vegetarian"],
-    image: "/images/dishes/fresh-salads.webp",
+    image: "/images/menu/fattoush.webp",
     featured: true,
   },
   {

@@ -140,7 +140,7 @@ export default async function ContactPage() {
         <section aria-labelledby="faq-heading" className="mt-16 max-w-[820px] md:mt-28">
           <p className="eyebrow text-gold-ink">Good to know</p>
           <h2 id="faq-heading" className="display-section mt-4 text-charcoal">
-            Questions we hear a lot
+            Frequently Asked Questions
           </h2>
           <div className="mt-10">
             {faq.map((f) => (
