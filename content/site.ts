@@ -25,19 +25,20 @@ export const site = {
     country: "US",
   },
 
-  // TODO(owner): verify exact coordinates for 40100 Washington St, Suite 109.
-  geo: { latitude: 33.7455, longitude: -116.2977 },
+  // 40100 Washington St — Bermuda Dunes Plaza, SE corner of Washington St &
+  // Country Club Dr, just south of the I-10 Washington St off-ramp (OSM).
+  geo: { latitude: 33.7569, longitude: -116.3029 },
 
   phone: "(760) 360-8178",
   phoneHref: "tel:+17603608178",
   email: "itsawrapshack@outlook.com",
 
-  /** Open every day. Online ordering opens 30 min after and closes 30 min before. */
+  /** Open every day. Online ordering opens 30 min after we open and runs until close. */
   hours: {
     opens: "11:00",
     closes: "20:00",
     display: "Open daily · 11:00 am – 8:00 pm",
-    orderingWindow: "Online ordering 11:30 am – 7:30 pm",
+    orderingWindow: "Online ordering 11:30 am – 8:00 pm",
     days: [
       "Monday",
       "Tuesday",

@@ -7,7 +7,7 @@ Marketing site for **The Wrap Shack — Mediterranean Eats** (Lebanese/Mediterra
 - Brand name in all UI/copy/metadata/schema: **"The Wrap Shack"**, descriptor "Mediterranean Eats". **Never** write "It's A Wrap Shack".
 - Domain: `itsawrapshack.com` (intentionally differs from brand name — do not "fix").
 - Marketing location: Palm Desert, Southern California. Real address (contact page + JSON-LD only): 40100 Washington St Suite 109, Bermuda Dunes, CA 92203.
-- Phone (760) 360-8178 · itsawrapshack@outlook.com · Mon–Sun 11:00am–8:00pm · online ordering 11:30am–7:30pm.
+- Phone (760) 360-8178 · itsawrapshack@outlook.com · Mon–Sun 11:00am–8:00pm · online ordering 11:30am–8:00pm.
 - Clover: `https://www.clover.com/online-ordering/wrap-shack-bermuda-dunes` — single constant `CLOVER_ORDER_URL` in `content/site.ts`; every Order button consumes it (`target="_blank" rel="noopener"`).
 - Never redesign the logo. `public/brand/logo.png` (transparent, original colors) and `logo-cream.png` (cream monochrome, for forest/dark surfaces) are the only logo assets.
 

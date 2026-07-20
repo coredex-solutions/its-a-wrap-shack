@@ -69,7 +69,7 @@ export default function TestimonialsEditor({ initial }: { initial: Testimonial[]
               onChange={(e) => set(t.id, { quote: e.target.value })}
             />
           </Field>
-          <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_1fr_110px]">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label="Name">
               <TextInput
                 value={t.attribution}
@@ -80,6 +80,12 @@ export default function TestimonialsEditor({ initial }: { initial: Testimonial[]
               <TextInput
                 value={t.source ?? ""}
                 onChange={(e) => set(t.id, { source: e.target.value || undefined })}
+              />
+            </Field>
+            <Field label="Date (optional)" hint="When the review was posted, e.g. “March 2026”">
+              <TextInput
+                value={t.date ?? ""}
+                onChange={(e) => set(t.id, { date: e.target.value || undefined })}
               />
             </Field>
             <Field label="Stars (1–5)">

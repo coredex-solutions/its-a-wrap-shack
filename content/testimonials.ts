@@ -12,6 +12,8 @@ export interface Testimonial {
   attribution: string;
   /** Where the review came from (credibility signal + schema source). */
   source?: string;
+  /** When the review was posted, e.g. "March 2026". Free text; shown when set. */
+  date?: string;
   /** Star rating, 1–5. Defaults to 5. */
   rating?: number;
 }

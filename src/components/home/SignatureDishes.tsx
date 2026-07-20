@@ -63,7 +63,7 @@ const DISHES: Dish[] = [
     title: "Tabbouleh Salad",
     blurb:
       "Parsley first, the way it should be — soaked bulgur, mint, tomato, and lemon under good olive oil.",
-    image: "/images/menu/tabouleh.webp",
+    image: "/images/menu/tabbouleh.webp",
     imageAlt:
       "Bowl of tabbouleh — chopped parsley and bulgur studded with tomato, a spoon resting in it",
   },

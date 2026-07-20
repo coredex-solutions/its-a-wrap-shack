@@ -53,6 +53,7 @@ export const testimonialSchema = z.object({
   quote: z.string().min(1),
   attribution: z.string().min(1),
   source: z.string().optional(),
+  date: z.string().optional(),
   rating: z.number().int().min(1).max(5).optional(),
 });
 

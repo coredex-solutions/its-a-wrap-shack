@@ -208,6 +208,14 @@ export default function Testimonials() {
                         {q.source}
                       </span>
                     )}
+                    {q.date && (
+                      <>
+                        <span className="h-1 w-1 rounded-full bg-tahini" aria-hidden />
+                        <span className="eyebrow text-charcoal-60/70">
+                          {q.date}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </blockquote>
               ))}

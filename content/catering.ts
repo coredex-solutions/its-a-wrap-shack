@@ -110,6 +110,14 @@ export const catering: CateringSection[] = [
           "10 pan-seared salmon filets served over a bed of rice with baba ghanoush, house salad, and pita bread. Served with tahini sauce.",
       },
       {
+        id: "mini-mixed-grill-platter",
+        name: "Mini Mixed Grill Platter",
+        price: 89,
+        description:
+          "10 mixed skewers — kefta, chicken kebab, and beef kebab — served over a bed of rice with hummus, mixed salad, and pita bread. With garlic and tahini sauces.",
+        image: "/images/catering/mixed-grill-platter.webp",
+      },
+      {
         id: "mixed-grill-platter",
         name: "Large Mixed Grill Platter",
         price: 199,

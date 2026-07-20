@@ -95,7 +95,7 @@ export const menu: MenuItem[] = [
       "Ground beef worked with onion and parsley, grilled on the skewer, then wrapped with greens, tomato, pickles, onion, and tahini.",
     price: 13.99,
     dietary: [],
-    image: "/images/menu/kefta-kebab-wrap.webp",
+    image: "/images/menu/kefta-wrap.webp",
     featured: true,
   },
   {
@@ -188,7 +188,7 @@ export const menu: MenuItem[] = [
     description:
       "Falafel on a bed of rice with hummus, garbanzo bean salad, and warm pita.",
     price: 17.99,
-    image: "/images/menu/falafel-plate.webp",
+    image: "/images/menu/falafel-plate-v2.webp",
     dietary: ["vegan", "vegetarian"],
   },
   {
@@ -443,7 +443,7 @@ export const menu: MenuItem[] = [
       "Parsley and fresh mint with soaked bulgur, onion, tomato, and lemon, drizzled with olive oil. Romaine hearts on the side for scooping.",
     price: 8.5,
     dietary: ["vegan", "vegetarian"],
-    image: "/images/menu/tabouleh.webp",
+    image: "/images/menu/tabbouleh.webp",
     featured: true,
   },
   {

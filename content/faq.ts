@@ -27,7 +27,7 @@ export const faq: FaqItem[] = [
     id: "order",
     question: "How do I order online?",
     answer:
-      "We take online orders through Clover for pickup. Online ordering opens at 11:30 am and closes at 7:30 pm daily — 30 minutes inside our door hours.",
+      "We take online orders through Clover for pickup. Online ordering opens at 11:30 am and runs until 8:00 pm daily.",
   },
   {
     id: "where",
@@ -45,7 +45,7 @@ export const faq: FaqItem[] = [
     id: "hours",
     question: "What are your hours?",
     answer:
-      "We're open every day of the week, 11:00 am to 8:00 pm. Online ordering runs 11:30 am to 7:30 pm — 30 minutes inside our door hours.",
+      "We're open every day of the week, 11:00 am to 8:00 pm. Online ordering runs 11:30 am to 8:00 pm.",
   },
   {
     id: "reservations",
