@@ -5,6 +5,7 @@ import TrustStrip from "@/components/home/TrustStrip";
 import StorySection from "@/components/home/StorySection";
 import GallerySection from "@/components/home/GallerySection";
 import MounehCorner from "@/components/home/MounehCorner";
+import HeritageSection from "@/components/home/HeritageSection";
 import VisitSection from "@/components/home/VisitSection";
 import FinalCta from "@/components/home/FinalCta";
 
@@ -70,6 +71,7 @@ export default async function HomePage() {
         <Divider className="mx-auto max-w-[1100px] px-5" />
       </div>
       <MounehCorner />
+      <HeritageSection />
       <div className="grain bg-cream">
         <Divider className="mx-auto max-w-[1100px] px-5" />
       </div>
