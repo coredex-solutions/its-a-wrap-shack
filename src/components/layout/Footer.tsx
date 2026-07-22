@@ -11,6 +11,7 @@ import BackToTop from "@/components/ui/BackToTop";
 const NAV = [
   { href: "/menu", label: "Menu" },
   { href: "/#retail", label: "The Retail Corner" },
+  { href: "/#heritage", label: "Our Heritage" },
   { href: "/catering", label: "Catering" },
   { href: "/about", label: "Our Story" },
   { href: "/contact", label: "Visit Us" },
