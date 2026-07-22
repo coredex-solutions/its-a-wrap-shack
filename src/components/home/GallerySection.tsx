@@ -13,7 +13,7 @@ const SHOTS = [
   { src: "/images/menu/lamb-chop-plate.webp", label: "Grilled Lamb Chops", alt: "Grilled lamb chops over rice with hummus and salad", tall: false },
   { src: "/images/menu/falafel-wrap.webp", label: "Falafel Wrap", alt: "Rolled falafel wrap cut to show crisp falafel and greens", tall: true },
   { src: "/images/menu/muhamara.webp", label: "Muhamara", alt: "Red muhamara dip topped with walnuts and sesame", tall: false },
-  { src: "/images/menu/chicken-shawarma-plate.webp", label: "Shawarma Plate", alt: "Shawarma over saffron rice with hummus, salad, and pita", tall: true },
+  { src: "/images/menu/chicken-shawarma-plate-v2.webp", label: "Shawarma Plate", alt: "Chicken shawarma over rice with hummus, salad, and pita", tall: true },
   { src: "/images/menu/baba-ghanoush.webp", label: "Baba Ghanoush", alt: "Smoky baba ghanoush swirled with olive oil", tall: false },
   { src: "/images/menu/baklava.webp", label: "Baklava", alt: "Layered pistachio-and-walnut baklava soaked in syrup", tall: false },
 ] as const;

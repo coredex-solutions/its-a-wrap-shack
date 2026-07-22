@@ -154,12 +154,23 @@ export const menu: MenuItem[] = [
   {
     id: "chicken-shawarma-plate",
     category: "plates",
-    name: "Chicken Shawarma or Gyro Plate",
+    name: "Chicken Shawarma Plate",
     description:
-      "Your choice of chicken shawarma or gyro over rice with hummus, house salad, and warm pita.",
+      "Grilled chicken shawarma over rice with hummus, house salad, and warm pita.",
     price: 19.99,
     dietary: [],
-    image: "/images/menu/chicken-shawarma-plate.webp",
+    image: "/images/menu/chicken-shawarma-plate-v2.webp",
+    featured: true,
+  },
+  {
+    id: "beef-gyro-plate",
+    category: "plates",
+    name: "Beef Gyro Plate",
+    description:
+      "Char-grilled beef gyro over rice with hummus, house salad, and warm pita.",
+    price: 19.99,
+    dietary: [],
+    image: "/images/menu/beef-gyro-plate.webp",
     featured: true,
   },
   {
