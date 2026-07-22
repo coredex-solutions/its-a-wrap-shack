@@ -182,6 +182,17 @@ export const menu: MenuItem[] = [
     dietary: [],
   },
   {
+    id: "chicken-tawook-plate",
+    category: "plates",
+    name: "Chicken Tawook Plate",
+    description:
+      "Two skewers of marinated grilled chicken tawook with peppers and onion, over a bed of rice with hummus, house salad, and warm pita. Served with garlic sauce.",
+    addOn: "Extra skewer · $7.50",
+    price: 18.99,
+    image: "/images/menu/chicken-tawook-plate.webp",
+    dietary: [],
+  },
+  {
     id: "falafel-plate",
     category: "plates",
     name: "Falafel Plate",
@@ -474,6 +485,7 @@ export const menu: MenuItem[] = [
     name: "Sumac Fries",
     description: "Golden and crispy, seasoned with sumac.",
     price: 5.99,
+    image: "/images/menu/sumac-fries.webp",
     dietary: ["vegan", "vegetarian"],
   },
   {
