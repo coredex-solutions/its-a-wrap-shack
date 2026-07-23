@@ -31,7 +31,7 @@ export const site = {
 
   phone: "(760) 360-8178",
   phoneHref: "tel:+17603608178",
-  email: "itsawrapshack@outlook.com",
+  email: "mmalak@hotmail.com",
 
   /** Open every day. Online ordering opens 30 min after we open and runs until close. */
   hours: {
