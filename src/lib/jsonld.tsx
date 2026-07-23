@@ -61,8 +61,8 @@ function restaurantNode() {
     url: site.url,
     image: [
       `${site.url}/og.jpg`,
-      `${site.url}/images/dishes/chicken-shawarma-wrap.webp`,
-      `${site.url}/images/dishes/lamb-chop-plate.webp`,
+      `${site.url}/images/dishes/chicken-shawarma.webp`,
+      `${site.url}/images/dishes/beef-gyro.webp`,
     ],
     logo: `${site.url}/brand/logo.png`,
     telephone: site.phoneHref.replace("tel:", ""),
