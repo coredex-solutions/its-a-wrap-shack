@@ -40,26 +40,39 @@ export default async function ContactPage() {
           withFaq: true,
         })}
       />
-      {/* opening chapter: the heading over the brand image as a full-bleed
-          background — the wrap sits right of the text on every viewport */}
-      <section className="relative overflow-hidden bg-forest text-cream">
-        <Image
-          src="/images/contact-hero.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          quality={60}
-          className="object-cover object-right md:object-center"
-        />
-        {/* flat mobile-only veil: the display text can reach the wrap on
-            narrow crops — solid color, so no gradient/glass in sight */}
-        <span aria-hidden className="absolute inset-0 bg-forest/45 md:hidden" />
-        <div className="relative mx-auto max-w-[1400px] px-5 pb-16 pt-28 md:px-10 md:pb-24 md:pt-40">
-          <p className="eyebrow text-gold">Visit us</p>
-          <h1 className="display-section mt-4 max-w-[18ch]">
-            Come hungry. Leave with extra garlic sauce.
-          </h1>
+      {/* opening chapter: split grid — text left, cutout wrap right */}
+      <section className="bg-forest text-cream">
+        <div className="mx-auto grid max-w-[1400px] gap-6 px-5 pb-14 pt-28 md:grid-cols-[1fr_420px] md:items-center md:gap-16 md:px-10 md:pb-24 md:pt-44">
+          <div>
+            {/* Above the fold: no [data-reveal] — LCP copy paints with the
+                HTML; eyebrow carries the CSS entrance (hero-enter rule). */}
+            <p className="eyebrow hero-enter text-gold">Visit us</p>
+            <h1 className="display-section mt-4 max-w-[18ch]">
+              Come hungry. Leave with extra garlic sauce.
+            </h1>
+            <p className="body-copy mt-6 max-w-[52ch] text-[16.5px] leading-[1.85] text-sage">
+              Drop by our spot on Washington Street in Bermuda Dunes — grab a
+              wrap off the spit, a fresh-squeezed lemonade, and a seat. We&rsquo;ll
+              take care of the rest.
+            </p>
+          </div>
+          {/* cutout wrap image — floats right of the text on desktop,
+              below it on mobile. The image has a transparent/white bg
+              so we use object-contain with no rounding. */}
+          <div
+            className="hero-enter relative mx-auto aspect-[3/4] w-full max-w-[320px] md:mx-0 md:max-w-none"
+            style={{ animationDelay: "0.15s" }}
+          >
+            <Image
+              src="/images/shawarma-cutout.webp"
+              alt="A hand-rolled chicken shawarma wrap tied with twine"
+              fill
+              priority
+              sizes="(max-width: 767px) 320px, 420px"
+              quality={75}
+              className="object-contain drop-shadow-[0_8px_40px_rgba(0,0,0,0.35)]"
+            />
+          </div>
         </div>
       </section>
 
