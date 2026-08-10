@@ -26,7 +26,11 @@ import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
 const SETS = {
   lg: { dir: "lg", end: 146, native: 146 },
-  sm: { dir: "sm", end: 75, native: 75 },
+  // dir is versioned (sm-v2) as a cache-buster: the frames carry a 30-day
+  // immutable Cache-Control, so re-extracting the mobile film MUST land on a
+  // fresh path or phones keep serving the old cached frames. Bump the suffix
+  // whenever the sm film is replaced.
+  sm: { dir: "sm-v2", end: 75, native: 75 },
 } as const;
 
 const HERO_ALT =
