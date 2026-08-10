@@ -86,6 +86,11 @@ export function initGsap(): Promise<GsapBundle> {
       ease.CustomEase,
       flip.Flip,
     );
+    // Mobile URL-bar show/hide changes viewport height mid-scroll. Without
+    // this, ScrollTrigger refreshes on that resize and the pinned hero jumps;
+    // with it, the pin geometry stays put while the `dvh`-sized hero still
+    // grows to fill the newly-revealed strip (no white gap under the hero).
+    st.ScrollTrigger.config({ ignoreMobileResize: true });
     // cubic-bezier(0.22, 1, 0.36, 1) — the only easing family on the site
     ease.CustomEase.create("brand", "0.22, 1, 0.36, 1");
     bundle = {

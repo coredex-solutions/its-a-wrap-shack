@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image, { getImageProps } from "next/image";
+import { getImageProps } from "next/image";
 import { getCloverUrl, getHome } from "@/lib/content";
 import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
@@ -26,7 +26,7 @@ import { initGsap, prefersReducedMotion, type GsapBundle } from "@/lib/gsap";
 
 const SETS = {
   lg: { dir: "lg", end: 146, native: 146 },
-  sm: { dir: "sm", end: 78, native: 78 },
+  sm: { dir: "sm", end: 75, native: 75 },
 } as const;
 
 const HERO_ALT =
@@ -39,13 +39,8 @@ export default function HeroSequence() {
   const introRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
-  const endRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const [canvasReady, setCanvasReady] = useState(false);
-  // flips at first interaction (same trigger as the frame preload): gates the
-  // mobile finale logo <Image>, whose ~95 KB otherwise loads at boot and
-  // competes with the fonts/poster for LCP bandwidth
-  const [warm, setWarm] = useState(false);
   const clover = getCloverUrl();
   const hero = getHome().hero;
 
@@ -167,7 +162,6 @@ export default function HeroSequence() {
         if (window.scrollY > 0) go();
       });
       if (disposed) return;
-      setWarm(true);
       const coarse: Promise<void>[] = [];
       for (let i = 0; i < cfg.end; i += 5) coarse.push(loadFrame(i));
       coarse.push(loadFrame(cfg.end - 1));
@@ -193,9 +187,12 @@ export default function HeroSequence() {
       if (disposed) return;
       let creamPhase = false;
       // when the field turns light and the header's cream ink must flip dark:
-      // desktop tracks the film (~66%); mobile tracks the earlier cream sweep
-      // (~48%) so the cream logo/hamburger never sit invisibly on the cream field
-      const creamAt = cfg === SETS.sm ? 0.5 : 0.68;
+      // the vertical mobile film dissolves to its cream logo field ~57%, the
+      // landscape desktop film ~66%
+      const creamAt = cfg === SETS.sm ? 0.57 : 0.68;
+      // fade the green vignette out just before that dissolve so it never
+      // tints the cream ending
+      const vignetteAt = cfg === SETS.sm ? 0.5 : 0.6;
       tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -267,28 +264,12 @@ export default function HeroSequence() {
         ).to(captionRef.current, { opacity: 0, y: -18, duration: 0.06 }, 0.53);
       }
 
-      // ~62–72%: the film dissolves to its light logo field — fade the green
-      // vignette out so it doesn't tint the white ending
+      // the film dissolves to its light logo field — fade the green vignette
+      // out so it doesn't tint the cream ending. Both the vertical mobile film
+      // and the landscape desktop film now end on a complete, correctly-framed
+      // logo lockup, so the canvas owns the finale (no DOM overlay).
       if (vignetteRef.current)
-        tl.to(vignetteRef.current, { opacity: 0, duration: 0.1 }, 0.6);
-
-      // small screens: the film's wide logo-lockup finale center-crops to an
-      // illegible sliver on a portrait viewport. So once the wrap is fully
-      // assembled (~frame 42 / 55%) but BEFORE the film begins dissolving into
-      // that logo (~frame 48 / 62%), sweep an opaque cream field over the canvas
-      // and rise the real, correctly-sized logo into it — the cropped film logo
-      // never shows; mobile ends on a clean, complete brand lockup.
-      // (the logo <Image> inside mounts lazily at first interaction, so the
-      // overlay fade owns the whole reveal — no separate logo tween, which
-      // would have to target an element that doesn't exist yet)
-      if (cfg === SETS.sm && endRef.current) {
-        tl.fromTo(
-          endRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.07 },
-          0.48,
-        );
-      }
+        tl.to(vignetteRef.current, { opacity: 0, duration: 0.1 }, vignetteAt);
 
       // (the intro entrance is a CSS animation — see .hero-enter — so the
       // headline paints before hydration and stays the fastest LCP candidate;
@@ -328,17 +309,31 @@ export default function HeroSequence() {
     src: "/hero-frames/hero-poster.webp",
     priority: true,
   });
+  // portrait LCP poster for phones — matches the vertical film's first frame
+  // so the canvas fades in with no landscape→portrait poster swap
+  const { props: posterSmProps } = getImageProps({
+    ...common,
+    width: 720,
+    height: 1280,
+    src: "/hero-frames/hero-poster-sm.webp",
+    priority: true,
+  });
 
   return (
     <section aria-label="Welcome to The Wrap Shack">
       {/* pre-rendered pin spacer — see pinSpacer above */}
       <div ref={spacerRef}>
-        <div ref={pinRef} className="relative h-svh overflow-hidden bg-forest">
+        <div ref={pinRef} className="relative h-dvh overflow-hidden bg-forest">
           {/* LCP poster / reduced-motion still */}
           <picture>
             <source
               media="(prefers-reduced-motion: reduce)"
               srcSet={staticProps.srcSet}
+              sizes="100vw"
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet={posterSmProps.srcSet}
               sizes="100vw"
             />
             {/* eslint-disable-next-line jsx-a11y/alt-text -- alt comes via posterProps */}
@@ -425,26 +420,6 @@ export default function HeroSequence() {
           >
             {hero.caption}
           </p>
-
-          {/* small screens only: cream field + real logo covers the film's
-            16:9 logo finale, which would otherwise crop on portrait */}
-          <div
-            ref={endRef}
-            aria-hidden
-            className="absolute inset-0 z-20 flex items-center justify-center bg-cream opacity-0 md:hidden motion-reduce:hidden"
-          >
-            {warm && (
-              <Image
-                src="/brand/logo.png"
-                alt=""
-                width={420}
-                height={337}
-                sizes="66vw"
-                quality={50}
-                className="h-auto w-[min(66vw,400px)]"
-              />
-            )}
-          </div>
 
           {/* scroll cue — gone by 5% */}
           <div
